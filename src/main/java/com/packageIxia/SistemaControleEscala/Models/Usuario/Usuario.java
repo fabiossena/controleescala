@@ -1,6 +1,6 @@
 package com.packageIxia.SistemaControleEscala.Models.Usuario;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,8 +88,8 @@ public class Usuario {
     private String sexo;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dataNascimento;
-    
+    private LocalDate dataNascimento;
+   
     private boolean ativo = true;
 
 	@Size(max = 20)
@@ -285,11 +285,11 @@ public class Usuario {
 		this.sexo = sexo;
 	}
 
-	public Date getDataNascimento() {
+	public LocalDate getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(Date dataNascimento) {
+	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 	
