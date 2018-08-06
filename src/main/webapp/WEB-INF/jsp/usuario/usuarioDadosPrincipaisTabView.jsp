@@ -93,7 +93,7 @@
 	  <div class="form-group">
 	      <label for="skype" class="col-md-12 control-label">Data de nascimento</label>
 	      <div class="col-md-9">
-	          <form:input path="dataNascimento" class="form-control mask-date" name="dataNascimento" placeholder="data de nascimento" disabled="${isDisableTodosCampos}"/>
+	          <form:input path="dataNascimento" class="form-control mask-date datepicker" placeholder="data de nascimento" disabled="${isDisableTodosCampos}"/>
 	      </div>
 	  </div>
 	        
