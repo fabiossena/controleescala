@@ -106,7 +106,16 @@ public class Usuario {
 
 	@Size(max = 100)
     private String informacoesAdicionaisEndereco;
- 
+
+	@Size(max = 100)
+    private String paisString;
+	
+	@Size(max = 150)
+    private String estadoString;
+
+	@Size(max = 150)
+	private String cidadeString;
+    
     private int cidadeId;
     
     private int bancoId;
@@ -444,5 +453,29 @@ public class Usuario {
 
 	public void setDataExcluido(LocalDateTime dataExcluido) {
 		this.dataExcluido = dataExcluido;
+	}
+
+	public String getPaisString() {
+		return paisString;
+	}
+
+	public void setPaisString(String paisString) {
+		this.paisString = paisString;
+	}
+
+	public String getEstadoString() {
+		return estadoString;
+	}
+
+	public void setEstadoString(String estadoString) {
+		this.estadoString = estadoString;
+	}
+
+	public String getCidadeString() {
+		return cidadeString;
+	}
+
+	public void setCidadeString(String cidadeString) {
+		this.cidadeString = cidadeString;
 	}
 }
