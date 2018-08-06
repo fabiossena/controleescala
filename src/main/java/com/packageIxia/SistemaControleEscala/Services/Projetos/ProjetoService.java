@@ -15,8 +15,6 @@ import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
-//import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
-//import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
 
@@ -31,22 +29,19 @@ public class ProjetoService {
 	@Autowired
 	public ProjetoService(
 			ProjetoDao projetoDao,
-//			ProjetoEscalaService projetoEscalaService,
-//			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
 			HttpSession session) {
 		this.projetoDao = projetoDao;
-		//this.projetoEscalaService = projetoEscalaService;
-		//this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.session = session;
 	}
 
-	public List<Projeto> findAllByUsuarioLogado(Usuario usuarioLogado) {
+	public List<Projeto> findAllByUsuarioLogado() {
 		List<Projeto> projetos = Utilities.toList(projetoDao.findAllByExcluido(false));
 		    	
 		if (projetos == null || projetos.isEmpty()) {
 			return projetos;			
 		}
-		
+
+		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
     	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
     		List<ProjetoEscala> escalas = projetoEscalaDao.findAllByMonitorId(usuarioLogado.getId());
             return projetos.stream().filter(x-> escalas.stream().anyMatch(y->y.getProjetoId()==x.getId())).collect(Collectors.toList());
@@ -65,10 +60,8 @@ public class ProjetoService {
 	}
 	
 	public Projeto findById(long id) {
-		return projetoDao.findById(id).orElse(null);
-	}
-
-	public Projeto findById(long id, Usuario usuarioLogado) {
+		
+		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		Projeto projeto = projetoDao.findById(id).orElse(null);
 
     	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {

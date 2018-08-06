@@ -1,7 +1,6 @@
 package com.packageIxia.SistemaControleEscala.Services.Projetos;
 
 import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,17 +8,13 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.SistemaControleEscala.Daos.ProjetoEscalaPrestadorDao;
-import com.packageIxia.SistemaControleEscala.Daos.UsuarioDao;
 import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
-import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
-import com.packageIxia.SistemaControleEscala.Services.Usuario.UsuarioService;
 
 @Service
 public class ProjetoEscalaPrestadorService {

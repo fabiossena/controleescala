@@ -3,7 +3,6 @@ package com.packageIxia.SistemaControleEscala.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.packageIxia.SistemaControleEscala.Daos.Referencias.BancoDao;
 import com.packageIxia.SistemaControleEscala.Daos.Referencias.CidadeDao;
 import com.packageIxia.SistemaControleEscala.Daos.Referencias.EstadoDao;
@@ -108,8 +107,8 @@ public class ReferenciasService {
     	if (list == null || list.isEmpty()) {	  
     		return new ArrayList<Estado>();    		
     	}
-    	
-    	return Queryable.from(list).where(p-> p.getId() == idPais).toList();
+
+    	return list.stream().filter(p-> p.getId() == idPais).collect(Collectors.toList());
     }
     
     public List<Estado> getEstados() {
@@ -139,7 +138,7 @@ public class ReferenciasService {
     		return new ArrayList<Cidade>();    		
     	}
     	
-    	return Queryable.from(list).where(p-> p.getId() == idEstado).toList();
+    	return list.stream().filter(p-> p.getId() == idEstado).collect(Collectors.toList());
     }
     
     public List<Cidade> getCidades() {

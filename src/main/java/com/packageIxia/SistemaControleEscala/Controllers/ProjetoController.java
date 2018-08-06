@@ -97,7 +97,7 @@ public class ProjetoController {
             return erroModelView;
     	}
 
-		modelViewCadastros.addObject("projetosCadastrados", this.projetoService.findAllByUsuarioLogado(this.usuarioLogado));		
+		modelViewCadastros.addObject("projetosCadastrados", this.projetoService.findAllByUsuarioLogado());		
 				
 		return modelViewCadastros;
 	}   
@@ -168,7 +168,7 @@ public class ProjetoController {
             return erroModelView;
     	}
     	
-		this.projetoEditado = this.projetoService.findById(id, usuarioLogado);
+		this.projetoEditado = this.projetoService.findById(id);
 		if (this.projetoEditado == null) {
     		ModelAndView erroModelView = new ModelAndView("redirect:/error");
     		erroModelView.addObject("errorMessage", "Projeto não existe ou nao cadastrado para este usuário");

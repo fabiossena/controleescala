@@ -51,8 +51,7 @@ public class DashboardController {
 	public ModelAndView projeto(HttpServletRequest request) {
 
 		System.out.println("dashboard principal");
-		Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
-    	List<Projeto> projetos = this.projetoService.findAllByUsuarioLogado(usuarioLogado);
+    	List<Projeto> projetos = this.projetoService.findAllByUsuarioLogado();
 
     	if (projetos == null || projetos.isEmpty()) {
     		ModelAndView erroModelView = new ModelAndView("errorView");
@@ -83,9 +82,8 @@ public class DashboardController {
 	}
 
 	private ModelAndView dashboard(HttpServletRequest request, long id, int mes, int ano, int escalaId) {
-		Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));		
-    	
-		Projeto projeto = this.projetoService.findById(id, usuarioLogado);
+		
+		Projeto projeto = this.projetoService.findById(id);
     	
     	if (projeto == null) {
     		ModelAndView erroModelView = new ModelAndView("errorView");
@@ -93,7 +91,7 @@ public class DashboardController {
             return erroModelView;
     	}
 
-    	List<Projeto> projetos = this.projetoService.findAllByUsuarioLogado(usuarioLogado);
+    	List<Projeto> projetos = this.projetoService.findAllByUsuarioLogado();
 
     	if (projetos == null || projetos.isEmpty()) {
     		ModelAndView erroModelView = new ModelAndView("errorView");

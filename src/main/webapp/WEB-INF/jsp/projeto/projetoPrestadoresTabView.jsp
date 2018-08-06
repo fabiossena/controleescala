@@ -1,5 +1,5 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -19,10 +19,12 @@
       	  <div class="invalid-feedback"><form:errors path="projetoEscala" /></div>
 	  </div>    
 	  
-	   	<c:set var="total" value="${0}"/>
+		<%-- <c:set var="total" value="${0}"/>--%>
 		<c:forEach var="item" items="${prestadores}">
 		    <c:set var="total" value="${total + 1}" />
 		</c:forEach>
+		 
+		 
 		<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin-top: 25px"> 
 		  	<h5>Todos prestadores<span class="badge"> | Quantidade ${total}/${escalaSelecionada.quantidadePrestadoresPlanejada} (real/planejada)</span></h5>      
 		</div>
