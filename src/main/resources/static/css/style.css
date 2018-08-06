@@ -1,0 +1,50 @@
+
+
+	.nav-link  {
+   		color: #666;
+	}
+	
+	/* .nav-link .show>.nav-link {
+	    background-color: #CCC;
+   		color: #000;
+	} */
+	
+       .nav-link a:hover {
+           color: #666 !important;
+           cursor: pointer;
+	    background-color: #BBB;
+       }
+       
+	.nav-pills .nav-link.active {
+	    background-color: #CCC;
+   		color: #000;
+   		border-left: 2px solid #CCC; 
+   		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		border-radius: 0px;
+	}
+	
+	.panel-custom {
+		padding: 20px 0 20px 0;
+	}
+	
+	.control-label-custom {
+	    background: transparent;
+	    border: none;
+	    outline:none;
+	    box-shadow:none;
+	}
+	
+	.hide-row {
+		visibility:hidden;
+	}
+	
+	.ui-widget-header .ui-icon { 
+	     background-image: url(images/ui-icons_444444_256x240.png);
+	 } 
+	 
+	 
+       .error{
+             color:red;
+             font-size: 10pt;
+       }
