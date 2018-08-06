@@ -284,8 +284,7 @@ public class ProjetoController {
     }
 
 	private String deleteFolgaSemanal(long id) {
-		String message = "";
-		message = this.projetoFolgaSemanalService.deleteByProjetoEscalaPrestadorId(id);	
+		String message = this.projetoFolgaSemanalService.deleteByProjetoEscalaPrestadorId(id);	
 //		List<ProjetoFolgaSemanal> todosPrestadores = this.projetoFolgaSemanalService.findAllByProjetoEscalaPrestadorId(id);
 //		for (ProjetoFolgaSemanal projetoFolgaSemanal : todosPrestadores) {
 //			message = this.projetoFolgaSemanalService.delete(projetoFolgaSemanal.getId());		
@@ -295,7 +294,7 @@ public class ProjetoController {
 //		}
 
 		folgasSemanais = new ArrayList<ProjetoFolgaSemanal>();
-		return "";
+		return message;
 	}
 
 	@RequestMapping("/projeto/delete/{id}")

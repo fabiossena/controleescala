@@ -19,7 +19,6 @@ import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestad
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoFolgaSemanal;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.DiaSemanaEnum;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.DiasMes;
-import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoEscalaPrestadorService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoEscalaService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoFolgaSemanalService;
