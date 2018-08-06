@@ -32,6 +32,8 @@ public class Estado {
 
 	private String nome;
 
+	private String uf;
+	
 	public long getId() {
 		return id;
 	}
@@ -62,6 +64,14 @@ public class Estado {
 
 	public void setPaisId(long paisId) {
 		this.paisId = paisId;
+	}
+
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
 	}
 
 }
