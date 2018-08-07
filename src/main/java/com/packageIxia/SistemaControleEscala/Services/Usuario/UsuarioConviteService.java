@@ -2,27 +2,16 @@ package com.packageIxia.SistemaControleEscala.Services.Usuario;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-
 import com.packageIxia.SistemaControleEscala.Daos.UsuarioDao;
 import com.packageIxia.SistemaControleEscala.Daos.UsuarioEmailPrimeiroAcessoDao;
 import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
-
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
