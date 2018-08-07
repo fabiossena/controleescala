@@ -2,6 +2,7 @@ package com.packageIxia.SistemaControleEscala.Services.Usuario;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.Strings;
@@ -13,17 +14,31 @@ import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class UsuarioConviteService {
 	
 	private UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao;
 	private UsuarioDao usuarioDao;
+	private HttpServletRequest request;
 
 	public UsuarioConviteService(
+			HttpServletRequest request, 
 			UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao,
 			UsuarioDao usuarioDao) {
 		this.usuarioEmailPrimeiroAcessoDao = usuarioEmailPrimeiroAcessoDao;
 		this.usuarioDao = usuarioDao;
+		this.request = request;
 	}
 
 	public List<UsuarioEmailPrimeiroAcesso> findAll() {
@@ -40,6 +55,14 @@ public class UsuarioConviteService {
 
 		if (Strings.isBlank(usuarioConvite.getEmail().trim())) {
 			return "Preencha o campo e-mail";
+		}
+
+		try {
+			if (InternetAddress.parse(usuarioConvite.getEmail()).length == 0) {
+				return "Digite um e-mail válido";
+			}
+		} catch (AddressException e) {
+			return "Digite um e-mail válido";
 		}
 
 		if (usuarioConvite.getFuncaoId() == 0) {
@@ -64,8 +87,14 @@ public class UsuarioConviteService {
 		}
 		
 		// todo: enviar e-mail
-		
 		this.usuarioEmailPrimeiroAcessoDao.save(usuarioConvite);
+
+		try {
+			new EnvioEmail(usuarioConvite.getEmail(), usuarioConvite.getMatricula(), request.getRequestURL().toString().replace("convite", "")).start();
+		} catch (Exception e) {
+			System.out.println("erro envio e-mail");
+			System.out.println(e.toString());
+		}
 		
 		return "";
 	}
