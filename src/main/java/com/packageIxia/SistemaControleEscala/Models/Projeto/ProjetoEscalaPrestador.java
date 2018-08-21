@@ -2,6 +2,7 @@ package com.packageIxia.SistemaControleEscala.Models.Projeto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -81,7 +82,11 @@ public class ProjetoEscalaPrestador {
 	private LocalDateTime dataExcluido;
 
 	// todo: ajustar
-    transient private ProjetoFolgaSemanal[] projetoFolgasSemanais;
+    transient private List<ProjetoFolgaSemanal> projetoFolgasSemanais;
+
+    transient private List<AusenciaSolicitacao> ausenciaSolicitacoes;
+
+    transient private List<AusenciaReposicao> ausenciaReposicoes;
     
 	public Projeto getProjeto() {
 		return this.projeto;
@@ -207,11 +212,11 @@ public class ProjetoEscalaPrestador {
 		this.dataExcluido = dataExcluido;
 	}
 
-	public ProjetoFolgaSemanal[] getProjetoFolgasSemanais() {
+	public List<ProjetoFolgaSemanal> getProjetoFolgasSemanais() {
 		return projetoFolgasSemanais;
 	}
 
-	public void setProjetoFolgasSemanais(ProjetoFolgaSemanal[] projetoFolgasSemanais) {
+	public void setProjetoFolgasSemanais(List<ProjetoFolgaSemanal> projetoFolgasSemanais) {
 		this.projetoFolgasSemanais = projetoFolgasSemanais;
 	}
 	
@@ -221,6 +226,22 @@ public class ProjetoEscalaPrestador {
 
 	public void setIndicadaFolgaSemana(boolean indicadafolgaSemana) {
 		this.indicadaFolgaSemana = indicadafolgaSemana;
+	}
+
+	public void setAusenciaSolicitacoes(List<AusenciaSolicitacao> ausenciaSolicitacoes) {
+		this.ausenciaSolicitacoes = ausenciaSolicitacoes;		
+	}
+
+	public List<AusenciaSolicitacao> getAusenciaSolicitacoes() {
+		return this.ausenciaSolicitacoes;		
+	}
+
+	public void setAusenciaReposicoes(List<AusenciaReposicao> ausenciaReposicoes) {
+		this.ausenciaReposicoes = ausenciaReposicoes;		
+	}
+
+	public List<AusenciaReposicao> getAusenciaReposicoes() {
+		return	this.ausenciaReposicoes;		
 	}
 
 }

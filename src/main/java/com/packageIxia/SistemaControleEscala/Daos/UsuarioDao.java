@@ -1,6 +1,5 @@
 package com.packageIxia.SistemaControleEscala.Daos;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;

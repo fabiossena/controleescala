@@ -217,6 +217,7 @@ public class ProjetoController {
 		}
 	} 
 
+	
 	@PostMapping("/projeto/{id}/editar")
 	public ModelAndView cadastroPost(
     		@Valid @ModelAttribute("projeto")Projeto projeto,

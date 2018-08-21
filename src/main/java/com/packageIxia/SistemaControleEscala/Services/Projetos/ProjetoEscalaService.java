@@ -1,26 +1,43 @@
 package com.packageIxia.SistemaControleEscala.Services.Projetos;
 
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.xpath;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.packageIxia.SistemaControleEscala.Daos.ProjetoDao;
 import com.packageIxia.SistemaControleEscala.Daos.ProjetoEscalaDao;
 import com.packageIxia.SistemaControleEscala.Helper.Utilities;
+import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
+import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
+import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
+import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
 
 @Service
 public class ProjetoEscalaService {
 
 	private ProjetoEscalaDao projetoEscalaDao;
 	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private HttpSession session;
+	private ProjetoDao projetoDao;
 
 	@Autowired
 	public ProjetoEscalaService(
+			ProjetoDao projetoDao,
 			ProjetoEscalaDao projetoEscalaDao,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService) {
+			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
+			HttpSession session) {
 		this.projetoEscalaDao = projetoEscalaDao;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
+		this.session = session;
+		this.projetoDao = projetoDao;
 	}
 	
 	public List<ProjetoEscala> findAllByProjetoId(long projetoId) {
@@ -116,5 +133,40 @@ public class ProjetoEscalaService {
 
 	public List<ProjetoEscala> findAllByMonitorId(long monitorId) {
 		return this.projetoEscalaDao.findAllByMonitorId(monitorId);
+	}
+	
+	public List<ProjetoEscala> findAllByPrestadorId(long id) {
+		return this.projetoEscalaPrestadorService.findAllByPrestadorId(id)
+				.stream().map(x->x.getProjetoEscala()).distinct().collect(Collectors.toList());
+	}
+	
+	public List<ProjetoEscala> findAllByPrestadorIdExceptPrestadorEscalaId(long usuarioId, long prestadorEscalaId) {
+		List<ProjetoEscalaPrestador> projetosEscalas = this.projetoEscalaPrestadorService.findAllByPrestadorId(usuarioId);
+		return projetosEscalas
+				.stream().filter(x->prestadorEscalaId == 0 || x.getProjetoEscala().getId() != prestadorEscalaId)
+				.map(x->x.getProjetoEscala()).distinct().collect(Collectors.toList());
+	}
+
+	public List<ProjetoEscala> findAllByPermissao() {
+		Usuario usuario = ((Usuario)this.session.getAttribute("usuarioLogado"));
+		List<ProjetoEscala> escalas = new ArrayList<ProjetoEscala>();
+		if (usuario.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+			escalas = findAllByPrestadorId(usuario.getId());
+		} 
+		else if (usuario.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+			escalas = findAllByMonitorId(usuario.getId());
+		}
+		else if (usuario.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+			List<Projeto> projs = this.projetoDao.findAllByGerenteId(usuario.getId());
+			List<Long> idProjs = projs.stream().map(x->x.getId()).collect(Collectors.toList());
+			escalas = Utilities.toList(this.projetoEscalaDao.findAll())
+					.stream().filter(x-> idProjs.stream().anyMatch(y->y==x.getProjetoId()))
+					.collect(Collectors.toList()); // todo: ajustar
+		}
+		else {
+			escalas = Utilities.toList(projetoEscalaDao.findAll());			
+		}
+		
+		return escalas;
 	}
 }

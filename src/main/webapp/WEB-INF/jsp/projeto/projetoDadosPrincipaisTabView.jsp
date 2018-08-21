@@ -84,12 +84,12 @@
 			<label for="dataInicio"
 				class='control-label ${result.hasFieldErrors("dataInicio") ? "is-invalid" : ""}'>Data
 				início *</label>
-			<form:input path="dataInicio" 
-				 		id="dataInicioProjeto"
-						class='form-control datepicker'
-						placeholder="data início" 
-						disabled="${isDisableCamposProjeto}" />
-			<div class="invalid-feedback">
+				<form:input path="dataInicio" 
+					 		id="dataInicioProjeto"
+							class='form-control datepicker'
+							placeholder="data início" 
+							disabled="${isDisableCamposProjeto}" />
+				<div class="invalid-feedback">
 				<form:errors path="dataInicio" />
 			</div>
 		</div>

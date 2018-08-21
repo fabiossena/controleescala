@@ -25,9 +25,9 @@
 					<br />
 					<div class="table-container table-responsive">
 						<table id="tabelaProjetos" class="display tabela-avancada">
-					      
-					       <!-- Header Table -->
-					     <thead>
+
+					        <!-- Header Table -->
+					        <thead>
 					            <tr>
 					                <th>id</th>
 									<th>Nome</th>

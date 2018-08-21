@@ -46,6 +46,7 @@ public class LoginController {
         mv.addObject("login", login); 
 		System.out.println("submit cadastro");  
 
+    	mv.addObject("errorMessage", null);
 		boolean hasErrors = result.hasErrors();
 		System.out.println(hasErrors);  
     	mv.addObject("result", result);

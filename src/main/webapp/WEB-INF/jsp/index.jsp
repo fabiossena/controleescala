@@ -11,6 +11,43 @@
 	<title>Ixia - Sistema de Escala - Pagina inicial</title>
     <jsp:include page="shared/headerPartialView.jsp"/>
 	<script src="<c:url value='/js/index-projeto.js' />"></script>
+	<script>
+
+
+	function aprovarSolicitacao(id) {
+		$("#motivo-recusa-solicitacao-feedback" + id).html("");
+		$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
+		aceitaRecusaSolicitacaoAusencia(id, true, $("#motivo-recusa-solicitacao" + id).html(), 3);	
+	}
+	
+	function recusarSolicitacao(id) {
+		if ($("#panel-motivo-recusa-solicitacao" + id).is(":hidden") || 
+				$("#motivo-recusa-solicitacao" + id).val() == "") {
+			$("#panel-motivo-recusa-solicitacao" + id).show();
+			$("#motivo-recusa-solicitacao" + id).addClass("is-invalid");
+			$("#motivo-recusa-solicitacao-feedback" + id).html("Preencha o campo motivo recusa");		
+		}
+		else { //if (confirm("Deseja recusar este projeto?")) {	
+			$("#motivo-recusa-solicitacao-feedback" + id).html("");
+			$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
+			aceitaRecusaSolicitacaoAusencia(id, false, $("#motivo-recusa-solicitacao" + id).val(), 3);			
+		}
+	}
+
+	function aceitaRecusaSolicitacaoAusencia(id, aceita, motivo, origem)
+    {
+		if (!aceita && origem != 2){
+			if (motivo == "" || motivo == null){
+				alert("Preencha o campo observação com o motivo da recusa");
+				return;
+			}
+		}
+		
+		if (confirm("Deseja realmente " + (aceita ? "aceitar" : "recusar") + " esta solicitação?")) {
+			window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=" + origem + "&aceita=" + aceita + (motivo == null || motivo == "" ? "" :  "&motivo=" + motivo);
+		}		
+    }
+	</script>
 </head>
 <body>
 
@@ -29,8 +66,10 @@
 	        
 	        <c:forEach items="${projetosCadastrados}" var="item"> 
 	        
-	        	<div id="card${item.id}" class="card" style="width: 18rem; margin: 12px; float: left;">
+	        	<div id="card${item.id}" class="card col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 12px; float: left;">
 				  <div class="card-body">
+				  
+				    <h4 class="card-title">Projeto cadastrado</h4>
 				    <h5 class="card-title">${item.projeto.descricaoProjeto} - ${item.projetoEscala.descricaoEscala}</h5>
 				    
 				    <h6 class="card-subtitle mb-2 text-muted">
@@ -50,13 +89,14 @@
 				                id="bt-aceita-prestador${item.id}"
 		                		onclick="aceitarPrestador(${item.id})" 
 		                		class="btn btn-sm btn-success"
-		                		style="margin-bottom: 10px"
+		                		style="margin: 1px"
 		                		value="clique aqui para aceitar" />				                
 	               		
 		                <input  type="button"
 		                		id="bt-recusa-prestador${item.id}"
 		                		onclick="recusarPrestador(${item.id})" 
 		                		class="btn btn-sm btn-danger" 
+		                		style="margin: 1px"
 		                		value="clique aqui para recusar" />
 		                	
 	              			<div class="form-group" 
@@ -71,6 +111,148 @@
               		 			<div id="motivo-recusa-feedback${item.id}" class="invalid-feedback"></div>	
 						</div>	               
 	             	
+				  </div>
+				</div>
+	        </c:forEach>
+	        
+	        
+	        
+	        
+	        <c:forEach items="${solicitacoesAusencias}" var="solicitacao"> 
+	        
+	        	<div id="card${solicitacao.id}" class="card col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 12px; float: left;">
+				  <div class="card-body">
+				  
+				    <h4 class="card-title">Solicitação ausência</h4>
+				    <h5 class="card-title">${solicitacao.projetoEscala.projeto.descricaoProjeto} - ${solicitacao.projetoEscala.descricaoEscala}</h5>
+				    
+				    <h6 class="card-subtitle mb-2 text-muted">
+	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${solicitacao.dataInicio} " var="dataInicio" />
+	                	<fmt:formatDate value="${dataInicio}" pattern="dd/MM/yyyy" />
+	                	
+	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${solicitacao.dataFim}" var="dataFim" />
+	                	<fmt:formatDate value="${dataFim}" pattern="dd/MM/yyyy" />
+			    	</h6>
+			    	
+				    <h6 class="card-subtitle mb-2 text-muted">Horário: ${solicitacao.horaInicio} às ${solicitacao.horaFim} <c:if test="${solicitacao.horas != ''}">(${solicitacao.horas}/dia)</c:if></h6>
+				    
+				    <h6 class="card-subtitle mb-2 text-muted">Status: 
+						                	<c:if test="${solicitacao.aceito==0}">Pendente</c:if>
+						                	<c:if test="${solicitacao.aceito==1}">Aceita</c:if>
+						                	<c:if test="${solicitacao.aceito==2}">Recusada</c:if>
+                	</h6>
+                	
+				    <h6 class="card-subtitle mb-2 text-muted">Motivo: ${solicitacao.motivoAusencia.nome}</h6>
+				    
+				    <h6 class="card-subtitle mb-2 text-muted">
+	                	Tipo: <c:if test="${solicitacao.tipoAusencia == 0}">Simples</c:if>                
+	                	<c:if test="${solicitacao.tipoAusencia == 1}">Horário colocado a disposição</c:if>
+	                	<c:if test="${solicitacao.tipoAusencia == 2}">Indicado outro horário/usuário</c:if>
+                	</h6>
+                	
+				    <h6 class="card-subtitle mb-2 text-muted">Seu acesso: <br>
+				        			        
+					   <c:forEach items="${solicitacao.dadosAcesso.dadosAcesso}" var="acesso">
+	        	  			<c:if test='${!acesso.nome.isEmpty()}'> 
+						  	 	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+	  							  	- ${acesso.nome}
+	  							  </div>
+  							 </c:if>
+					   </c:forEach>
+				    </h6>
+				    
+				    
+	               	<br>				    
+				    <c:if test='${solicitacao.tipoAusencia == 1}'>
+				    <h6 class="card-subtitle mb-2 text-muted">Horário a disposição</h6>
+				    </c:if>
+					<c:if test='${solicitacao.tipoAusencia == 2}'>
+						<h6 class="card-subtitle mb-2 text-muted">Reposição:</h6>
+						<p class="card-text" style="font-size: 10pt">
+							
+						  	<c:if test='${solicitacao.tipoAusencia == 2}'>
+							  <c:forEach items="${solicitacao.ausenciaReposicoes}" var="reposicao">			    	  							  
+								  	<c:if test='${reposicao.indicadoOutroUsuario}'>
+									  	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+	    	  							  	<b>${reposicao.usuarioTroca.nomeCompletoMatricula}</b>
+	    	  							  </div>
+								  	</c:if> 
+								  	<fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.data}" var="data" />
+							  		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+	   	  							  	<b><fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /> | ${reposicao.horaInicio} - ${reposicao.horaFim}<c:if test="${solicitacao.horas != ''}"> (${solicitacao.horas})</c:if></b>
+	   	  							 </div>	
+								  	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+	   	  							  	<i>Projeto/escala: ${reposicao.projetoEscalaTroca.descricaoCompletaEscala}</i>
+	   	  							  	<c:if test="${reposicao.observacao != ''}">Observação: ${reposicao.observacao}</c:if>
+	   	  							 </div>	
+								  	<br>
+							  </c:forEach>		
+						  	</c:if>
+		
+						
+						</p>
+			         </c:if>   
+				    
+				    
+				    
+				    <h6 class="card-subtitle mb-2 text-muted">Detalhes:</h6>
+				    <p class="card-text" style="font-size: 10pt">
+						
+						<c:if test="${solicitacao.observacao != ''}">()Observação) ${solicitacao.observacao}</c:if>
+							
+						  <c:forEach items="${solicitacao.dadosAcesso.dadosAprovacao}" var="aprovacao">
+						  	<c:if test='${aprovacao.nome.contains("Pendente") || aprovacao.nome.contains("Não enviada")}'>
+							  	<div class="text-primary col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+ 	  							  	- ${aprovacao.nome}
+ 	  							  </div>
+						  	</c:if>
+						  	<c:if test='${aprovacao.nome.contains("Aprovado")}'>
+							  	<div class="text-success col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+ 	  							  	- ${aprovacao.nome}
+ 	  							  </div>
+						  	</c:if>
+						  	<c:if test='${aprovacao.nome.contains("Recusado")}'>
+							  	<div class="text-danger col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
+	  							  	- ${aprovacao.nome}
+	  							  </div>
+						  	</c:if>
+						  </c:forEach>		
+					</p>				                	
+	               	        	
+					  <c:if test="${solicitacao.dadosAcesso.visivelAprovacao}">
+			              <a class="btn btn-sm btn-primary" href="<c:url value='/ausencia' />/${solicitacao.id}" style="margin: 1px">ver solicitação</a>
+        				  
+        				  <c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 2}">
+			              
+			                <input  type="button" 
+					                id="bt-aprova-solicitacao${solicitacao.id}"
+			                		onclick="aprovarSolicitacao(${solicitacao.id})" 
+			                		class="btn btn-sm btn-success"
+			                		style="margin: 1px"
+			                		value="clique aqui para aprovar" />				                
+		               		</c:if>
+		               		
+			                <c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 1}">
+								<input  type="button"
+			                		id="bt-recusa-solicitacao${solicitacao.id}"
+			                		onclick="recusarSolicitacao(${solicitacao.id})" 
+			                		class="btn btn-sm btn-danger" 
+			                		style="margin: 1px"
+			                		value="clique aqui para recusar" />
+		                	</c:if>
+			                	
+		              			<div class="form-group" 
+		              				 id="panel-motivo-recusa-solicitacao${solicitacao.id}"
+		              				 style="font-size: 10pt; margin-top: 15px; display: none">
+		              				 <label for="motivo-recusa-solicitacao${solicitacao.id}">Motivo:</label>
+		                			<textarea 
+			                			class="form-control" 
+			                			rows="3" 
+			                			maxlength="500"
+			                			id="motivo-recusa-solicitacao${solicitacao.id}"></textarea>
+	              		 			<div id="motivo-recusa-solicitacao-feedback${solicitacao.id}" class="invalid-feedback"></div>	
+								</div>	               
+	             		</c:if>
 				  </div>
 				</div>
 	        </c:forEach>

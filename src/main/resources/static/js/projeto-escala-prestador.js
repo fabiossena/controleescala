@@ -587,8 +587,7 @@ function escalaFolgaSugeridaPrestador(id) {
 		},
 		error : function(e) {
 			alert("Error!")
-			console.log("ERROR: ", e);
-        	$("btn-salvar-folga").prop("disabled",false);
+			console.log("ERROR: ", e);S
 		}
 	});   
  }

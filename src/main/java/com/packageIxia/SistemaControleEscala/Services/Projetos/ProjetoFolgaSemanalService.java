@@ -166,11 +166,14 @@ public class ProjetoFolgaSemanalService {
 
 	public String findEscalaFolgaSemanal(long id) {		
 		
-		String folgaSemanalSugerida = "";
+		String folgaSemanalSugerida = "";		
 		List<ProjetoFolgaSemanal> list = this.findAllByProjetoEscalaPrestadorId(id);
-		for (ProjetoFolgaSemanal item : list) {			
-			folgaSemanalSugerida += folgaSemanalSugerida == "" ? "Folga semanal: <br />" : folgaSemanalSugerida  + "<br />";
-			folgaSemanalSugerida += item.getDiaSemana().getNome() + " " + item.getHoraInicio() + " às " + item.getHoraFim() + " (" + item.getMotivo().getNome() + ")";
+		
+		if (list.size() > 0) {
+			folgaSemanalSugerida = "Folga semanal: ";
+			for (ProjetoFolgaSemanal item : list) {
+				folgaSemanalSugerida += "<br />" + item.getDiaSemana().getNome() + " " + item.getHoraInicio() + " às " + item.getHoraFim() + " (" + item.getMotivo().getNome() + ")";
+			}
 		}
 		
 		return folgaSemanalSugerida;

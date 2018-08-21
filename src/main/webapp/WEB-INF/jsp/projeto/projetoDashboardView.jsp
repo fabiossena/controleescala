@@ -19,6 +19,9 @@
     	$("#escala").change(function() {
     		selectEscala(this.value)    		
     	});
+    	
+    	//$("#selecionar").closest("td").css("background-color", "red");
+    	$(".selecionar").closest("td").addClass("bg-light");
     });
 
     function selectProjeto(projeto){
@@ -114,22 +117,176 @@
 		     	</td>
 	     	</tr>
 	     	
+	     	
+	     	<c:set var="selecionarSolicitacao">1</c:set>
+			     	
 	     	<c:forEach items="${prestadores}" var="item"> 
 	            <tr> 
 					<td style="vertical-align: top">${item.prestador.nomeCompletoMatricula}
 						<span class="fixar badge badge-primary" style="vertical-align: top; display: none; position: absolute; font-size: 9pt; margin-top:-13px;">${item.prestador.nomeCompletoMatricula}</span>
 					</td>
+					
 					<td class="border-left" style="vertical-align: top">${item.observacaoPrestador.trim()}</td>
+					
 			     	<c:forEach items="${diasMes}" var="dia">
 	            		<td  class="border-left" style="font-size: 12pt; vertical-align: top">
 			            	<c:if test="${dia.data >= item.dataInicio && (item.dataFim == null || dia.data <= item.dataFim)}">
+			            		
 			            		<div class="badge badge-success">${item.projetoEscala.horaInicio} - ${item.projetoEscala.horaFim}</div>
+						     	
+						     	
 						     	<c:forEach items="${item.projetoFolgasSemanais}" var="folga">
-					            	<c:if test="${folga.diaSemanaId == dia.diaSemana}"> <br> 
-			            				<div class="badge badge-warning">Folga programada:</div>
-					            		<div class="badge badge-warning">${folga.motivo.nome} (${folga.horaInicio} - ${folga.horaFim})</div>
+					            	<c:if test="${folga.diaSemanaId == dia.diaSemana}"> 
+			            				<br><div class="badge badge-info">Folga programada:</div><br>
+					            		<div class="badge badge-info">${folga.motivo.nome} (${folga.horaInicio} - ${folga.horaFim})</div><br>
 					            	</c:if>     
 						     	</c:forEach>
+               	  			  	
+						     	<c:forEach items="${item.ausenciaSolicitacoes}" var="solicitacao">
+						     	 
+						     		<c:if test="${(solicitacao.dataFim == null ? solicitacao.dataInicio == dia.data : dia.data <= solicitacao.dataFim && dia.data >= solicitacao.dataInicio) }">
+						     			
+	                	  	 			<c:if test="${solicitacaoId == solicitacao.id}">
+												<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-danger selecionar" style="font-size: 12pt; width: 100%; margin: 5px 0 5px 0">Folga solicitada</div>
+											<c:set var="selecionarSolicitacao">0</c:set>											
+										</c:if>	  	
+				            			 
+							     		<br><b>Folga solicitada</b> <a target="_blank" style="font-size: 10pt;font-weight: bold" class="btn btn-sm btn-warning" href="<c:url value='/ausencia' />/${solicitacao.id}" style="margin: 1px">ver</a>
+							     		
+							     		<div style="font-size: 10pt;">
+							     			<b>Status: </b>
+										  	<c:if test='${solicitacao.aceito == 0}'>Pendente</c:if>
+										  	<c:if test='${solicitacao.aceito == 1}'>Em aprovação</c:if>
+										  	<c:if test='${solicitacao.aceito == 2}'>Recusado</c:if>
+										  	<c:if test='${solicitacao.aceito == 3}'>Aprovado</c:if>
+										  	<c:if test='${solicitacao.aceito == 4}'>Finalizado</c:if> 
+			            				</div>
+			            										
+			            				<div class="badge badge-info">${solicitacao.motivoAusencia.nome} (${solicitacao.horaInicio} - ${solicitacao.horaFim} | ${solicitacao.horas}/dia)</div>
+				            			<c:if test="${solicitacao.dataFim != null}">
+						            			
+									      <fmt:parseDate pattern="yyyy-MM-dd" value="${solicitacao.dataInicio}" var="dtIni" />
+				                	  	  <c:set var="dataInicio"><fmt:formatDate value="${dtIni}" pattern="dd/MM/yyyy" /></c:set>
+									      <fmt:parseDate pattern="yyyy-MM-dd" value="${solicitacao.dataFim}" var="dtFim" />
+				                	  	  <c:set var="dataFim"><fmt:formatDate value="${dtFim}" pattern="dd/MM/yyyy" /></c:set>
+					            		<div style="font-size: 10pt">De ${dataInicio} até ${dataFim}</div>
+				            			</c:if> 
+				            			
+				            			<c:if test='${solicitacao.tipoAusencia == 1}'>
+									  	<div style="font-size: 10pt;font-weight: bold">Horário a disposição</div>
+									  											  	
+									  	</c:if>
+									  	<c:if test='${solicitacao.tipoAusencia == 2 && solicitacao.ausenciaReposicoes != null && solicitacao.ausenciaReposicoes.size() > 0}'>
+									  		<div style="font-size: 10pt;font-weight: bold">Horário reposição</div>
+										  	<c:forEach items="${solicitacao.ausenciaReposicoes}" var="reposicao">			    	  							  
+											  	<c:if test='${reposicao.indicadoOutroUsuario}'>
+												  	<div style="font-size: 10pt">
+				    	  							  	<b>${reposicao.usuarioTroca.nomeCompletoMatricula}</b>
+				    	  							  </div>
+											  	</c:if> 
+											  	<fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.data}" var="data" />
+										  		<div style="font-size: 10pt">
+			    	  							  	<fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /> | ${reposicao.horaInicio} - ${reposicao.horaFim}  <c:if test="${reposicao.horas != ''}">(${reposicao.horas})</c:if>
+			    	  							 </div>
+											  	<div style="font-size: 10pt">			    	  							  	
+											  		<a  target="_blank"
+												  		href="<c:url value='/dashboard' />/${reposicao.projetoEscalaTroca.projetoId}?mes=${reposicao.data.monthValue}&ano=${reposicao.data.year}&escala=${reposicao.projetoEscalaTroca.id}&solicitacao=${solicitacao.id}&aceito=0#selecionar">
+														<i>Projeto/escala: ${reposicao.projetoEscalaTroca.descricaoCompletaEscala}</i>
+													</a>
+			    	  							  	<c:if test="${reposicao.observacao != ''}">Observação: ${reposicao.observacao}</c:if>
+			    	  							 </div>	
+											  	<br>
+										  </c:forEach>		
+									  	</c:if>
+										<br>
+				            			 	     
+				            		</c:if>					       
+				            		
+						     	</c:forEach>
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	<c:forEach items="${item.ausenciaReposicoes}" var="reposicao">
+						     	 
+						     		<c:if test="${reposicao.data == dia.data}">
+						     			
+	                	  	 			<c:if test="${solicitacaoId == reposicao.ausenciaSolicitacao.id}">
+											<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-xl alert-danger selecionar" style="margin: 5px 0 5px 0">Reposição solicitada</div>
+											<c:set var="selecionarSolicitacao">0</c:set>											
+										</c:if>	  	
+				            			 
+							     		<b>Reposição solicitada</b> 
+							     		<a target="_blank" style="font-size: 10pt;font-weight: bold" class="btn btn-sm btn-success" href="<c:url value='/ausencia' />/${reposicao.id}" style="margin: 1px">ver</a>
+							     		
+							     		<div style="font-size: 10pt">
+							     			<b>Status: </b>
+										  	<c:if test='${reposicao.ausenciaSolicitacao.aceito == 0}'>Pendente</c:if>
+										  	<c:if test='${reposicao.ausenciaSolicitacao.aceito == 1}'>Em aprovação</c:if>
+										  	<c:if test='${reposicao.ausenciaSolicitacao.aceito == 2}'>Recusado</c:if>
+										  	<c:if test='${reposicao.ausenciaSolicitacao.aceito == 3}'>Aprovado</c:if>
+										  	<c:if test='${reposicao.ausenciaSolicitacao.aceito == 4}'>Finalizado</c:if> 
+			            				</div>
+			            							            				
+										<div style="font-size: 10pt"><b>Solicitante:</b><br>
+    	  							  	${reposicao.ausenciaSolicitacao.usuario.nomeCompletoMatricula}</div>
+    	  							  					  	
+								  		<a  target="_blank"
+								  			style="font-size: 10pt"
+									  		href="<c:url value='/dashboard' />/${reposicao.ausenciaSolicitacao.projetoEscala.projetoId}?mes=${reposicao.ausenciaSolicitacao.dataInicio.monthValue}&ano=${reposicao.ausenciaSolicitacao.dataInicio.year}&escala=${reposicao.ausenciaSolicitacao.projetoEscala.id}&solicitacao=${reposicao.ausenciaSolicitacao.id}&aceito=0#selecionar">
+											<i>Projeto/escala: ${reposicao.ausenciaSolicitacao.projetoEscala.descricaoCompletaEscala}</i>
+										</a>
+										
+			            				<div class="badge badge-info">${reposicao.ausenciaSolicitacao.motivoAusencia.nome} (${reposicao.ausenciaSolicitacao.horaInicio} - ${reposicao.ausenciaSolicitacao.horaFim} | ${reposicao.ausenciaSolicitacao.horas}/dia)</div>
+				            			
+										
+				            			<c:if test="${reposicao.ausenciaSolicitacao.dataFim != null}">
+						            			
+									      <fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.ausenciaSolicitacao.dataInicio}" var="dtIni" />
+				                	  	  <c:set var="dataInicio"><fmt:formatDate value="${dtIni}" pattern="dd/MM/yyyy" /></c:set>
+									      <fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.ausenciaSolicitacao.dataFim}" var="dtFim" />
+				                	  	  <c:set var="dataFim"><fmt:formatDate value="${dtFim}" pattern="dd/MM/yyyy" /></c:set>
+					            		  <div style="font-size: 10pt">De ${dataInicio} até ${dataFim}</div>
+					            		  
+				            			</c:if> 
+				            			
+									  	<c:if test='${reposicao.ausenciaSolicitacao.tipoAusencia == 2}'>
+									  	<div style="font-size: 12pt;font-weight: bold">Reposição</div>
+			    	  							  
+										  	<c:if test='${reposicao.indicadoOutroUsuario}'>
+											  	<div style="font-size: 10pt">
+			    	  							  	<b>${reposicao.usuarioTroca.nomeCompletoMatricula}</b>
+			    	  							  </div>
+										  	</c:if> 
+										  	<fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.data}" var="data" />
+									  		<div style="font-size: 10pt">
+		    	  							  	<fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /> | ${reposicao.horaInicio} - ${reposicao.horaFim}  <c:if test="${reposicao.horas != ''}">(${reposicao.horas})</c:if>
+		    	  							 </div>
+										  	<div style="font-size: 10pt">			    	  							  	
+										  		<i>Projeto/escala: ${reposicao.projetoEscalaTroca.descricaoCompletaEscala}</i>
+		    	  							  	<c:if test="${reposicao.observacao != ''}">Observação: ${reposicao.observacao}</c:if>
+		    	  							 </div>	
+										  	<br>
+
+									  	</c:if>
+										<br>
+				            			 	     
+				            		</c:if>					       
+				            		
+						     	</c:forEach>
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
+						     	
 					     	</c:if>     
 		            	</td>
 			     	</c:forEach>

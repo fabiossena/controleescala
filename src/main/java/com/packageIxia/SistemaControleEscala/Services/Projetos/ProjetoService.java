@@ -29,19 +29,26 @@ public class ProjetoService {
 	@Autowired
 	public ProjetoService(
 			ProjetoDao projetoDao,
+			ProjetoEscalaPrestadorDao projetoEscalaPrestadorDao,
 			HttpSession session) {
 		this.projetoDao = projetoDao;
+		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.session = session;
 	}
 
 	public List<Projeto> findAllByUsuarioLogado() {
 		List<Projeto> projetos = Utilities.toList(projetoDao.findAllByExcluido(false));
-		    	
-		if (projetos == null || projetos.isEmpty()) {
+
+		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
+		
+		if (projetos == null || 
+			projetos.isEmpty() || 
+			usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.funcao.getId() ||
+			usuarioLogado.getFuncaoId() == FuncaoEnum.diretoria.funcao.getId() ||
+			usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
 			return projetos;			
 		}
 
-		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
     	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
     		List<ProjetoEscala> escalas = projetoEscalaDao.findAllByMonitorId(usuarioLogado.getId());
             return projetos.stream().filter(x-> escalas.stream().anyMatch(y->y.getProjetoId()==x.getId())).collect(Collectors.toList());
@@ -52,9 +59,9 @@ public class ProjetoService {
             return projetos.stream().filter(x-> prestadores.stream().anyMatch(y->y.getProjeto().getId()==x.getId())).collect(Collectors.toList());
     	}
 
-//    	if (!(usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId())) {
-//            return projetos.stream().filter(x->x.getGerente().getId() == usuarioLogado.getId());
-//    	}
+    	if (!(usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId())) {
+            return projetos.stream().filter(x->x.getGerente().getId() == usuarioLogado.getId()).collect(Collectors.toList());
+    	}
     	
 		return projetos;
 	}
@@ -64,6 +71,12 @@ public class ProjetoService {
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		Projeto projeto = projetoDao.findById(id).orElse(null);
 
+		if (usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.funcao.getId() ||
+			usuarioLogado.getFuncaoId() == FuncaoEnum.diretoria.funcao.getId() ||
+			usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
+			return projeto;
+		}
+		
     	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
     		List<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadorDao.findAllByProjetoId(projeto.getId());
     		if (!projetoEscalaPrestador.stream().anyMatch(x->x.getPrestador().getId()==usuarioLogado.getId())) {
@@ -71,13 +84,19 @@ public class ProjetoService {
     		}
     	}
 
-//    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
-//    		List<ProjetoEscala> projetoEscala = projetoEscalaService.findAllByProjetoId(projeto.getId());
-//    		if (!projetoEscala.stream().anyMatch(x->x.getMonitor().getId()==usuarioLogado.getId())) {
-//    			return null;
-//    		}
-//    	}
-//    	
+    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+    		List<ProjetoEscala> projetoEscala = projetoEscalaDao.findAllByProjetoId(projeto.getId());
+    		if (!projetoEscala.stream().anyMatch(x->x.getMonitor().getId()==usuarioLogado.getId())) {
+    			return null;
+    		}
+    	}
+
+    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+    		if (projeto.getGerente().getId() != usuarioLogado.getId()) {
+    			return null;
+    		}
+    	}
+    	
 		return projeto;
 	}
 	
@@ -101,5 +120,9 @@ public class ProjetoService {
 
 	public boolean existsByGerenteId(long id) {
 		return this.projetoDao.existsByGerenteId(id);
+	}
+
+	public List<Projeto> findAll() {
+		return Utilities.toList(this.projetoDao.findAll());
 	}
 }

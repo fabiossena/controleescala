@@ -9,7 +9,7 @@
 		<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 0 0 30px 0">    
 	        <c:forEach items="${projetosCadastrados}" var="item"> 
 	        
-	        	<div class="card" style="width: 18rem; margin: 12px; float: left;">
+	        	<div class="card col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 12px; float: left;">
 				  <div class="card-body">
 				    <h5 class="card-title">${item.projeto.descricaoProjeto} - ${item.projetoEscala.descricaoEscala}</h5>
 				    
@@ -49,15 +49,15 @@
 		                		onclick="aceitarPrestador(${item.id})" 
 		                		class="btn btn-sm btn-success" 
 		                		value="clique aqui para aceitar" 
-		                		style='margin-bottom: 10px<c:if test="${!(item.aceito == 0 || item.aceito == 2) || item.aceito == 1}">; display: none</c:if>'	 
+		                		style='margin: 1px <c:if test="${!(item.aceito == 0 || item.aceito == 2) || item.aceito == 1}">; display: none</c:if>'	 
 		                		<c:if test="${isDisableTodosCampos}">disabled</c:if> />
                 			       
 		                <input  type="button"
 		                		id="bt-recusa-prestador${item.id}"
 		                		onclick="recusarPrestador(${item.id})" 
 		                		class="btn btn-sm btn-danger" 
-		                		value="clique aqui para recusar" 
-		                		<c:if test="${!(item.aceito == 0 || item.aceito == 1)}">style='display: none'</c:if>
+		                		value="clique aqui para recusar"
+		                		style='margin: 1px; <c:if test="${!(item.aceito == 0 || item.aceito == 1)}">display: none</c:if>'
 		                		<c:if test="${isDisableTodosCampos}">disabled</c:if> />
                		</c:if>		
 				  </div>

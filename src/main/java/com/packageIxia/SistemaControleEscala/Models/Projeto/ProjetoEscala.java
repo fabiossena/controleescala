@@ -1,6 +1,7 @@
 package com.packageIxia.SistemaControleEscala.Models.Projeto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +40,11 @@ public class ProjetoEscala {
 	@UpdateTimestamp
 	protected LocalDateTime ultimaModificacao; 
 
+	@Transient
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="projetoId")
+	transient private Projeto projeto;
+	
 	private long projetoId;
 	
 	@NotEmpty(message="Preencha o campo descrição escala")
@@ -104,15 +110,24 @@ public class ProjetoEscala {
 	public void setId(long id) {
 		this.id = id;
 	}
-
+//	
+//	public Projeto getProjeto() {
+//		return this.projeto;
+//	}
+//	
+	
+//	public void setProjeto(Projeto projeto) {
+//		this.projeto = projeto;
+//	}
+	
 	public long getProjetoId() {
-		return projetoId;
+		return this.projetoId;
 	}
-
+	
 	public void setProjetoId(long projetoId) {
 		this.projetoId = projetoId;
 	}
-
+	
 	public String getDescricaoEscala() {
 		return descricaoEscala;
 	}
@@ -262,6 +277,11 @@ public class ProjetoEscala {
 		return this.descricaoEscala + " - " + this.horaInicio + " " + this.horaFim  + " (" + this.getDiaSemanaDe().getNome() + " à " + this.getDiaSemanaAte().getNome() + ")";
 	}
 
+	public String getDescricaoCompletaEscalaData() {
+		return this.descricaoEscala + " - " + this.horaInicio + " " + this.horaFim  + " (" + this.getDiaSemanaDe().getNome() + " à " + this.getDiaSemanaAte().getNome() + ")" +
+				(this.projeto == null ? "" :  " " + this.projeto.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + (this.projeto.getDataInicio() == null ? "" : " à " + this.projeto.getDataFim().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+	}
+
 	public boolean isExcluido() {
 		return excluido;
 	}
@@ -284,5 +304,13 @@ public class ProjetoEscala {
 
 	public int getQuantidadePrestadoresReal() {
 		return this.quantidadePrestadoresReal;
+	}
+
+	public Projeto getProjeto() {
+		return projeto;
+	}
+
+	public void setProjeto(Projeto projeto) {
+		this.projeto = projeto;
 	}
 }

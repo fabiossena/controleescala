@@ -10,15 +10,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
+import com.packageIxia.SistemaControleEscala.Services.Projetos.AusenciaSolicitacaoService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoEscalaPrestadorService;
 
 @Controller
 public class IndexController {
 
 	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
 
-	public IndexController(ProjetoEscalaPrestadorService projetoEscalaPrestadorService) {
+	public IndexController(
+			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
+			AusenciaSolicitacaoService ausenciaSolicitacaoService) {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
+		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 	}
 	
     @GetMapping(value = "/")
@@ -31,6 +36,8 @@ public class IndexController {
         
         	List<ProjetoEscalaPrestador> projetosCadastrados = this.projetoEscalaPrestadorService.findAllProjetosByPrestadorId(usuarioLogado != null ? usuarioLogado.getId() : 0, true, true, true, true, true, false, false);
     		index.addObject("projetosCadastrados", projetosCadastrados);
+        	
+    		index.addObject("solicitacoesAusencias", ausenciaSolicitacaoService.findAll(true));
         	
         	return index;
         }

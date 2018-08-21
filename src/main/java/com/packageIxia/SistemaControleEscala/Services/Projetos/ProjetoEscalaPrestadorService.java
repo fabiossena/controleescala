@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.packageIxia.SistemaControleEscala.Daos.ProjetoEscalaPrestadorDao;
 import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
+import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
@@ -33,12 +34,39 @@ public class ProjetoEscalaPrestadorService {
 		this.projetoService = projetoService;
 	}
 	
+	public List<Usuario> findAllPrestadoresByProjetoEscalaId(long projetoEscalaId) {
+		if (projetoEscalaId == 0) {
+			return new ArrayList<Usuario>();
+		}
+		
+		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false)
+				.stream().map(x->x.getPrestador()).collect(Collectors.toList());
+	}
+
+
 	public List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId) {
 		if (projetoEscalaId == 0) {
 			return new ArrayList<ProjetoEscalaPrestador>();
 		}
 		
 		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
+	}
+	
+	public List<Usuario> findAllByProjetoEscalaIdExceptUsuarioId(long projetoEscalaId, long usuarioId) {
+		if (projetoEscalaId == 0) {
+			return new ArrayList<Usuario>();
+		}
+		
+		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false)
+				.stream().filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId).map(x->x.getPrestador()).collect(Collectors.toList());
+	}
+	
+	public ProjetoEscalaPrestador findByProjetoEscalaIdAndPrestadorIdAndExcluido(long projetoEscalaId, long prestadorId) {
+		if (projetoEscalaId == 0 || prestadorId == 0) {
+			return new ProjetoEscalaPrestador();
+		}
+		
+		return projetoEscalaPrestadorDao.findByProjetoEscalaIdAndPrestadorIdAndExcluido(projetoEscalaId, prestadorId, false);
 	}
 	
 	public ProjetoEscalaPrestador findById(long id) {
@@ -224,6 +252,11 @@ public class ProjetoEscalaPrestadorService {
 	}
 
 	public List<ProjetoEscalaPrestador> findAllByPrestadorId(long prestadorId) {
-		return Utilities.toList(this.projetoEscalaPrestadorDao.findAllByPrestadorId(prestadorId));
+		List<ProjetoEscalaPrestador> prestadores =  this.projetoEscalaPrestadorDao.findAllByPrestadorIdAndExcluidoAndAtivo(prestadorId, false, true);
+		
+		return prestadores.stream()
+				.filter(x->x.getProjeto().isAtivo() && !x.isExcluido())
+				.filter(x->x.getProjetoEscala().isAtivo() && !x.isExcluido()).distinct()
+				.collect(Collectors.toList());
 	}
 }

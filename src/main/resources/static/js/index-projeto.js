@@ -56,3 +56,40 @@
 			}
 		});	
 	}
+	
+	
+	
+
+	function aprovarSolicitacao(id) {
+		$("#motivo-recusa-solicitacao-feedback" + id).html("");
+		$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
+		aceitaRecusaSolicitacaoAusencia(id, true, $("#motivo-recusa-solicitacao" + id).html(), 3);	
+	}
+	
+	function recusarSolicitacao(id) {
+		if ($("#panel-motivo-recusa-solicitacao" + id).is(":hidden") || 
+				$("#motivo-recusa-solicitacao" + id).val() == "") {
+			$("#panel-motivo-recusa-solicitacao" + id).show();
+			$("#motivo-recusa-solicitacao" + id).addClass("is-invalid");
+			$("#motivo-recusa-solicitacao-feedback" + id).html("Preencha o campo motivo recusa");		
+		}
+		else if (confirm("Deseja recusar este projeto?")) {	
+			$("#motivo-recusa-solicitacao-feedback" + id).html("");
+			$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
+			aceitaRecusaSolicitacaoAusencia(id, false, $("#motivo-recusa-solicitacao" + id).val(), 3);			
+		}
+	}
+
+	function aceitaRecusaSolicitacaoAusencia(id, aceita, motivo, origem)
+    {
+		if (!aceita && origem != 2){
+			if (motivo == "" || motivo == null){
+				alert("Preencha o campo observação com o motivo da recusa");
+				return;
+			}
+		}
+		
+		if (confirm("Deseja realmente " + (aceita ? "aceitar" : "recusar") + " esta solicitação?")) {
+			window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=" + origem + "&aceita=" + aceita + (motivo == null || motivo == "" ? "" :  "&motivo=" + motivo);
+		}		
+    }	
