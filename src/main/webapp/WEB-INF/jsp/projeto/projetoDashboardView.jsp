@@ -123,7 +123,10 @@
 	     	<c:forEach items="${prestadores}" var="item"> 
 	            <tr> 
 					<td style="vertical-align: top">${item.prestador.nomeCompletoMatricula}
-						<span class="fixar badge badge-primary" style="vertical-align: top; display: none; position: absolute; font-size: 9pt; margin-top:-13px;">${item.prestador.nomeCompletoMatricula}</span>
+						<span class="fixar" style="vertical-align: top; display: none; position: absolute; margin-top:-15px">
+							<span style="font-size: 10pt" class=" badge badge-info">${item.prestador.nomeCompletoMatricula}</span><br> 
+							<span style="font-size: 10pt" class=" badge badge-info">${item.projetoEscala.descricaoEscala}</span>
+						</span>
 					</td>
 					
 					<td class="border-left" style="vertical-align: top">${item.observacaoPrestador.trim()}</td>
@@ -133,7 +136,6 @@
 			            	<c:if test="${dia.data >= item.dataInicio && (item.dataFim == null || dia.data <= item.dataFim)}">
 			            		
 			            		<div class="badge badge-success">${item.projetoEscala.horaInicio} - ${item.projetoEscala.horaFim}</div>
-						     	
 						     	
 						     	<c:forEach items="${item.projetoFolgasSemanais}" var="folga">
 					            	<c:if test="${folga.diaSemanaId == dia.diaSemana}"> 
@@ -147,7 +149,7 @@
 						     		<c:if test="${(solicitacao.dataFim == null ? solicitacao.dataInicio == dia.data : dia.data <= solicitacao.dataFim && dia.data >= solicitacao.dataInicio) }">
 						     			
 	                	  	 			<c:if test="${solicitacaoId == solicitacao.id}">
-												<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-danger selecionar" style="font-size: 12pt; width: 100%; margin: 5px 0 5px 0">Folga solicitada</div>
+												<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-danger selecionar" style="font-size: 12pt; width: 100%; margin: 5px 0 5px 0">Folga selecionada</div>
 											<c:set var="selecionarSolicitacao">0</c:set>											
 										</c:if>	  	
 				            			 
@@ -214,11 +216,11 @@
 						     		<c:if test="${reposicao.data == dia.data}">
 						     			
 	                	  	 			<c:if test="${solicitacaoId == reposicao.ausenciaSolicitacao.id}">
-											<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-xl alert-danger selecionar" style="margin: 5px 0 5px 0">Reposição solicitada</div>
+											<div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-xl alert-danger selecionar" style="margin: 5px 0 5px 0">Reposição selecionada</div>
 											<c:set var="selecionarSolicitacao">0</c:set>											
 										</c:if>	  	
 				            			 
-							     		<b>Reposição solicitada</b> 
+							     		<br><b>Reposição solicitada</b> 
 							     		<a target="_blank" style="font-size: 10pt;font-weight: bold" class="btn btn-sm btn-success" href="<c:url value='/ausencia' />/${reposicao.id}" style="margin: 1px">ver</a>
 							     		
 							     		<div style="font-size: 10pt">
