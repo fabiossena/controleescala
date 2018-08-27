@@ -11,7 +11,10 @@
     <jsp:include page="shared/headerPartialView.jsp"/>
     
 	<script type="text/javascript">	
-		$('#no-js').hide();$('.yes-js').show();
+		$(document).ready(function() {
+			$('#no-js').hide();
+			$('.yes-js').show();
+		});
 	</script>
 </head>
 
@@ -26,7 +29,7 @@
 		<jsp:include page="shared/navbarPartialView.jsp"/>
 	</span>
 
-    <div class="container yes-js" style="display: none;">    
+    <div class="container yes-js" style="display: none;	">    
    	 	    <div style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
        	<div class="panel panel-info" >
             <div class="panel-heading">

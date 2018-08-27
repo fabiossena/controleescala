@@ -59,7 +59,7 @@
     
     function ajustarUrl(url){
     	var urlBase = window.location.href;
-    	if (!urlBase.indexOf("?") > 0) {
+    	if (urlBase.indexOf("?") < 1) {
     		return url;
     	}
     	
