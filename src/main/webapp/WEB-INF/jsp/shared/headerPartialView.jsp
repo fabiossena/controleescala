@@ -31,6 +31,7 @@
 	<script type="text/javascript">	
 		var urlBase = "<c:url value='/' />";
 	</script>
-	<style>
+	
+	<style> 
 	
 	</style>
