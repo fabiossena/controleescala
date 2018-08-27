@@ -11,11 +11,20 @@
     <jsp:include page="shared/headerPartialView.jsp"/>
 </head>
 
-<body onload="$('#matricula').focus()">
+<body onload="$('#no-js').hide();$('#yes-js').show();$('#matricula').focus()">
 
-	<jsp:include page="shared/navbarPartialView.jsp"/>
+		
+	
+	<div id="no-js" style="font-size: 30pt">
+		<br><br><br>
+		Javascript não habilitado, por favor atualize sua tela ou verifique suas configurações.	
+	</div>
 
-    <div class="container">    
+	<span id="yes-js">
+		<jsp:include page="shared/navbarPartialView.jsp"/>
+	</span>
+	
+    <div id="yes-js" class="container">    
    	 	    <div style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
        	<div class="panel panel-info" >
             <div class="panel-heading">

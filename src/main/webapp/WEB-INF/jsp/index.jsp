@@ -66,7 +66,7 @@
 	        
 			        
 		<%-- <c:if test="${!isAtendimento}"> --%>
-	      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
+	      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8' style="display: none">
 		    <label for="escalaId" class="control-label">Selecione uma escala para iniciar:</label>
 	        <form:select path="escalaId" id="selected-projeto-escala-principal" class='form-control editable-select ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}'  disabled="${isDisableCampos}" >
 		        <option value="0"></option>
