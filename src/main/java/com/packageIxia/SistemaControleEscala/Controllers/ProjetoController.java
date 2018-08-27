@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.util.Strings;
@@ -63,6 +64,7 @@ public class ProjetoController {
 	private ProjetoFolgaSemanalService projetoFolgaSemanalService;
 	private List<ProjetoFolgaSemanal> folgasSemanais;
 	private UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService;
+	private HttpSession session;
 	
 	@Autowired
 	public ProjetoController(
@@ -72,7 +74,8 @@ public class ProjetoController {
 			UsuarioService usuarioService,
 			ReferenciasService referenciasService,
 			ProjetoFolgaSemanalService projetoFolgaSemanalService,
-			UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService) {
+			UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService,
+			HttpSession session) {
 		this.projetoService = projetoService;
 		this.escalaService = projetoEscalaService;
 		this.projetoEscalaPrestadorService = prestadorService;
@@ -80,6 +83,7 @@ public class ProjetoController {
 		this.referenciasService = referenciasService;
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.usuarioTurnosDisponiveisService = usuarioTurnosDisponiveisService;
+		this.session = session;
 	}
 
 	@GetMapping("/projetos")
@@ -121,7 +125,8 @@ public class ProjetoController {
 
     	modelViewCadastro.addObject("result", null);
     	modelViewCadastro.addObject("errorMessage", null);
-    	
+
+		this.usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
     	if (this.usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId() ||
 			this.usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
     		ModelAndView erroModelView = new ModelAndView("redirect:/error");
@@ -160,7 +165,8 @@ public class ProjetoController {
 
     	modelViewCadastro.addObject("result", null);
     	modelViewCadastro.addObject("errorMessage", null);
-    	
+
+		this.usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
     	if (this.usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId() ||
 			this.usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
     		ModelAndView erroModelView = new ModelAndView("redirect:/error");

@@ -232,6 +232,7 @@ public class AusenciaSolicitacaoService {
 	    		    	}  
 	    		    	
 	    				projetoEscalaTroca = projetoEscalaPrestadorTroca.getProjetoEscala();
+	    				projetoEscalaTroca.setProjeto(projetoEscalaPrestadorTroca.getProjeto());
 					}
 					else {
 	    				projetoEscalaTroca = projetoEscalaService.findById(

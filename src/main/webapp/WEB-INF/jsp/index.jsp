@@ -62,7 +62,32 @@
 		 </div> 
 		</div>
 		
-		<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 0 0 30px 0">    
+		<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 30px 0 30px 0">    
+	        
+			        
+		<%-- <c:if test="${!isAtendimento}"> --%>
+	      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
+		    <label for="escalaId" class="control-label">Selecione uma escala para iniciar:</label>
+	        <form:select path="escalaId" id="selected-projeto-escala-principal" class='form-control editable-select ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}'  disabled="${isDisableCampos}" >
+		        <option value="0"></option>
+		        <c:forEach items="${escalas}" var="item">
+		        	<option <c:if test="${item.id == escalaId}">selected</c:if> value="${item.id}">${item.descricaoCompletaEscala}</option> 
+		        </c:forEach>
+	        </form:select>
+			<br />
+			<button id="btn-iniciar" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${iniciarDisabled}">disabled</c:if>>Iniciar</button>
+			<button id="btn-pausar" class="btn btn-sm btn-primary" style="margin: 1px"  <c:if test="${pausarDisabled}">disabled</c:if>>
+				<span id="lbl-pausar">${pausar}</span> 
+				<input id="txt-motivo" 
+					   value="${motivo}" 
+					   <c:if test="${pausar != 'pausar' || pausarDisabled}">disabled</c:if> />
+			</button>
+			
+			<button id="btn-parar" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${pararDisabled}">disabled</c:if>>Parar</button>
+			
+			<b>Tempo: </b><span id="tempo">00:00:00</span>
+		  </div>		                    
+        <%-- </c:if> --%>
 	        
 	        <c:forEach items="${projetosCadastrados}" var="item"> 
 	        

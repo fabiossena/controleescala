@@ -2,6 +2,7 @@ package com.packageIxia.SistemaControleEscala.Models.Projeto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -100,8 +101,9 @@ public class ProjetoEscala {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataExcluido;
 
-	@Transient
-	private int quantidadePrestadoresReal;
+	transient private int quantidadePrestadoresReal;
+
+	transient private List<AusenciaReposicao> ausenciaReposicoes;
 
 	public long getId() {
 		return id;
@@ -110,15 +112,6 @@ public class ProjetoEscala {
 	public void setId(long id) {
 		this.id = id;
 	}
-//	
-//	public Projeto getProjeto() {
-//		return this.projeto;
-//	}
-//	
-	
-//	public void setProjeto(Projeto projeto) {
-//		this.projeto = projeto;
-//	}
 	
 	public long getProjetoId() {
 		return this.projetoId;
@@ -312,5 +305,14 @@ public class ProjetoEscala {
 
 	public void setProjeto(Projeto projeto) {
 		this.projeto = projeto;
+	}
+
+	public void setAusenciaReposicoes(List<AusenciaReposicao> ausenciaReposicoes) {
+		this.ausenciaReposicoes = ausenciaReposicoes;
+		
+	}
+
+	public List<AusenciaReposicao> getAusenciaReposicoes() {
+		return this.ausenciaReposicoes;
 	}
 }

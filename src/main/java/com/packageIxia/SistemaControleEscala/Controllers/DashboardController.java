@@ -19,7 +19,6 @@ import com.packageIxia.SistemaControleEscala.Models.Projeto.AusenciaSolicitacao;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
-import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoFolgaSemanal;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.DiaSemanaEnum;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.DiasMes;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.AusenciaReposicaoService;
@@ -133,14 +132,40 @@ public class DashboardController {
 		for (ProjetoEscalaPrestador prest : prestadores) {
 			prest.setProjetoFolgasSemanais(projetoFolgaSemanalService.findAllByProjetoEscalaPrestadorId(prest.getId()));
 		}
-		
-    	List<ProjetoEscala> escalas = this.escalaService.findAllByProjetoId(projetoId);
-    	for (ProjetoEscala projetoEscala : escalas) {
-    		projetoEscala.setQuantidadePrestadoresReal((int)this.prestadores.stream().filter(x->x.getProjetoEscala().getId()==projetoEscala.getId()).count());
-		}
+
 		
 		int mesAtual = (mes != 0 ? mes : LocalDate.now().getMonth().getValue());
 		int anoAtual = (ano != 0 ? ano : LocalDate.now().getYear());
+
+		
+		List<AusenciaReposicao> ausenciaReposicoes = null;
+		if (escalaId != 0) {
+			ausenciaReposicoes = this.ausenciaReposicaoService.findAllByProjetoEscalaId(anoAtual, mesAtual, escalaId, aceito);
+		}
+		else {
+			ausenciaReposicoes = this.ausenciaReposicaoService.findAllByProjetoId(anoAtual, mesAtual, projetoId, aceito);
+		}
+
+		if (ausenciaReposicoes != null && ausenciaReposicoes.size() > 0) {
+			for (ProjetoEscalaPrestador projEsc : this.prestadores) {
+				projEsc.setAusenciaReposicoes(
+						ausenciaReposicoes.stream().filter(x->
+						x.getProjetoEscalaTroca().getId() == projEsc.getProjetoEscala().getId() &&
+						(x.getUsuarioTroca() == null || x.getUsuarioTroca().getId() == projEsc.getPrestador().getId()) ).collect(Collectors.toList()));
+			}
+		}
+		
+		
+    	List<ProjetoEscala> escalas = this.escalaService.findAllByProjetoId(projetoId);
+    	for (ProjetoEscala projetoEscala : escalas) {
+    		projetoEscala.setProjeto(this.projetoService.findById(projetoId));
+    		projetoEscala.setQuantidadePrestadoresReal((int)this.prestadores.stream().filter(x->x.getProjetoEscala().getId()==projetoEscala.getId()).count());
+    		projetoEscala.setAusenciaReposicoes(
+					ausenciaReposicoes.stream().filter(x->
+					x.getProjetoEscalaTroca().getId() == projetoEscala.getId() &&
+					(x.getUsuarioTroca() == null) ).collect(Collectors.toList()));
+		}
+    	
 
 		modelView.addObject("solicitacaoId", solicitacao);	
 		
@@ -182,21 +207,12 @@ public class DashboardController {
 			}
 		}
 
-		
-		List<AusenciaReposicao> ausenciaReposicoes = null;
-		if (escalaId != 0) {
-			ausenciaReposicoes = this.ausenciaReposicaoService.findAllByProjetoEscalaId(anoAtual, mesAtual, escalaId, aceito);
-		}
-		else {
-			ausenciaReposicoes = this.ausenciaReposicaoService.findAllByProjetoId(anoAtual, mesAtual, projetoId, aceito);
-		}
-
 		if (ausenciaReposicoes != null && ausenciaReposicoes.size() > 0) {
 			for (ProjetoEscalaPrestador projEsc : this.prestadores) {
 				projEsc.setAusenciaReposicoes(
 						ausenciaReposicoes.stream().filter(x->
 						x.getProjetoEscalaTroca().getId() == projEsc.getProjetoEscala().getId() &&
-						(x.getUsuarioTroca() == null || x.getUsuarioTroca().getId() == projEsc.getPrestador().getId()) ).collect(Collectors.toList()));
+						(x.getUsuarioTroca() != null && x.getUsuarioTroca().getId() == projEsc.getPrestador().getId()) ).collect(Collectors.toList()));
 			}
 		}
 		    	

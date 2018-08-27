@@ -84,6 +84,10 @@ $(document).ready(function() {
 			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/ausencias' />">Ausências</a>
 		      		</li>	
 				</c:if>	
+							      
+	     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/aprova')}">active</c:if>"  style="display: none">
+		  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/aprovacaohoras' />">Aprovação horas</a>
+	      		</li>	
 			</c:if>
 			
 			
