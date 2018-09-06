@@ -3,10 +3,12 @@ package com.packageIxia.SistemaControleEscala.Daos;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
 
 
+@Repository
 public interface UsuarioDao extends CrudRepository<Usuario, Long> {
 	
 	public Usuario findByMatricula(String matricula);

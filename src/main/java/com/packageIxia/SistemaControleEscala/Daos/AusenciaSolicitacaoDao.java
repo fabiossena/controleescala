@@ -3,9 +3,11 @@ package com.packageIxia.SistemaControleEscala.Daos;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.packageIxia.SistemaControleEscala.Models.Projeto.AusenciaSolicitacao;
 
+@Repository
 public interface AusenciaSolicitacaoDao extends CrudRepository<AusenciaSolicitacao, Long> {
 
 	List<AusenciaSolicitacao> findAllByUsuarioId(long id);

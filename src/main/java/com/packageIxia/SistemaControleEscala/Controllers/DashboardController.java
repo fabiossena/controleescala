@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.SistemaControleEscala.Models.Projeto.AusenciaReposicao;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.AusenciaSolicitacao;
+import com.packageIxia.SistemaControleEscala.Models.Projeto.HoraTrabalhada;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
@@ -23,6 +24,7 @@ import com.packageIxia.SistemaControleEscala.Models.Referencias.DiaSemanaEnum;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.DiasMes;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.AusenciaReposicaoService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.AusenciaSolicitacaoService;
+import com.packageIxia.SistemaControleEscala.Services.Projetos.HoraTrabalhadaService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoEscalaPrestadorService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoEscalaService;
 import com.packageIxia.SistemaControleEscala.Services.Projetos.ProjetoFolgaSemanalService;
@@ -39,6 +41,7 @@ public class DashboardController {
 	private ProjetoService projetoService;
 	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
 	private AusenciaReposicaoService ausenciaReposicaoService;
+	private HoraTrabalhadaService horaTrabalhadaService;
 
 	@Autowired
 	public DashboardController(
@@ -47,6 +50,7 @@ public class DashboardController {
 			ProjetoEscalaPrestadorService prestadorService,
 			ProjetoFolgaSemanalService projetoFolgaSemanalService,
 			AusenciaSolicitacaoService ausenciaSolicitacaoService,
+			HoraTrabalhadaService horaTrabalhadaService,
 			AusenciaReposicaoService ausenciaReposicaoService) {
 		this.escalaService = escalaService;
 		this.projetoService = projetoService;
@@ -54,6 +58,7 @@ public class DashboardController {
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.ausenciaReposicaoService = ausenciaReposicaoService;
+		this.horaTrabalhadaService = horaTrabalhadaService;
 	}	
 
 	@GetMapping("/dashboard")
@@ -155,7 +160,8 @@ public class DashboardController {
 			}
 		}
 		
-		
+
+    	List<HoraTrabalhada> horasTrabalhadas = new ArrayList<HoraTrabalhada>();
     	List<ProjetoEscala> escalas = this.escalaService.findAllByProjetoId(projetoId);
     	for (ProjetoEscala projetoEscala : escalas) {
     		projetoEscala.setProjeto(this.projetoService.findById(projetoId));
@@ -164,9 +170,12 @@ public class DashboardController {
 					ausenciaReposicoes.stream().filter(x->
 					x.getProjetoEscalaTroca().getId() == projetoEscala.getId() &&
 					(x.getUsuarioTroca() == null) ).collect(Collectors.toList()));
+    		
+    		horasTrabalhadas.addAll(this.horaTrabalhadaService.findByProjetoEscalaId(projetoEscala.getId(), anoAtual, mesAtual));
 		}
     	
 
+		modelView.addObject("horasTrabalhadas", horasTrabalhadas.stream().filter(x->x.getTipoAcao() == 1 || x.getDataHoraFim()==null).collect(Collectors.toList()));	
 		modelView.addObject("solicitacaoId", solicitacao);	
 		
 		modelView.addObject("mes", mesAtual);	
@@ -180,7 +189,6 @@ public class DashboardController {
 		
     	LocalDate data = LocalDate.of((ano != 0 ? ano : LocalDate.now().getYear()), (mes != 0 ? mes : LocalDate.now().getMonth().getValue()), 1);
     	modelView.addObject("data", data);	
-		
     	List<DiasMes> diasMes = new ArrayList<DiasMes>();
     	LocalDate dataIni = data;
 		while (data.getMonth() == dataIni.getMonth()) {

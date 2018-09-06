@@ -46,7 +46,7 @@ import com.packageIxia.SistemaControleEscala.Services.Usuario.UsuarioTurnosDispo
 @Controller
 public class ProjetoController {
 
-	private boolean CamposDisabilitados;
+	private boolean camposDisabilitados;
 	private ModelAndView modelViewCadastro = new ModelAndView("projeto/projetoView");
 	private ModelAndView modelViewCadastros = new ModelAndView("projeto/projetosView");
 	
@@ -209,7 +209,7 @@ public class ProjetoController {
 	
 	private void DisabilitarCampos(long projetoId, boolean disabilitarTodosCampos) {
 		
-		this.CamposDisabilitados = disabilitarTodosCampos;
+		this.camposDisabilitados = disabilitarTodosCampos;
 		
 		if (disabilitarTodosCampos) {
 			modelViewCadastro.addObject("isDisableCamposProjeto", true);
@@ -398,7 +398,7 @@ public class ProjetoController {
 	@RequestMapping("/escala/selecionar/{id}")
 	public ModelAndView selectionarEscala(@PathVariable("id") long id) {			
 
-		ModelAndView modelView = new ModelAndView("redirect:/projeto/" + this.projetoEditado.getId() +  (this.CamposDisabilitados ? "" : "/editar"));
+		ModelAndView modelView = new ModelAndView("redirect:/projeto/" + this.projetoEditado.getId() +  (this.camposDisabilitados ? "" : "/editar"));
 		System.out.println("selecionar escala");
 		System.out.println(id);
 		

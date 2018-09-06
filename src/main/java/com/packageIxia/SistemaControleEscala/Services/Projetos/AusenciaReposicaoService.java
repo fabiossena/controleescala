@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,6 @@ import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 public class AusenciaReposicaoService {
 	
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
-	private HttpSession session;
 	private ProjetoEscalaService projetoEscalaService;
 	private ProjetoService projetoService;
 
@@ -27,12 +24,10 @@ public class AusenciaReposicaoService {
 	public AusenciaReposicaoService(
 			AusenciaReposicaoDao ausenciaReposicaoDao,
 			ProjetoEscalaService projetoEscalaService,
-			ProjetoService projetoService,
-			HttpSession session) {
+			ProjetoService projetoService) {
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
 		this.projetoEscalaService = projetoEscalaService;
 		this.projetoService = projetoService;
-		this.session = session;
 	}
 	
 	public String save(AusenciaReposicao ausenciaReposicao) {

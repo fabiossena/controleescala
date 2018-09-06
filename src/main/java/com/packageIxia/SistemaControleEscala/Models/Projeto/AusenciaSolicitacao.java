@@ -71,7 +71,6 @@ public class AusenciaSolicitacao {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataFim;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@NotEmpty(message="Preencha o campo hora início")
 	private String horaInicio;
 

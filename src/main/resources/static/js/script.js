@@ -6,9 +6,12 @@
 		$(document).ready(function() {
 			
 			$(".mask-phone").mask("(00) 000000009");	
-			$(".mask-date").mask("00/00/0000");	
+			$(".mask-date").mask("00/00/0000");		
+			$(".mask-date-hour").mask("00/00/0000 00:00");	
 			$(".mask-hour").mask("00:00");	
 			$(".mask-number").mask("00000000000000");
+			$(".mask-month").mask("00");
+			$(".mask-year").mask("0000");
 
 			$( ".number, .mask-number").keydown(function (e) {
 		        // Allow: backspace, delete, tab, escape, enter and .

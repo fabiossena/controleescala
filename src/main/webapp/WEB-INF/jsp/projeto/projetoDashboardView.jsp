@@ -2,8 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page session="true"%>
@@ -27,7 +26,7 @@
 
     	
     	$("#proximo").click(function() {
-        	window.location.href = ajustarUrl("<c:url value='/dashboard' />/${projeto.id}?mes=${mesAnterior}&ano=${anoAnterior}");
+        	window.location.href = ajustarUrl("<c:url value='/dashboard' />/${projeto.id}?mes=${mesProximo}&ano=${anoProximo}");
     	});
 
 
@@ -175,8 +174,11 @@
 								(real/planejada):
 								${escala.quantidadePrestadoresReal}/${escala.quantidadePrestadoresPlanejada}</th>
 							<c:forEach items="${diasMes}" var="dia">
+							
+												
 								<td class="border-left"
 									style="font-size: 14pt; vertical-align: top">
+									
 									<%-- <c:if test="${dia.data >= escala.projeto.dataInicio && dia.data <= escala.projeto.dataFim}"> --%>
 									<div class="badge badge-success">${escala.horaInicio}-
 										${escala.horaFim}</div> <br> <c:if
@@ -193,7 +195,30 @@
 									<c:set var="dia" value="${dia}" scope="request"/>	
 									<c:set var="selecionarReposicao" value="${selecionarReposicao}" scope="request"/>
 									<jsp:include page="projetoDashboardReposicaoPartialView.jsp" />
-											
+										 				
+										<c:forEach items="${horasTrabalhadas}" var="hora">
+
+												<c:if test="${hora.projetoEscala.id == escala.id && 
+														  hora.horaAprovacao.prestador.id == escala.monitor.id && 
+														  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
+												<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
+													<div class="badge badge-info" style="font-size: 10pt;">
+														Trabalhado de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
+													</div>
+												</c:if>
+												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
+													<div class="badge badge-warning" style="font-size: 10pt;">
+														Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+													</div>
+												</c:if>
+												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
+													<div class="badge badge-warning" style="font-size: 10pt;">
+														Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+													</div>
+												</c:if>
+											</c:if>
+										</c:forEach>
+												
 								</td>
 							</c:forEach>
 						</tr>
@@ -228,9 +253,10 @@
 							<c:forEach items="${diasMes}" var="dia">
 								<td class="border-left"
 									style="font-size: 12pt; vertical-align: top">
+									
 									<c:if
 										test="${dia.data >= item.dataInicio && (item.dataFim == null || dia.data <= item.dataFim)}">
-
+										
 										<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
 											- ${item.projetoEscala.horaFim}</div>
 
@@ -258,7 +284,34 @@
 										
 
 
-									</c:if></td>
+									</c:if>
+								
+								
+																		
+									<c:forEach items="${horasTrabalhadas}" var="hora">
+										
+											<c:if test="${hora.projetoEscala.id == item.projetoEscala.id && 
+													  hora.horaAprovacao.prestador.id == item.prestador.id && 
+													  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
+											<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
+												<div class="badge badge-info" style="font-size: 10pt;">
+													Trabalhado de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
+												</div>
+											</c:if>
+											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
+												<div class="badge badge-warning" style="font-size: 10pt;">
+													Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+												</div>
+											</c:if>
+											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
+												<div class="badge badge-warning" style="font-size: 10pt;">
+													Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+												</div>
+											</c:if>
+										</c:if>
+									</c:forEach>
+								
+								</td>
 							</c:forEach>
 						</tr>
 

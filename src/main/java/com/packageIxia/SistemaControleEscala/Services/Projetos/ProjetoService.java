@@ -29,9 +29,11 @@ public class ProjetoService {
 	@Autowired
 	public ProjetoService(
 			ProjetoDao projetoDao,
+			ProjetoEscalaDao projetoEscalaDao,
 			ProjetoEscalaPrestadorDao projetoEscalaPrestadorDao,
 			HttpSession session) {
 		this.projetoDao = projetoDao;
+		this.projetoEscalaDao = projetoEscalaDao;
 		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.session = session;
 	}
@@ -49,12 +51,12 @@ public class ProjetoService {
 			return projetos;			
 		}
 
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
     		List<ProjetoEscala> escalas = projetoEscalaDao.findAllByMonitorId(usuarioLogado.getId());
             return projetos.stream().filter(x-> escalas.stream().anyMatch(y->y.getProjetoId()==x.getId())).collect(Collectors.toList());
     	}
 
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
     		List<ProjetoEscalaPrestador> prestadores = projetoEscalaPrestadorDao.findAllByPrestadorId(usuarioLogado.getId());
             return projetos.stream().filter(x-> prestadores.stream().anyMatch(y->y.getProjeto().getId()==x.getId())).collect(Collectors.toList());
     	}

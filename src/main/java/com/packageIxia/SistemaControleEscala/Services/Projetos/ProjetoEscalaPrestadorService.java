@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.packageIxia.SistemaControleEscala.Daos.ProjetoEscalaPrestadorDao;
 import com.packageIxia.SistemaControleEscala.Helper.Utilities;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.Projeto;
-import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;

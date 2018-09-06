@@ -24,7 +24,6 @@ import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscala;
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 import com.packageIxia.SistemaControleEscala.Models.Referencias.FuncaoEnum;
 import com.packageIxia.SistemaControleEscala.Models.Usuario.Usuario;
-import com.packageIxia.SistemaControleEscala.Services.Usuario.UsuarioService;
 
 @Service
 public class AusenciaSolicitacaoService {
@@ -35,7 +34,6 @@ public class AusenciaSolicitacaoService {
 	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
 	private ProjetoService projetoService;
 	private ProjetoEscalaService projetoEscalaService;
-	private UsuarioService usuarioService;
 	
 	@Autowired
 	public AusenciaSolicitacaoService(
@@ -44,7 +42,6 @@ public class AusenciaSolicitacaoService {
 			ProjetoService projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			UsuarioService usuarioService,
 			HttpSession session) {
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
@@ -52,7 +49,6 @@ public class AusenciaSolicitacaoService {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.projetoEscalaService = projetoEscalaService;
 		this.projetoService = projetoService;
-		this.usuarioService = usuarioService;
 	}
 	
 	public List<AusenciaSolicitacao> findAll() {

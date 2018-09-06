@@ -1,14 +1,17 @@
 package com.packageIxia.SistemaControleEscala.Helper;
 
+import java.awt.Stroke;
 import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.validation.BindingResult;
 
@@ -98,6 +101,19 @@ public class Utilities {
 		}
 		
 		return false;
+	}
+
+	public static double Round(double value) {
+		return Round(value, 2);
+	}
+	
+	public static double Round(double value, int casas) {
+		DecimalFormat formato = new DecimalFormat("#0." + String.join("", Collections.nCopies(casas, "#")));
+		return Double.parseDouble(formato.format(value).replace(",", "."));
+	}
+
+	public static Iterable<Long> streamLongToIterable(Stream<Long> longValues) {
+		return longValues == null ? null : longValues.map(Long::longValue).collect(Collectors.toList());
 	}
 	
 }

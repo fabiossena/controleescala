@@ -3,9 +3,11 @@ package com.packageIxia.SistemaControleEscala.Daos;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.packageIxia.SistemaControleEscala.Models.Projeto.ProjetoEscalaPrestador;
 
+@Repository
 public interface ProjetoEscalaPrestadorDao extends CrudRepository<ProjetoEscalaPrestador, Long>  {
 
 	Iterable<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId);

@@ -1,9 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <%@page session="true"%>
 
 <form:form id="form-prestador" modelAttribute="prestador" method="POST" class="form-horizontal row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">

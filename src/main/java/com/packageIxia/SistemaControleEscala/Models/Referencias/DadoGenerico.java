@@ -2,20 +2,28 @@ package com.packageIxia.SistemaControleEscala.Models.Referencias;
 
 public class DadoGenerico {
 
-	private int id;
+	private long id;
 	
 	private String nome;
+
+	private double doubleValue;
 	
-	public DadoGenerico(int id, String nome) {
+	public DadoGenerico(long id, String nome) {
 		this.id = id;
 		this.nome = nome;
 	}
 	
-	public int getId() {
+	public DadoGenerico(long id, String nome, double doubleValue) {
+		this.id = id;
+		this.nome = nome;
+		this.doubleValue = doubleValue;
+	}
+
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
@@ -27,4 +35,12 @@ public class DadoGenerico {
 		this.nome = nome;
 	}
 
+	
+	public double getDoubleValue() {
+		return doubleValue;
+	}
+	
+	public void setDoubleValue(double doubleValue) {
+		this.doubleValue = doubleValue;
+	}
 }

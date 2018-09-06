@@ -190,15 +190,15 @@
 
 						      			
 	        	  			  						    
-							  <div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4" 
-							  id="panel-selected-projeto-escala-principal" 
-							  <c:if test="${isAtendimento}">style="display:none;"</c:if> >
-							      <label for="usuario.id" class='control-label container row'> 
+							  <div  class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4" 
+							  		id="panel-selected-projeto-escala-principal" 
+							  		<c:if test="${isAtendimento}">style="display:none;"</c:if> >
+							      	<label for="usuario.id" class='control-label container row'> 
 							   	    Prestador 
-							      </label>
+							      	</label>
 							        <form:select path="usuario.id" id="selected-usuario-solicitacao" disabled="${isDisableCampos && solicitacao.id != 0}" class="form-control" >
-							        <option value="0"></option>
-							        <form:options items="${usuariosSolicitacao}"  itemLabel="nomeCompletoMatricula" itemValue="id" class='form-control' />
+								        <option value="0"></option>
+								        <form:options items="${usuariosSolicitacao}"  itemLabel="nomeCompletoMatricula" itemValue="id" class='form-control' />
 							        </form:select>
 							        <div class="invalid-feedback"><form:errors path="usuario.id" /></div>
 							  </div> 
@@ -209,12 +209,12 @@
 		                	  	  <fmt:parseDate pattern="yyyy-MM-dd" value="${solicitacao.dataInicio}" var="dtIni" />
 		                	  	  <c:set var="dataInicio"><fmt:formatDate value="${dtIni}" pattern="dd/MM/yyyy" /></c:set>
 							      <form:input 
-						      				path="dataInicio"
-						      				value="${dataInicio}"
-						      				class='form-control mask-date datepicker  ${result.hasFieldErrors("dataInicio") ? "is-invalid" : ""}' 
-						      				placeholder2="data início" 
-						      				disabled="${isDisableCampos}" 
-						      				style="z-index: 1;" />
+					      				path="dataInicio"
+					      				value="${dataInicio}"
+					      				class='form-control mask-date datepicker  ${result.hasFieldErrors("dataInicio") ? "is-invalid" : ""}' 
+					      				placeholder2="data início" 
+					      				disabled="${isDisableCampos}" 
+					      				style="z-index: 1;" />
 		                          <div class="invalid-feedback"><form:errors path="dataInicio" /></div>
 							  </div>
 							     
@@ -232,12 +232,12 @@
 							   	    <span class="col-10 col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10" >Data fim</span> 
 							      </label>
 						          <form:input 
-						          			path="dataFim" 
-						      				value="${dataFim}"
-						      				class='form-control mask-date datepicker  ${result.hasFieldErrors("dataFim") ? "is-invalid" : ""}'  
-						      				placeholder2="data fim" 
-						      				disabled="${isDisableCampos}" 
-						      				style="z-index: 2;" />
+					          			path="dataFim" 
+					      				value="${dataFim}"
+					      				class='form-control mask-date datepicker  ${result.hasFieldErrors("dataFim") ? "is-invalid" : ""}'  
+					      				placeholder2="data fim" 
+					      				disabled="${isDisableCampos}" 
+					      				style="z-index: 2;" />
 							  </div> 
 							  
 							   
@@ -283,18 +283,15 @@
 							  
 							  <c:if test="${solicitacao.dadosAcesso.visivelAprovacao}">
 								  <div class="form-group col-12 col-xs-12 col-xm-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-								      <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-								      	  	
-										    	<br />
-										    	
-								      	  		<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 2}">
-													<input id="btn-aprovar-reposicao" type="button" onclick="aceita(${solicitacao.id}, true)" class="btn btn-lg btn-success" value="Aceitar" style="margin: 1px" />
-								      	  		</c:if>
-								    			<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 1}">
-													<input id="btn-recusar-reposicao" type="button" onclick="aceita(${solicitacao.id}, false)" class="btn btn-lg btn-danger" value="Recusar" style="margin: 1px" /> 
-												</c:if>
-												
-								    			<br />
+								      <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">							      	  	
+									    	<br />									    	
+							      	  		<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 2}">
+												<input id="btn-aprovar-reposicao" type="button" onclick="aceita(${solicitacao.id}, true)" class="btn btn-lg btn-success" value="Aceitar" style="margin: 1px" />
+							      	  		</c:if>
+							    			<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 1}">
+												<input id="btn-recusar-reposicao" type="button" onclick="aceita(${solicitacao.id}, false)" class="btn btn-lg btn-danger" value="Recusar" style="margin: 1px" /> 
+											</c:if>											
+							    			<br />
 								   	  </div>									   	  
 							   	  
 									  <div class="form-group col-sm-12">

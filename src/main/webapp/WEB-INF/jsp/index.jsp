@@ -12,83 +12,148 @@
     <jsp:include page="shared/headerPartialView.jsp"/>
 	<script src="<c:url value='/js/index-projeto.js' />"></script>
 	<script>
-
-
-	function aprovarSolicitacao(id) {
-		$("#motivo-recusa-solicitacao-feedback" + id).html("");
-		$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
-		aceitaRecusaSolicitacaoAusencia(id, true, $("#motivo-recusa-solicitacao" + id).html(), 3);	
-	}
 	
-	function recusarSolicitacao(id) {
-		if ($("#panel-motivo-recusa-solicitacao" + id).is(":hidden") || 
-				$("#motivo-recusa-solicitacao" + id).val() == "") {
-			$("#panel-motivo-recusa-solicitacao" + id).show();
-			$("#motivo-recusa-solicitacao" + id).addClass("is-invalid");
-			$("#motivo-recusa-solicitacao-feedback" + id).html("Preencha o campo motivo recusa");		
-		}
-		else { //if (confirm("Deseja recusar este projeto?")) {	
+		function aprovarSolicitacao(id) {
 			$("#motivo-recusa-solicitacao-feedback" + id).html("");
 			$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
-			aceitaRecusaSolicitacaoAusencia(id, false, $("#motivo-recusa-solicitacao" + id).val(), 3);			
+			aceitaRecusaSolicitacaoAusencia(id, true, $("#motivo-recusa-solicitacao" + id).html(), 3);	
 		}
-	}
-
-	function aceitaRecusaSolicitacaoAusencia(id, aceita, motivo, origem)
-    {
-		if (!aceita && origem != 2){
-			if (motivo == "" || motivo == null){
-				alert("Preencha o campo observação com o motivo da recusa");
+		
+		function recusarSolicitacao(id) {
+			if ($("#panel-motivo-recusa-solicitacao" + id).is(":hidden") || 
+					$("#motivo-recusa-solicitacao" + id).val() == "") {
+				$("#panel-motivo-recusa-solicitacao" + id).show();
+				$("#motivo-recusa-solicitacao" + id).addClass("is-invalid");
+				$("#motivo-recusa-solicitacao-feedback" + id).html("Preencha o campo motivo recusa");		
+			}
+			else { //if (confirm("Deseja recusar este projeto?")) {	
+				$("#motivo-recusa-solicitacao-feedback" + id).html("");
+				$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
+				aceitaRecusaSolicitacaoAusencia(id, false, $("#motivo-recusa-solicitacao" + id).val(), 3);			
+			}
+		}
+	
+		function aceitaRecusaSolicitacaoAusencia(id, aceita, motivo, origem)
+	    {
+			if (!aceita && origem != 2){
+				if (motivo == "" || motivo == null){
+					alert("Preencha o campo observação com o motivo da recusa");
+					return;
+				}
+			}
+			
+			if (confirm("Deseja realmente " + (aceita ? "aceitar" : "recusar") + " esta solicitação?")) {
+				window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=" + origem + "&aceita=" + aceita + (motivo == null || motivo == "" ? "" :  "&motivo=" + motivo);
+			}		
+	    }
+		
+		function iniciar(tipo, iniciar){
+			var escala= $("#selected-projeto-escala-principal").val();
+			var motivo = $("#motivo").val();
+			if (tipo == 2 && !$("#motivo").prop("disabled") && motivo == "") {
+				alert("Preencha o campo motivo");	
 				return;
+			} else if (tipo == 2 && !$("#motivo").prop("disabled")) {
+				iniciar = true;
+			}
+			else if (tipo == 2 && $("#motivo").prop("disabled")) {
+				iniciar = false;			
+			}		
+			
+	    	window.location.href = "<c:url value='/horas/iniciarEscala/' />" + escala + "?tipo=" + tipo +"&motivo=" + motivo +"&iniciar=" + iniciar;
+		}
+		
+		var tempoServer = ${totalSegundos+0};
+		var tempoInicial = Date.now();
+		$(document).ready(function() {
+			if (${totalSegundos+0} > 0) {
+				setTempo();
+			}
+			
+			if ("${pausar}" ==  "pausar") {
+				$("#btn-pausar").mouseover(function() {
+					timeout = setTimeout(function () { $("#panel-motivo").show(500); }, 200);
+				});
+				var timeout;
+				$("#btn-pausar").mouseleave(function() {
+					clearTimeout(timeout);
+					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 500);
+				});
+				
+				$("#panel-motivo, #motivo").mouseover(function() {
+					clearTimeout(timeout);
+					$("#panel-motivo").show();
+				});
+	
+				$("#panel-motivo").mouseleave(function() {
+					clearTimeout(timeout);
+					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 500);
+				});
+			}
+			
+		});
+
+		function setTempo() {
+
+			var date = new Date(null);
+			tempoServer++;
+			date.setSeconds(tempoServer); // + (((Date.now() - tempoInicial)/60)/60)*2,5); // specify value for SECONDS here
+			var timeString = date.toISOString().substr(11, 8);
+			if (${iniciarDisabled}) {
+				$("#tempo").html(timeString);				
+				if ("${pausar}" ==  "pausar") {
+					setTimeout(setTempo, 1000);
+				}
 			}
 		}
 		
-		if (confirm("Deseja realmente " + (aceita ? "aceitar" : "recusar") + " esta solicitação?")) {
-			window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=" + origem + "&aceita=" + aceita + (motivo == null || motivo == "" ? "" :  "&motivo=" + motivo);
-		}		
-    }
+	
 	</script>
 </head>
 <body>
 
 	<jsp:include page="shared/navbarPartialView.jsp"/>
 
-    <div class="container">    
-	    <div style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">  
-          <div class="panel panel-info">
-              <div class="panel-heading">
-                  <h4 class="panel-title" style="font-weight: bold;">Bem vindo, ${usuarioLogado.primeiroNome} (${usuarioLogado.funcao.nome.toLowerCase()})</h4>
-              </div> 
-		 </div> 
-		</div>
-		
-		<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 30px 0 30px 0">    
-	        
-			        
-		<%-- <c:if test="${!isAtendimento}"> --%>
-	      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8' style="display: none">
-		    <label for="escalaId" class="control-label">Selecione uma escala para iniciar:</label>
-	        <form:select path="escalaId" id="selected-projeto-escala-principal" class='form-control editable-select ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}'  disabled="${isDisableCampos}" >
-		        <option value="0"></option>
-		        <c:forEach items="${escalas}" var="item">
-		        	<option <c:if test="${item.id == escalaId}">selected</c:if> value="${item.id}">${item.descricaoCompletaEscala}</option> 
-		        </c:forEach>
-	        </form:select>
-			<br />
-			<button id="btn-iniciar" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${iniciarDisabled}">disabled</c:if>>Iniciar</button>
-			<button id="btn-pausar" class="btn btn-sm btn-primary" style="margin: 1px"  <c:if test="${pausarDisabled}">disabled</c:if>>
-				<span id="lbl-pausar">${pausar}</span> 
-				<input id="txt-motivo" 
-					   value="${motivo}" 
-					   <c:if test="${pausar != 'pausar' || pausarDisabled}">disabled</c:if> />
-			</button>
+    <div class="container">  
+		    <div style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">  
+	          <div class="panel panel-info">
+	              <div class="panel-heading">
+	                  <h4 class="panel-title" style="font-weight: bold;">Bem vindo, ${usuarioLogado.primeiroNome} (${usuarioLogado.funcao.nome.toLowerCase()})</h4>
+	              </div> 
+			 </div> 
+			</div>
 			
-			<button id="btn-parar" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${pararDisabled}">disabled</c:if>>Parar</button>
-			
-			<b>Tempo: </b><span id="tempo">00:00:00</span>
-		  </div>		                    
-        <%-- </c:if> --%>
-	        
+			<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 30px 0 30px 0">    
+		        
+				        
+			<c:if test="${isAtendimento || isMonitoramento}">
+		      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
+			    <label for="escalaId" class="control-label">Selecione uma escala para iniciar:</label>
+		        <form:select path="escalaId" id="selected-projeto-escala-principal" class='form-control editable-select ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}'  disabled="${iniciarDisabled}" >
+			        <option value="0"></option>
+			        <c:forEach items="${escalas}" var="item">
+			        	<option <c:if test="${item.id == escalaId}">selected</c:if> value="${item.id}">${item.descricaoCompletaEscala}</option> 
+			        </c:forEach>
+		        </form:select>
+				<br />
+				<button id="btn-iniciar" onclick="iniciar(1,true)" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${iniciarDisabled}">disabled</c:if>>Iniciar</button>
+				
+				<button id="btn-pausar" " onclick="iniciar(2)" class="btn btn-sm btn-primary" style="margin: 1px"  <c:if test="${pausarDisabled}">disabled</c:if>>
+					<span id="lbl-pausar">${pausar}</span>
+				</button>
+						   
+				<button id="btn-parar" onclick="iniciar(1,false)" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${pararDisabled}">disabled</c:if>>Parar</button>
+				
+				<b>Tempo médio: </b><span id="tempo">00:00:00</span>
+				<br>
+				<div id="panel-motivo" style="display: none">
+					<label for="motivo"><b>Motivo:</b></label>
+					<input id="motivo" 
+							   value="${motivo}" 
+							   <c:if test="${pausar != 'pausar' || pausarDisabled}">disabled</c:if> />
+			    </div> 
+			  </div>		                    
+	        </c:if>	
 	        <c:forEach items="${projetosCadastrados}" var="item"> 
 	        
 	        	<div id="card${item.id}" class="card col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 12px; float: left;">
