@@ -7,13 +7,12 @@
 <head>
 	<title>Ixia - Sistema de Escala - Cadastro projetos</title>
     <jsp:include page="../shared/headerPartialView.jsp"/>
-	<script src="<c:url value='/js/projeto-principal.js' />"></script>
 </head>
 
 <body>
 
 	<jsp:include page="../shared/navbarPartialView.jsp"/>
-	<script src="<c:url value='/js/projeto-principal.js' />"></script>
+	<script src="<c:url value='/js/projeto/projeto-principal.js' />"></script>
 
     <div class="container">    
 	        <div style="margin-top:50px" class="mainbox col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">

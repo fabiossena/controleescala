@@ -9,15 +9,15 @@
 	</c:if>
 	<c:if test="${!result.hasErrors()}">
 		<c:if test="${not empty errorMessage}">
-		  <div id="login-alert" class="alert alert-danger col-sm-10">${errorMessage}</div>				    	
+		  <div id="login-alert" class="alert alert-danger col-sm-10">${errorMessage}<span onclick="$(this).parent().hide()" style="cursor: pointer; position: absolute; right: 10px; top: 0;font-weight: bold; color: red; font-size: 12pt;">x<span></div>				    	
 		</c:if>
 		
 		<c:if test="${not empty error}">
-		   <div id="login-alert" class="alert alert-danger col-sm-10">${error}</div>
+		   <div id="login-alert" class="alert alert-danger col-sm-10">${error}<span onclick="$(this).parent().hide()" style="cursor: pointer; position: absolute; right: 10px; top: 0;font-weight: bold; color: red; font-size: 12pt;">x<span></div>
 		</c:if>
 		
 		<c:if test="${not empty message}">
-		   <div id="login-alert" class="alert alert-danger col-sm-10">${message}</div>
+		   <div id="login-alert" class="alert alert-danger col-sm-10">${message}<span onclick="$(this).parent().hide()" style="cursor: pointer; position: absolute; right: 10px; top: 0;font-weight: bold; color: red; font-size: 12pt;">x<span></div>
 		</c:if>    
 	</c:if>                            
 </div>

@@ -80,8 +80,6 @@
 <body>
 	<jsp:include page="../shared/navbarPartialView.jsp" />
 
-
-
 	<c:set var="selecionarSolicitacao">1</c:set>
 	<c:set var="selecionarReposicao">1</c:set>
 	
@@ -134,6 +132,7 @@
 				style="margin: 1px">mês próximo</button>
 
 		</div>
+		
 		<div>
 
 			<table style="font-size: 10pt" id="table-dashboard"
@@ -319,6 +318,8 @@
 				</tbody>
 			</table>
 		</div>
+
+	</div>
 </body>
 
 </html>

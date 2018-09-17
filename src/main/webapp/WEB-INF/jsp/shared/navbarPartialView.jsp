@@ -1,6 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script>
 $(document).ready(function() {	 
+	<c:if test="${usuarioLogado != null}">
+	setTimeout(notificacoes, 5000);
+	</c:if>
+	
 	window.onscroll = function() {
 		$('#nav-main').css("left", window.pageXOffset + 'px');
 		
@@ -23,6 +27,62 @@ $(document).ready(function() {
 		}
 	}	
 });
+
+
+<c:if test="${usuarioLogado != null}">
+	function notificacoes()
+    {			
+       $.ajax({
+           type:'GET',
+           url: urlBase + "notificacao?ler=true",         
+           dataType:'json',                    
+           cache:false,
+           success:function(result) {
+        	   var html = "";
+        	   $.each(result,function(index, value){
+        		   var nivel = "success"
+        		   if (value.nivel == 3) {
+        			   nivel = "danger";
+        		   } else if (value.nivel == 2) {
+        			   nivel = "warning";
+        		   }
+        		   
+        		   html += '<p class="border alert alert-' + nivel + '">' + value.titulo + '<br>' + value.mensagem + '<span onclick="ler(this, ' + value.id + ')" style="cursor: pointer; position: absolute; right: 10px; top: 0;font-weight: bold; color: red; font-size: 12pt;">x<span></p>'; 
+        		});
+				
+				$("#notificacao").html(html); 
+   				setTimeout(notificacoes, 5000);
+           },
+           error:function(){
+
+   			setTimeout(notificacoes, 5000);
+		   }
+       });
+
+       return false;
+    }
+
+	function ler(obj, id)
+    {			
+	   $(obj).parent().hide(500);
+       $.ajax({
+           type:'POST',
+           url: urlBase + "notificacao/"+id,         
+           dataType:'json',                    
+           cache:false,
+           success:function(aData) {
+
+   				setTimeout(notificacoes, 5000); 
+           },
+           error:function(){
+
+   			setTimeout(notificacoes, 5000);
+		   }
+       });
+
+       return false;
+    }
+</c:if>
 </script> 
 	<nav id="nav-main" class="navbar navbar-dark bg-dark navbar-toggleable-sm navbar-inverse bg-inverse">
 	  <span>
@@ -98,5 +158,7 @@ $(document).ready(function() {
 			</c:if>
 		
 		</ul>
+	  </div>
+	  <div id="notificacao" style="opacity: 0.9; position: absolute; top: 80px; right: 10px; z-index: 1000; font-size: 10pt">
 	  </div>
 	</nav>

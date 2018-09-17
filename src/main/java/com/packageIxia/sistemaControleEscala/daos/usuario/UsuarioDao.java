@@ -1,0 +1,23 @@
+package com.packageIxia.sistemaControleEscala.daos.usuario;
+
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
+
+
+@Repository
+public interface UsuarioDao extends CrudRepository<Usuario, Long> {
+	
+	public Usuario findByMatricula(String matricula);
+	public boolean existsByMatricula(String matricula);
+	public boolean existsByEmail(String email);
+	public Usuario findByEmail(String email);
+	public List<Usuario> findAllByFuncaoIdAndExcluido(int funcaoI, boolean excluido);
+	public Usuario findByCpf(String cpf);
+	public Iterable<Usuario> findAllByExcluido(boolean excluido);
+	public Iterable<Usuario> findAllByFuncaoId(int id);
+
+}

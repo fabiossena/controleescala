@@ -3,8 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <h5>Projetos cadastrados</h5>
-<div class="container border-top panel-custom"> 
-	
+<div class="container border-top panel-custom">	
 		
 		<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 0 0 30px 0">    
 	        <c:forEach items="${projetosCadastrados}" var="item"> 

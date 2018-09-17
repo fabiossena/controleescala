@@ -64,6 +64,7 @@
 				                <input type="hidden" id="prestador.id${item.id}" value="${item.prestador.id}" />
 				                <input type="hidden" id="projeto.id" value="${item.projeto.id}" />
 				                <input type="hidden" id="observacaoPrestador${item.id}" value="${item.observacaoPrestador}" />
+				                <input type="hidden" id="ramalIntegracaoRobo${item.id}" value="${item.ramalIntegracaoRobo}" />
 				                <input type="hidden" id="prestadorAtivo${item.id}" value="${item.ativo}" />
 			                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataFim}" var="dataFim" />
 				                <input type="hidden" id="dataFim${item.id}" value="<fmt:formatDate value="${dataFim}" pattern="dd/MM/yyyy" />" />

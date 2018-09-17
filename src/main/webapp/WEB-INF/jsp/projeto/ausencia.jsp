@@ -10,7 +10,7 @@
 <head>
 	<title>Ixia - Sistema de Escala - Cadastro projeto</title>
     <jsp:include page="../shared/headerPartialView.jsp"/>
-	<script src="<c:url value='/js/ausencia.js' />"></script>
+	<script src="<c:url value='/js/projeto/ausencia.js' />"></script>
 	<script> 
 
 	 function apagarReposicao(id) {

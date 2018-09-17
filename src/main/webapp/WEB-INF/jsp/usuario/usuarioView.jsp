@@ -14,10 +14,10 @@
 		var globalUsuarioEnderecoCidadeId = ${usuario.cidadeId};
     </script>
     
-	<script src="<c:url value='/js/usuario-endereco-cidade.js' />"></script>
-	<script src="<c:url value='/js/usuario-turno-folga.js' />"></script>
-	<script src="<c:url value='/js/usuario-projeto.js' />"></script>
-	<script src="<c:url value='/js/usuario-principal.js' />"></script>
+	<script src="<c:url value='/js/usuario/usuario-endereco-cidade.js' />"></script>
+	<script src="<c:url value='/js/usuario/usuario-turno-folga.js' />"></script>
+	<script src="<c:url value='/js/usuario/usuario-projeto.js' />"></script>
+	<script src="<c:url value='/js/usuario/usuario-principal.js' />"></script>
 </head>
 <body onload="$('#primeiroNome').focus()">
 

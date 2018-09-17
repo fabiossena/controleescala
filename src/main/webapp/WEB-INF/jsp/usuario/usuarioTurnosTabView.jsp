@@ -13,13 +13,10 @@
             </form:select>
             <div class="valid-feedback">${orientacoesPeriodoDisponivel}</div>
         </div>
-    </div>
-           
+    </div>           
 </div>
 
-
 <br />
-
 
 <h5>Folga semanal planejada</h5>      
 <div class="container border-top panel-custom">

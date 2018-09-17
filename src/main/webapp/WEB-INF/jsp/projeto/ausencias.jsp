@@ -32,14 +32,6 @@
 				window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=" + origem + "&aceita=" + aceita + (motivo == null || motivo == "" ? "" :  "&motivo=" + motivo);
 			}	
 		}
-
-/* 
-		function aceitar(id, aceita, origem, motivo)
-	    {			
-			if (confirm("Deseja realmente " + (aceita ? "aceitar" : "recusar") + " esta solicitação?")) {
-				window.location.href = urlBase + "ausencia/aceita/" + id + "?origem=2&aceita=" + aceita + ($(motivo).val() == null ? "" :  "&motivo=" + $(motivo).val());
-			}		
-	    } */
     </script>
 </head>
 

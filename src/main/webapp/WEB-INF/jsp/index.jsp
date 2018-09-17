@@ -10,7 +10,7 @@
 <head>
 	<title>Ixia - Sistema de Escala - Pagina inicial</title>
     <jsp:include page="shared/headerPartialView.jsp"/>
-	<script src="<c:url value='/js/index-projeto.js' />"></script>
+	<script src="<c:url value='/js/projeto/index-projeto.js' />"></script>
 	<script>
 	
 		function aprovarSolicitacao(id) {
@@ -136,6 +136,7 @@
 			        </c:forEach>
 		        </form:select>
 				<br />
+				
 				<button id="btn-iniciar" onclick="iniciar(1,true)" class="btn btn-sm btn-primary" style="margin: 1px" <c:if test="${iniciarDisabled}">disabled</c:if>>Iniciar</button>
 				
 				<button id="btn-pausar" " onclick="iniciar(2)" class="btn btn-sm btn-primary" style="margin: 1px"  <c:if test="${pausarDisabled}">disabled</c:if>>
@@ -164,8 +165,7 @@
 				    
 				    <h6 class="card-subtitle mb-2 text-muted">
 	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataInicio} " var="dataInicio" />
-	                	<fmt:formatDate value="${dataInicio}" pattern="dd/MM/yyyy" />
-	                	
+	                	<fmt:formatDate value="${dataInicio}" pattern="dd/MM/yyyy" />	                	
 	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataFim}" var="dataFim" />
 	                	<fmt:formatDate value="${dataFim}" pattern="dd/MM/yyyy" />
 			    	</h6>

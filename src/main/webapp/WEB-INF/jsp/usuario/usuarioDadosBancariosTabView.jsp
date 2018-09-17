@@ -9,7 +9,10 @@
      <div class="form-group">
          <label for="banco" class="col-md-12 control-label">Banco</label>
          <div class="col-md-9">
-             <form:select path="bancoId" class="form-control" itemLabel="nome" itemValue="id" items="${bancos}" disabled="${isDisableTodosCampos}"/>
+             <form:select path="bancoId" class="form-control" disabled="${isDisableTodosCampos}">
+              <form:options itemLabel="nome" itemValue="id" items="${bancos}" />
+              <option value="0">Outro</option>
+              </form:select>
          </div>
      </div>
                       
@@ -39,7 +42,12 @@
          <div class="col-md-9">
              <form:input path="nomeCompletoCadastradoBanco" class="form-control" name="nomeCompletoCadastradoBanco" placeholder="nome completo cadastrado no banco" disabled="${isDisableTodosCampos}" maxlength="250"/>
          </div>
-     </div>		                           
+     </div>
+	        
+	  <div class="form-group">
+	      <label for="contaCorrente" class="col-md-12 control-label">Conta corrente</label>
+          <form:checkbox  path="contaCorrente" disabled="${isDisableTodosCampos}" class="form-control  col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" name="contaCorrente" />
+	  </div>		                           
                       
      <div class="form-group">
          <label for="cpf" class="col-md-12 control-label">Cpf</label>
@@ -47,4 +55,15 @@
              <input readOnly value="${usuario.cpf}" class="form-control"/>
          </div>
      </div>
+
+	 <div
+		class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<label for="observacoes" class="control-label">Observações</label>
+		<form:textarea path="observacaoConta" class='form-control'
+			placeholder="observações" disabled="${isDisableTodosCampos}"
+			maxlength="500" />
+		<div class="invalid-feedback">
+			<form:errors path="observacaoConta" />
+		</div>
+	 </div>
 </div>

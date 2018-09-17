@@ -49,6 +49,13 @@
 	  		
 
 			$("#btn-aceitar-todas").click(function () {
+				<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id}">
+				if ($("#nota-anexa") == null || $("#nota-anexa").html() == "") {
+					alert("Anexe a nota fiscal")
+					return;
+				}
+				</c:if>
+				
 				window.location.href = "../horas/aprovar/${aprovacaoHora.id}"
 			});
 			
@@ -63,6 +70,13 @@
 				window.location.href = "../horas/aprovar/${aprovacaoHora.id}?aprovar=false&motivo=" + motivo;					
 			});
 		});
+		
+		function anexarClique() {
+			if ($("#arquivo-updload") == null || $("#arquivo-updload").val() == "") {
+				alert("Anexe a nota fiscal")
+				return false; 
+			}
+		}
 		
 		function selecionarHora(id) {
 			cancelarHoras();
@@ -167,57 +181,51 @@
 		        		<jsp:include page="../shared/errorPartialView.jsp"/>	
 	        	  	                      
             			<div class="row align-items-start" style="margin-top: 30px">	  
-							<div class="tab-content col-8 col-sm-8 col-md-9 col-lg-9 col-xl-9 border" style="padding-top:20px; min-height: 450px;" >
-							
-															
+							<div class="tab-content col-8 col-sm-8 col-md-9 col-lg-9 col-xl-9 border" style="padding-top:20px; min-height: 450px;">
 															
 								<h5>Resumo</h5>
 								
-								<div class="container border-top panel-custom" style="font-size: 10pt">						   	  
-						   	  
+								<div class="container border-top panel-custom" style="font-size: 10pt">		
 						   	  		  
-									  <%-- <c:if test="${!isDisableCampos}"> --%>
-							  			  <c:set var="styleStatusPrestador">
+						  			  <c:set var="styleStatusPrestador">
 										  <c:if test="${aprovacaoHora.aceitePrestador == 0}">text-primary</c:if>
 										  <c:if test="${aprovacaoHora.aceitePrestador == 1}">text-success</c:if>
 										  <c:if test="${aprovacaoHora.aceitePrestador == 2}">text-danger</c:if>
 									  </c:set>
 									  
-									  <div class="form-group col-sm-12 ${styleStatusPrestador}" style="font-size: 10pt" >
-											  <label class="control-label">
-												  <c:if test="${aprovacaoHora.aceitePrestador == 0}"><b>Etapa 1:</b> (Pendente)</c:if>
-												  <c:if test="${aprovacaoHora.aceitePrestador == 1}"><b>Etapa 1:</b> (Aprovado)</c:if>
-												  <c:if test="${aprovacaoHora.aceitePrestador == 2}"><b>Etapa 1:</b> (Recusado)</c:if> Prestador: ${aprovacaoHora.prestador.nomeCompletoMatricula}
-											   </label>	
-											   
-											<%--   <c:if test="${aprovacaoHora.aceitePrestador != 1 && aprovacaoHora.prestador.id == usuarioLogado.id}">
-											      <label class="control-label text-primary">Realize os ajustes e aprove as horas abaixo</label>	
-											   </c:if> --%>
-											  
+									  <div class="form-group col-sm-12" style="font-size: 10pt" >
+										  <b>Etapa 1: </b> 
+										  <span class="${styleStatusPrestador}">
+											  <c:if test="${aprovacaoHora.aceitePrestador == 0}">(Pendente)</c:if>
+											  <c:if test="${aprovacaoHora.aceitePrestador == 1}">(Aprovado)</c:if>
+											  <c:if test="${aprovacaoHora.aceitePrestador == 2}">(Recusado)</c:if> Prestador: ${aprovacaoHora.prestador.nomeCompletoMatricula}
+										   </span><br>	        	  		
+				        	  			   <c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}"><a class="text-dark" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>											  
 									  </div> 
-										    
-									   <%-- </c:if> --%>
+									    
 									    
 									  <div class="form-group col-sm-12">
+									  <c:if test="${aprovacaoHora.dadosAcessoAprovacaoHoras.dadosAprovacao.size() > 0}"><b>Etapa 2:</b><br> </c:if>
+									  
 									     <c:forEach items="${aprovacaoHora.dadosAcessoAprovacaoHoras.dadosAprovacao}" var="item">
 								          
 								  			  <c:set var="styleStatusAprovador">
-											  <c:if test="${item.nome.contains('(Pendente') || item.nome.contains('(Parcial')}">text-primary</c:if>
-											  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
-											  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
+												  <c:if test="${item.nome.contains('(Pendente') || item.nome.contains('(Parcial')}">text-primary</c:if>
+												  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
+												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
-										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}"><b>Etapa 2:</b> ${item.nome} | <b>${item.doubleValue} horas</b></label>
+										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.doubleValue} horas</b></label>
 								          	  <br>
 									      </c:forEach>
 								       </div>	
 									  
 									  
 										<div class="form-group col-sm-12" style="font-size: 10pt">	
-									   
-								          <c:if test="${aprovacaoHora.aceiteAprovador == 0}"><span class="text-primary"><b>Etapa 3:</b> (Pendente) Financeiro</span></c:if>
-								          <c:if test="${aprovacaoHora.aceiteAprovador == 1}"><span class="text-success"><b>Etapa 3:</b> (Aprovado) Financeiro | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
-								          <c:if test="${aprovacaoHora.aceiteAprovador == 2}"><span class="text-danger"><b>Etapa 3:</b> (Recusado) Financeiro (${aprovacaoHora.motivoRecusaAprovador}) | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
-								          <c:if test="${aprovacaoHora.aceiteAprovador == 3}"><span class="text-success"><b>Etapa 3:</b> (Finalizado) Financeiro | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
+									   	  <b>Etapa 3: </b> 
+								          <c:if test="${aprovacaoHora.aceiteAprovador == 0}"><span class="text-primary">(Pendente) Financeiro</span></c:if>
+								          <c:if test="${aprovacaoHora.aceiteAprovador == 1}"><span class="text-success">(Aprovado) Financeiro | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
+								          <c:if test="${aprovacaoHora.aceiteAprovador == 2}"><span class="text-danger">(Recusado) Financeiro (${aprovacaoHora.motivoRecusaAprovador}) | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
+								          <c:if test="${aprovacaoHora.aceiteAprovador == 3}"><span class="text-success">(Finalizado) Financeiro | ${aprovacaoHora.aprovador.nomeCompletoMatricula}</span></c:if>
 									   </div>
 									      
 								  	  <div class="form-group col-sm-12" style="font-size: 10pt"> 								          
@@ -248,15 +256,16 @@
 								          
 							          
 					        	  	  <c:if test="${!isDisableCampos}">
-									   <div class="form-group col-sm-12">		        	  			
-						        	  		<c:if test="${((aprovacaoHora.aceitePrestador == 0 || aprovacaoHora.aceitePrestador == 2) && (aprovacaoHora.prestador.id == usuarioLogado.id)) ||
-						        	  				 		((aprovacaoHora.aceitePrestador == 1 && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 || aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 2)) && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}">						          
+									   <div class="form-group col-sm-12">	
+									   		<c:set var="atendentePodeAprovar">${((aprovacaoHora.aceitePrestador == 0 || aprovacaoHora.aceitePrestador == 2) && (aprovacaoHora.prestador.id == usuarioLogado.id)) ||
+						        	  				 		((aprovacaoHora.aceitePrestador == 1 && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 || aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 2)) && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}</c:set>	        	  			
+						        	  		<c:if test="${atendentePodeAprovar}">						          
 							        	  		<input 
 							        	  			id="btn-aceitar-todas" 
 							        	  			type="button" 
 							        	  			class="btn btn-sm btn-success" 
 							        	  			value="Aceitar todas" 
-							        	  			style="margin: 1px"  />
+							        	  			style="margin: 1px" />
 					        	  			</c:if>				        	  			
 						        	  		<c:if test="${(aprovacaoHora.aceitePrestador == 0 && aprovacaoHora.prestador.id == usuarioLogado.id) ||
 						        	  						(aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id)}">
@@ -265,10 +274,23 @@
 							        	  			type="button" 
 							        	  			class="btn btn-sm btn-danger" 
 							        	  			value="Recusar todas" 
-							        	  			style="margin: 1px"  />	
+							        	  			style="margin: 1px" />	
 					        	  			</c:if>		
+					        	  			
 				        	  			</div>	
+			        	  			
+				        	  			<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id && atendentePodeAprovar}">					          
+						        	  		<div class="form-group col-sm-12">	
+						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data"> 							        	  				
+												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-updload" /><br/><br/>
+												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar anexo" onclick="anexarClique()" />						        	  				
+												    <input type="hidden" name="forcar" value="${forcar}" />
+												</form>
+			        	  					</div>	 
 					        	  		</c:if>
+					        	  			
+				        	  		</c:if>	
+			        	  				
 						            </div>
 							          
 								<h5 style="margin-top: 30px">Horas trabalhadas</h5>
@@ -278,7 +300,6 @@
 									<div class="table-container table-responsive">
 										<table id="tabela" class="display tabela-avancada" style="font-size: 10pt">
 					
-									        <!-- Header Table -->
 									        <thead>
 									            <tr>
 									                <th>Id</th>
@@ -288,7 +309,6 @@
 									                <th>Ação/Motivo</th>
 									                <th>Observação</th>
 									                <th>Histórico</th>
-									            <!--     <th>Ação</th> -->
 									            </tr>
 									        </thead>
 									        <tbody>    
@@ -316,9 +336,9 @@
 										                	</td>
 											                <td style="font-size: 10pt">
 											                	<div  style="width: 200px">
-																	  <c:if test="${item.aprovadoResponsavel == 0}"><span class="text-primary">Aprovação pendente responsável</span></c:if>
+																	  <c:if test="${item.aprovadoResponsavel == 0}"><span class="text-primary">Aprovação pendente responsável | ${item.projetoEscala.monitor.nomeCompletoMatricula}</span></c:if>
 																	  <c:if test="${item.aprovadoResponsavel == 1}"><span class="text-success">Aprovado responsável<c:if test="${item.responsavelAprovacao != null}"> | ${item.responsavelAprovacao.nomeCompletoMatricula}</c:if></span></c:if>
-																	  <c:if test="${item.aprovadoResponsavel == 2}"><span class="text-danger">Recusado responsável (motivo: ${item.motivoRecusa})<c:if test="${item.responsavelAprovacao != null}"> | ${item.responsavelAprovacao.nomeCompletoMatricula}</c:if></span></c:if>
+																	  <c:if test="${item.aprovadoResponsavel == 2}"><span class="text-danger">Recusado responsável<c:if test="${item.responsavelAprovacao != null}"> | ${item.responsavelAprovacao.nomeCompletoMatricula}</c:if></span></c:if>
 																	  <br> <br> 
 												                	<c:if test="${item.incluidoManualmente}">
 												                		Inclusão manual					                	

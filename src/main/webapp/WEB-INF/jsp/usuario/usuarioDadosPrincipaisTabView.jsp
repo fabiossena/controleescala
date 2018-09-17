@@ -54,12 +54,12 @@
 	      </div>
 	  </div>
 	                   
-	  <div class="form-group">
+<%-- 	  <div class="form-group">
 	      <label for="ramal" class="col-md-12 control-label">Ramal</label>
 	      <div class="col-md-9">
 	          <form:input path="ramal" class="form-control" name="ramal" placeholder="ramal" disabled="${isDisableTodosCampos}" maxlength="20" />
 	      </div>
-	  </div>
+	  </div> --%>
 	                   
 	  <div class="form-group">
 	      <label for="celular" class="col-md-12 control-label">Celular</label>
@@ -96,6 +96,17 @@
 	          <form:input path="dataNascimento" class="form-control mask-date datepicker" placeholder="data de nascimento" disabled="${isDisableTodosCampos}"/>
 	      </div>
 	  </div>
+
+	 <div
+		class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<label for="observacaoAdicionais" class="control-label">Observações adicionais</label>
+		<form:textarea path="observacaoAdicionais" class='form-control'
+			placeholder="observações" disabled="${isDisableTodosCampos}"
+			maxlength="500" />
+		<div class="invalid-feedback">
+			<form:errors path="observacaoAdicionais" />
+		</div>
+	 </div>
 	        
 	  <div class="form-group">
 	      <label for="ativo" class="col-md-12 control-label">Ativo</label>

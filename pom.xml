@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.groupIxia.SistemaControleEscala</groupId>
-	<artifactId>escala</artifactId>
+	<groupId>com.groupIxia.sistemaControleEscala</groupId>
+	<artifactId>ixia.sistemaControleEscala</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>Ixia.SistemaControleEscala</name>
+	<name>ixia.sistemaControleEscala</name>
 	<description>Sistema de controle de escala</description>
 
 	<parent>
@@ -64,6 +64,13 @@
 		    <groupId>javax.mail</groupId>
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>3.9</version>
 		</dependency>
 
 	</dependencies>

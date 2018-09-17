@@ -13,9 +13,9 @@
 	<script type="text/javascript">	
 		var isDisableCamposPrestador = <c:if test="${isDisableCamposPrestador}">true</c:if><c:if test="${!isDisableCamposPrestador}">false</c:if>;		
 	</script>
-	<script src="<c:url value='/js/projeto-principal.js' />"></script>
-	<script src="<c:url value='/js/projeto-escala.js' />"></script>
-	<script src="<c:url value='/js/projeto-escala-prestador.js' />"></script>
+	<script src="<c:url value='/js/projeto/projeto-principal.js' />"></script>
+	<script src="<c:url value='/js/projeto/projeto-escala.js' />"></script>
+	<script src="<c:url value='/js/projeto/projeto-escala-prestador.js' />"></script>
 <body>
 	<jsp:include page="../shared/navbarPartialView.jsp"/>
 

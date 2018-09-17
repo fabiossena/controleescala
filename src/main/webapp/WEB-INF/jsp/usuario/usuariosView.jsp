@@ -7,7 +7,7 @@
 <head>
 	<title>Ixia - Sistema de Escala - Cadastro usuários</title>
     <jsp:include page="../shared/headerPartialView.jsp"/>
-	<script src="<c:url value='/js/usuario-principal.js' />"></script>
+	<script src="<c:url value='/js/usuario/usuario-principal.js' />"></script>
 </head>
 
 <body>
