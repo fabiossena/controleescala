@@ -15,8 +15,6 @@ import com.packageIxia.sistemaControleEscala.services.storage.StorageService;
 @Configuration
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
-//(scanBasePackages={
-//		"com.packageIxia.sistemaControleEscala"})
 public class Application implements WebMvcConfigurer  {
 
 	public static void main(String[] args) {
@@ -35,11 +33,11 @@ public class Application implements WebMvcConfigurer  {
 //            .excludePathPatterns("/admin/oldLogin");
 	}
 
-    @Bean
+    /*@Bean
     CommandLineRunner init(StorageService storageService) {
         return (args) -> {
             storageService.deleteAll();
             storageService.init();
         };
-    }
+    }*/
 }
