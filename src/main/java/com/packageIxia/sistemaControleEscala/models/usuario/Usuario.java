@@ -54,7 +54,6 @@ public class Usuario {
     private String matricula;
 
 	@Size(max = 50)
-    //@NotEmpty(message="Preencha o campo cpf")
     private String cpf;
 
 	@Size(max = 50)
@@ -64,7 +63,6 @@ public class Usuario {
     private String skype;
 
 	@Size(max = 50)
-    //@NotEmpty(message="Preencha o campo telefone")
     private String telefone;
 
 	@Size(max = 50)
@@ -146,14 +144,16 @@ public class Usuario {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataExcluido;
 
-	private boolean observacaoConta;
+	private String observacaoConta;
 	
-	private boolean observacaoAdicionais;
+	private String observacaoAdicionais;
 
-	//@Transient
-	//private boolean descricaoExcluido;
+	private int bancoHoras;
+	
+	private int folgasDisponiveisAno;
 
-    
+	private int valorMinuto;
+	
 	public long getId() {
 		return id;
 	}
@@ -308,8 +308,6 @@ public class Usuario {
 		this.dataNascimento = dataNascimento;
 	}
 	
-	
-
 	public String getCep() {
 		return cep;
 	}
@@ -434,10 +432,6 @@ public class Usuario {
 	public String getNomeCompleto() {
 		return this.primeiroNome.trim() + " " + this.sobrenome.trim();
 	}
-//
-//	public void setDescricaoExcluido(boolean descricaoExcluido) {
-//		this.descricaoExcluido = descricaoExcluido;
-//	}
 	
 	@Transient
 	public String getNomeCompletoMatricula() {
@@ -493,19 +487,43 @@ public class Usuario {
 		this.contaCorrente = contaCorrente;
 	}
 
-	public boolean isObservacaoConta() {
+	public String getObservacaoConta() {
 		return observacaoConta;
 	}
 
-	public void setObservacaoConta(boolean observacaoConta) {
+	public void setObservacaoConta(String observacaoConta) {
 		this.observacaoConta = observacaoConta;
 	}
 
-	public boolean isObservacaoAdicionais() {
+	public String getObservacaoAdicionais() {
 		return observacaoAdicionais;
 	}
 
-	public void setObservacaoAdicionais(boolean observacaoAdicionais) {
+	public void setObservacaoAdicionais(String observacaoAdicionais) {
 		this.observacaoAdicionais = observacaoAdicionais;
+	}
+
+	public int getBancoHoras() {
+		return bancoHoras;
+	}
+
+	public void setBancoHoras(int bancoHoras) {
+		this.bancoHoras = bancoHoras;
+	}
+
+	public int getFolgasDisponiveisAno() {
+		return folgasDisponiveisAno;
+	}
+
+	public void setFolgasDisponiveisAno(int folgasDisponiveisAno) {
+		this.folgasDisponiveisAno = folgasDisponiveisAno;
+	}
+
+	public int getValorMinuto() {
+		return valorMinuto;
+	}
+
+	public void setValorMinuto(int valorMinuto) {
+		this.valorMinuto = valorMinuto;
 	}
 }

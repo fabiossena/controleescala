@@ -24,7 +24,7 @@
      </div>                           
                       
      <div class="form-group">
-         <label for="conta" class="row col-12 col-xm-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 control-label">Conta</label>
+         <label for="conta" class="col-12 col-xm-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 control-label">Conta</label>
          <div class="col-md-9">
              <form:input path="conta" class="form-control" name="conta" placeholder="conta" disabled="${isDisableTodosCampos}" maxlength="50"/>
          </div>
@@ -57,11 +57,13 @@
      </div>
 
 	 <div
-		class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-		<label for="observacoes" class="control-label">Observações</label>
-		<form:textarea path="observacaoConta" class='form-control'
-			placeholder="observações" disabled="${isDisableTodosCampos}"
-			maxlength="500" />
+		class="form-group">
+		<label for="observacoes" class="control-label col-md-12">Observações</label>
+		<div class="col-md-9">
+			<form:textarea path="observacaoConta" class='form-control'
+				placeholder="observações" disabled="${isDisableTodosCampos}"
+				maxlength="500" />
+		</div>
 		<div class="invalid-feedback">
 			<form:errors path="observacaoConta" />
 		</div>

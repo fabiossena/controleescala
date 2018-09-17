@@ -98,11 +98,13 @@
 	  </div>
 
 	 <div
-		class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-		<label for="observacaoAdicionais" class="control-label">Observações adicionais</label>
-		<form:textarea path="observacaoAdicionais" class='form-control'
-			placeholder="observações" disabled="${isDisableTodosCampos}"
-			maxlength="500" />
+		class="form-group">
+		<label for="observacaoAdicionais" class="control-label  col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">Observações adicionais</label>
+	      <div class="col-md-9">
+			<form:textarea path="observacaoAdicionais" class='form-control'
+				placeholder="observações" disabled="${isDisableTodosCampos}"
+				maxlength="500" />
+			</div>
 		<div class="invalid-feedback">
 			<form:errors path="observacaoAdicionais" />
 		</div>

@@ -23,21 +23,21 @@
     <div class="form-group">
         <label for="folgasDisponiveisAno" class="col-md-12 control-label">Folgas disponívels no ano</label>
         <div class="col-md-9">
-            <input readOnly value="${usuario.matricula}" class="form-control" />
+            <input readOnly value="${usuario.folgasDisponiveisAno}" class="form-control" />
         </div>
     </div>                            
                      
     <div class="form-group">
         <label for="bancoHoras" class="col-md-12 control-label">Banco de horas</label>
         <div class="col-md-9">
-            <input readOnly value="${usuario.matricula}" class="form-control" />
+            <input readOnly value="${usuario.bancoHoras}" class="form-control" />
         </div>
     </div>		                           
                      
     <div class="form-group">
         <label for="valorMinuto" class="col-md-12 control-label">Valor minuto</label>
         <div class="col-md-9">
-            <input readOnly value="${usuario.matricula}" class="form-control" />
+     		<form:input path="valorMinuto" class="form-control" placeholder="matricula" readOnly="${isAdminstracao && (isDisableCamposChaves || isDisableTodosCampos)}" maxlength="50" />
         </div>
     </div>
 </div>
