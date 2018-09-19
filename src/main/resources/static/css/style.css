@@ -1,5 +1,17 @@
+	.bt-close {
+		cursor: pointer; 
+		position: absolute; 
+		right: 10px; 
+		top: 0;
+		font-weight: bold; 
+		font-size: 12pt;
+		opacity:0.6;
+	}
 
-
+	.bt-close:hover {
+		opacity:0.9;
+	}
+	
 	.nav-link  {
    		color: #666;
 	}
