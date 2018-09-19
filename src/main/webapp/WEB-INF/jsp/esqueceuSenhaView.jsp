@@ -20,17 +20,17 @@
             
                 <div class="panel-heading">
                     <h3 class="panel-title" style="font-weight: bold;">Recuperar senha</h3>
-                    <div style="float:right; font-size: 80%; position: relative"><a href="<c:url value='/login' />">Efetuar login</a></div>
+                    <div style="float:right; font-size: 10pt; position: relative"><a href="<c:url value='/login' />">Efetuar login</a></div>
                 </div>
                 
-                <div style="padding-top:30px" class="panel-body" >
+                <div style="padding-top:30px" class="container panel-body border-top" >
                     <form:form id="form-enviar" autocomplete="off" modelAttribute="esqueceuSenha" class="form-horizontal" method='POST'>
                     
                         <jsp:include page="shared/errorPartialView.jsp"/>
                         
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <form:input path="matricula" class='form-control ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="matrícula ixia" maxlength="50" />
+                            <form:input path="matricula" class='form-control col-md-9 ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="matrícula ixia" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='matricula' />
                             </div>
@@ -38,7 +38,7 @@
                         
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <form:input path="email" class='form-control ${result.hasFieldErrors("email") ? "is-invalid" : ""}' placeholder="e-mail" maxlength="50" />
+                            <form:input path="email" class='form-control col-md-9 ${result.hasFieldErrors("email") ? "is-invalid" : ""}' placeholder="e-mail" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='email' />
                             </div>
@@ -49,9 +49,16 @@
                                 <input id="btn-enviar" type="submit" class="btn btn-success" value="Enviar" />
                             </div>
                         </div>
-                        
-                    </form:form>
-                </div>
+               
+                         <div class="border-top" style="padding-top:15px; font-size:85%" >
+                             Não tem conta ainda! 
+                             <a href="<c:url value='/cadastroinicial' />">
+                             Clique aqui para se cadastrar
+                             </a>
+                         </div>
+						
+                  </form:form>
+                 </div>
             </div>
         </div>
     </div>

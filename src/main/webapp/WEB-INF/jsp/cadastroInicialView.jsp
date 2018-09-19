@@ -17,7 +17,7 @@
                     <h3 class="panel-title" style="font-weight: bold;">Cadastro de usuário</h3>
                     <div style="float:right; font-size: 85%; position: relative"><a id="signinlink" href="<c:url value='/login' />">Efetuar login</a></div>
                 </div>
-                <div class="panel-body" >
+                <div class="panel-body border-top" >
                     <form:form modelAttribute="cadastro" class="form-horizontal" method='POST'>
                     
                         <jsp:include page="shared/errorPartialView.jsp"/>
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         
-                        <div style="border-top: 1px solid #999; padding-top:20px"  class="form-group">
+                        <div class="border-top" style="padding-top:20px"  class="form-group">
                             <div class="col-md-offset-3 col-md-9" style="display: none;">
                                 <button id="btn-fbsignup" type="button" class="btn btn-primary"><i class="icon-google"></i>   Conectar com conta google</button>
                             </div>

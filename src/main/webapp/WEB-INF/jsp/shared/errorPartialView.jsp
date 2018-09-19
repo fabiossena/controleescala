@@ -3,21 +3,39 @@
 
 <div style="margin-top: 15px;">
 	<c:if test="${result.hasErrors()}">
-		<div id="login-alert" class="alert alert-danger col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
-			Preencha todos os campos obrigatórios (${camposComErro})
+		<div id="login-alert" class="alert alert-danger">
+			Preencha todos os campos obrigatórios <c:if test='${not empty camposComErro}'>(${camposComErro})</c:if>
+			<button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
 		</div>
 	</c:if>
 	<c:if test="${!result.hasErrors()}">
 		<c:if test="${not empty errorMessage}">
-		  <div id="login-alert" class="alert alert-danger col-sm-10">${errorMessage}<span onclick="$(this).parent().hide()" class="bt-close text-danger">x<span></div>				    	
+		  <div id="login-alert" class="alert alert-danger col-sm-10">
+		   ${errorMessage}
+		   <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+		   	<span aria-hidden="true">&times;</span>
+		   	</button>
+		   </div>				    	
 		</c:if>
 		
 		<c:if test="${not empty error}">
-		   <div id="login-alert" class="alert alert-danger col-sm-10">${error}<span onclick="$(this).parent().hide()" class="bt-close text-danger">x<span></div>
+		   <div id="login-alert" class="alert alert-danger col-sm-10">
+		    ${error}
+		    <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+		     <span aria-hidden="true">&times;</span>
+		    </button>
+		   </div>
 		</c:if>
 		
 		<c:if test="${not empty message}">
-		   <div id="login-alert" class="alert alert-danger col-sm-10">${message}<span onclick="$(this).parent().hide()" class="bt-close text-danger">x<span></div>
+		   <div id="login-alert" class="alert alert-danger col-sm-10">
+		     ${message}
+		   	 <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+		   	  <span aria-hidden="true">&times;</span>
+		   	 </button>
+		   	</div>
 		</c:if>    
 	</c:if>                            
 </div>

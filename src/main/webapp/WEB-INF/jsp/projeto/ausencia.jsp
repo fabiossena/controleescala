@@ -94,7 +94,6 @@
               <div class="panel-heading row">
                 	
                   <h3 class="panel-title col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">Solicitação ausência</h3>   
-
 				  <input id="id" name="id" value="${solicitacao.id}" type="hidden" /> 
 				  <form:hidden path="ativo" /> 
 				  
@@ -142,11 +141,11 @@
            				
         	  	</div>
               </div>  
-              <div class="panel-body" >
+              <div class="border-top panel-body" >
               
         		<jsp:include page="../shared/errorPartialView.jsp"/>	
           				        	  	                      
-          			<div class="row align-items-start" style="margin-top: 30px">	  
+          			<div class="container row align-items-start" style="margin-top: 30px">	  
 					
 											        
 					   <c:forEach items="${solicitacao.dadosAcesso.dadosAcesso}" var="acesso">

@@ -122,7 +122,8 @@
 	              </div> 
 			 </div> 
 			</div>
-			
+			<hr />
+                 
 			<div class="table-container row table-responsive col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: 30px 0 30px 0">    
 		        
 				        

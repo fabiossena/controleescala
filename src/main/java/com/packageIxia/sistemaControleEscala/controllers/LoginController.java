@@ -34,6 +34,8 @@ public class LoginController {
 		LoginPage login = new LoginPage();
 		login.setMatricula(matricula);
 		mv.addObject("login", login); 
+    	mv.addObject("result", null);
+    	mv.addObject("errorMessage", null);
 		return mv;
 	}
 

@@ -22,7 +22,9 @@ public class EsqueceuSenhaController {
 	
     @GetMapping(value = "/esqueceuSenha")
 	public ModelAndView esqueceuSenha()  {
-		mv.addObject("esqueceuSenha", new CadastroInicialPage()); 
+		mv.addObject("esqueceuSenha", new CadastroInicialPage());
+    	mv.addObject("result", null);
+    	mv.addObject("errorMessage", null); 
 		return mv;
 	}
 

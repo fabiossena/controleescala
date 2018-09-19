@@ -30,17 +30,18 @@
             
                 <div class="panel-heading">
                     <h3 class="panel-title" style="font-weight: bold;">Efetuar login</h3>
-                    <div style="float:right; font-size: 80%; position: relative"><a href="<c:url value='/esqueceuSenha' />">Esqueceu a senha? Clique aqui!</a></div>
+                    <div style="font-size: 10pt; float:right; position: relative"><a href="<c:url value='/esqueceuSenha' />">Esqueceu a senha? Clique aqui!</a></div>                                           
                 </div>
                 
-                <div style="padding-top:30px" class="panel-body" >
+                <div style="padding-top:30px" class="container border-top panel-body">
+                
                     <form:form id="form-login" autocomplete="off" modelAttribute="login" class="form-horizontal" method='POST'>
                     
                         <jsp:include page="shared/errorPartialView.jsp"/>
-                        
+                         
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <form:input path="matricula" class='form-control ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="Matrícula Ixia" maxlength="50" />
+                            <form:input path="matricula" class='form-control col-md-9 ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="Matrícula Ixia" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='matricula' />
                             </div>
@@ -48,12 +49,12 @@
                         
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <form:password path="senha" class='form-control ${result.hasFieldErrors("senha") ? "is-invalid" : ""}' placeholder="Senha" maxlength="50" />
+                            <form:password path="senha" class='form-control col-md-9 ${result.hasFieldErrors("senha") ? "is-invalid" : ""}' placeholder="Senha" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='senha' />
                             </div>
                         </div>
-                        
+                		
                         <div class="input-group" style="display: none;">
                             <div class="checkbox">
                                 <label>
@@ -69,16 +70,12 @@
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <div class="col-md-12 control">
-                                <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-                                    Não tem conta ainda! 
-                                    <a href="<c:url value='/cadastroinicial' />">
-                                    Clique aqui para se cadastrar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                         <div class="border-top" style="padding-top:15px; font-size:85%" >
+                             Não tem conta ainda! 
+                             <a href="<c:url value='/cadastroinicial' />">
+                             Clique aqui para se cadastrar
+                             </a>
+                         </div>
                         
                     </form:form>
                 </div>
