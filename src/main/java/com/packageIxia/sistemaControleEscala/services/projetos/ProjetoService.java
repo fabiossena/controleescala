@@ -12,6 +12,7 @@ import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
@@ -19,7 +20,7 @@ import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class ProjetoService {
+public class ProjetoService implements IProjeto {
 
 	private ProjetoDao projetoDao;
 	private ProjetoEscalaDao projetoEscalaDao;
@@ -38,6 +39,7 @@ public class ProjetoService {
 		this.session = session;
 	}
 
+	@Override
 	public List<Projeto> findAllByUsuarioLogado() {
 		List<Projeto> projetos = new ArrayList<Projeto>(); 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
@@ -52,7 +54,7 @@ public class ProjetoService {
     	} else if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
     		List<ProjetoEscalaPrestador> prestadores = projetoEscalaPrestadorDao.findAllByPrestadorId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(prestadores.stream().map(y->y.getProjeto().getId()))));
-    	} else if (!(usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId())) {
+    	} else if (usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
     		List<Projeto> projs = projetoDao.findAllByGerenteId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(projs.stream().map(y->y.getId()))));
     	}
@@ -60,6 +62,7 @@ public class ProjetoService {
 		return projetos;
 	}
 	
+	@Override
 	public Projeto findById(long id) {		
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		Projeto projeto = projetoDao.findById(id).orElse(null);
@@ -93,6 +96,7 @@ public class ProjetoService {
 		return projeto;
 	}
 	
+	@Override
 	public String saveProjeto(Projeto projeto) {
 		if (projeto.getDataInicio() != null && projeto.getDataFim() != null &&
 				projeto.getDataInicio().isAfter((projeto.getDataFim()))) {
@@ -103,6 +107,7 @@ public class ProjetoService {
 		return "";
 	}
 
+	@Override
 	public String delete(long id) {
 		List<ProjetoEscala> projetoEscalas = this.projetoEscalaDao.findAllByProjetoId(id);
 		if (projetoEscalas != null && projetoEscalas.size() > 0) {
@@ -117,10 +122,12 @@ public class ProjetoService {
 		return "";
 	}
 
+	@Override
 	public boolean existsByGerenteId(long id) {
 		return this.projetoDao.existsByGerenteId(id);
 	}
 
+	@Override
 	public List<Projeto> findAll() {
 		return Utilities.toList(this.projetoDao.findAll());
 	}

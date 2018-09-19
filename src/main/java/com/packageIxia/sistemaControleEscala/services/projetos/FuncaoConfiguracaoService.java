@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.projeto.FuncaoConfiguracaoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
 import com.packageIxia.sistemaControleEscala.models.projeto.FuncaoConfiguracao;
 
 @Service
-public class FuncaoConfiguracaoService {
+public class FuncaoConfiguracaoService implements IFuncaoConfiguracao {
 	
 	private FuncaoConfiguracaoDao funcaoConfiguracaoDao;
 	private Environment enviroment;
@@ -23,6 +24,7 @@ public class FuncaoConfiguracaoService {
 		this.enviroment = enviroment;
 	}
 
+	@Override
 	public List<FuncaoConfiguracao> findAll() {
 		List<FuncaoConfiguracao> configs = Utilities.toList(this.funcaoConfiguracaoDao.findAll());
 		if (configs == null || configs.isEmpty()) {

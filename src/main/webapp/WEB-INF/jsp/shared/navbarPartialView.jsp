@@ -2,7 +2,7 @@
 <script>
 $(document).ready(function() {	 
 	<c:if test="${usuarioLogado != null}">
-	setTimeout(notificacoes, 5000);
+	setTimeout(notificacoes, 10000);
 	</c:if>
 	
 	window.onscroll = function() {
@@ -51,11 +51,11 @@ $(document).ready(function() {
         		});
 				
 				$("#notificacao").html(html); 
-   				setTimeout(notificacoes, 5000);
+   				setTimeout(notificacoes, 30000);
            },
            error:function(){
 
-   			setTimeout(notificacoes, 5000);
+   			setTimeout(notificacoes, 30000);
 		   }
        });
 
@@ -71,12 +71,8 @@ $(document).ready(function() {
            dataType:'json',                    
            cache:false,
            success:function(aData) {
-
-   				setTimeout(notificacoes, 5000); 
            },
            error:function(){
-
-   			setTimeout(notificacoes, 5000);
 		   }
        });
 

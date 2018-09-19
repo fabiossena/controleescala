@@ -13,14 +13,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.models.CadastroInicialPage;
 import com.packageIxia.sistemaControleEscala.services.UsuarioAcessoService;
 
 @Controller
-@RequestMapping(value = "/cadastroinicial")
 public class CadastroInicialController {
 
 	@Autowired
@@ -28,13 +27,18 @@ public class CadastroInicialController {
 	
 	ModelAndView mv = new ModelAndView("cadastroInicialView");
 	
-    @GetMapping
-	public ModelAndView cadastro() {
-		mv.addObject("cadastro", new CadastroInicialPage()); 
+    @GetMapping("/cadastroinicial")
+	public ModelAndView cadastro(
+			@RequestParam(value="matricula", defaultValue="") String matricula,
+			@RequestParam(value="email", defaultValue="") String email) {
+    	CadastroInicialPage cadastro = new CadastroInicialPage();
+    	cadastro.setMatricula(matricula);
+    	cadastro.setEmail(email);
+		mv.addObject("cadastro", cadastro); 
 		return mv;
 	}
     
-    @PostMapping
+    @PostMapping(value = "/cadastroinicial")
     public ModelAndView submit(
     		@Valid @ModelAttribute("cadastro")CadastroInicialPage cadastro,
     		BindingResult result, 

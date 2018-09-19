@@ -1,77 +1,64 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraTrabalhadaDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.referencias.NotificacaoService;
-import com.packageIxia.sistemaControleEscala.services.storage.StorageService;
 
 @Service
-public class HoraTrabalhadaService {
+public class HoraTrabalhadaService implements IHoraTrabalhada {
 	
 	private HoraTrabalhadaDao horaTrabalhadaDao;
 	private HttpSession session;
-	private HoraAprovacaoService horaAprovacaoService;
-	private ProjetoEscalaService projetoEscalaService;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
-	private NotificacaoService notificacaoService;
-	private StorageService storageService;
+	private IHoraAprovacao horaAprovacaoService;
+	private IProjetoEscala projetoEscalaService;
 
 	@Autowired
 	public HoraTrabalhadaService(
 			HoraTrabalhadaDao horaTrabalhadaDao,
-			HoraAprovacaoService horaAprovacaoService,
-			ProjetoEscalaService projetoEscalaService,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			HttpSession session,
-			StorageService storageService,
-			NotificacaoService notificacaoService) {
+			IHoraAprovacao horaAprovacaoService,
+			IProjetoEscala projetoEscalaService,
+			HttpSession session) {
 		this.horaTrabalhadaDao = horaTrabalhadaDao;
 		this.horaAprovacaoService = horaAprovacaoService;
 		this.session = session;
 		this.projetoEscalaService = projetoEscalaService;
-		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
-		this.notificacaoService = notificacaoService;
-		this.storageService = storageService;
 	}
 	
+	@Override
 	public List<HoraTrabalhada> findByHoraAprovacaoId(Long id) {
 		List<HoraTrabalhada> horasAprovacoes = this.horaTrabalhadaDao.findAllByHoraAprovacaoId(id).stream().sorted(Comparator.comparing(HoraTrabalhada::getDataHoraInicio)).collect(Collectors.toList());
 		return horasAprovacoes;
 	}
 	
+	@Override
 	public HoraTrabalhada findById(Long id) {
 		return this.horaTrabalhadaDao.findById(id).orElse(null);
 	}
 	
+	@Override
 	public List<HoraTrabalhada> findByPrestadorId(Long id) {
 		return this.horaTrabalhadaDao.findByPrestadorId(id).stream().sorted(Comparator.comparing(HoraTrabalhada::getDataHoraInicio)).collect(Collectors.toList());
 	}
 	
+	@Override
 	public HoraTrabalhada findLastByPrestadorId(long prestadorId) throws Exception {
 		
 		List<HoraTrabalhada> all = this.findByPrestadorId(prestadorId);
@@ -82,6 +69,7 @@ public class HoraTrabalhadaService {
 		return all.get(all.size()-1);
 	}
 	
+	@Override
 	public HoraTrabalhada findLastStartedByPrestadorId(long prestadorId) throws Exception {
 		
 		List<HoraTrabalhada> all = this.findByPrestadorId(prestadorId).stream().filter(x -> x.getTipoAcao() == 1).collect(Collectors.toList());
@@ -93,6 +81,7 @@ public class HoraTrabalhadaService {
 	}
 	
 	
+	@Override
 	public String save(long escalaId, int tipoAcao, boolean novoSomenteDataInicial, String motivoAcao) throws Exception {
 		// tipoAcao | 1 = start, 2 = pause
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
@@ -174,6 +163,7 @@ public class HoraTrabalhadaService {
 		return "";
 	}
 	
+	@Override
 	public String setAndSave(HoraTrabalhada horaTrabalhada, HoraTrabalhada horaTrabalhadaAnterior) {
 		
 		HoraTrabalhada hora = findById(horaTrabalhada.getId());
@@ -194,6 +184,7 @@ public class HoraTrabalhadaService {
 		return save(hora, horaTrabalhadaAnterior);
 	}
 	
+	@Override
 	public String save(HoraTrabalhada horaTrabalhada, HoraTrabalhada horaTrabalhadaAnterior) {
 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
@@ -332,11 +323,13 @@ public class HoraTrabalhadaService {
 		}
 	}
 
+	@Override
 	public List<HoraTrabalhada> findByProjetoEscalaId(long id, int ano, int mes) {
 		List<HoraTrabalhada> hora = this.horaTrabalhadaDao.findByProjetoEscalaIdAndDate(id, ano, mes);
 		return Utilities.toList(this.horaTrabalhadaDao.findAllById(Utilities.streamLongToIterable(hora.stream().map(x->x.getId()))));		
 	}
 
+	@Override
 	public void deleteAllByMonthYear(int monthValue, int year) {
 		this.horaTrabalhadaDao.deleteAllByMonthYear(monthValue, year);		
 	}

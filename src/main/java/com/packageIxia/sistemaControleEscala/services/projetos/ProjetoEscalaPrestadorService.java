@@ -14,17 +14,20 @@ import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraAprovacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class ProjetoEscalaPrestadorService {
+public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 
 	private ProjetoEscalaPrestadorDao projetoEscalaPrestadorDao;
-	private ProjetoFolgaSemanalService projetoFolgaSemanalService;
-	private ProjetoService projetoService;
+	private IProjetoFolgaSemanal projetoFolgaSemanalService;
+	private IProjeto projetoService;
 	private AusenciaSolicitacaoDao ausenciaSolicitacaoDao;
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
 	private HoraAprovacaoDao horaAprovacaoDao;
@@ -32,11 +35,11 @@ public class ProjetoEscalaPrestadorService {
 	@Autowired
 	public ProjetoEscalaPrestadorService(
 			ProjetoEscalaPrestadorDao projetoEscalaPrestadorDao,
-			ProjetoFolgaSemanalService projetoFolgaSemanalService,
+			IProjetoFolgaSemanal projetoFolgaSemanalService,
+			IProjeto projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			HoraAprovacaoDao  horaAprovacaoDao,
-			ProjetoService projetoService) {
+			HoraAprovacaoDao  horaAprovacaoDao) {
 		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.projetoService = projetoService;
@@ -45,6 +48,7 @@ public class ProjetoEscalaPrestadorService {
 		this.horaAprovacaoDao = horaAprovacaoDao;
 	}
 	
+	@Override
 	public List<Usuario> findAllPrestadoresByProjetoEscalaId(long projetoEscalaId) {
 		if (projetoEscalaId == 0) {
 			return new ArrayList<Usuario>();
@@ -54,6 +58,7 @@ public class ProjetoEscalaPrestadorService {
 				.stream().map(x->x.getPrestador()).collect(Collectors.toList());
 	}
 
+	@Override
 	public List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId) {
 		if (projetoEscalaId == 0) {
 			return new ArrayList<ProjetoEscalaPrestador>();
@@ -62,6 +67,7 @@ public class ProjetoEscalaPrestadorService {
 		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
 	}
 	
+	@Override
 	public List<Usuario> findAllByProjetoEscalaIdExceptUsuarioId(long projetoEscalaId, long usuarioId) {
 		if (projetoEscalaId == 0) {
 			return new ArrayList<Usuario>();
@@ -71,6 +77,7 @@ public class ProjetoEscalaPrestadorService {
 				.stream().filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId).map(x->x.getPrestador()).collect(Collectors.toList());
 	}
 	
+	@Override
 	public ProjetoEscalaPrestador findByProjetoEscalaIdAndPrestadorIdAndExcluido(long projetoEscalaId, long prestadorId) {
 		if (projetoEscalaId == 0 || prestadorId == 0) {
 			return new ProjetoEscalaPrestador();
@@ -79,10 +86,12 @@ public class ProjetoEscalaPrestadorService {
 		return projetoEscalaPrestadorDao.findByProjetoEscalaIdAndPrestadorIdAndExcluido(projetoEscalaId, prestadorId, false);
 	}
 	
+	@Override
 	public ProjetoEscalaPrestador findById(long id) {
 		return projetoEscalaPrestadorDao.findByIdAndExcluido(id, false);
 	}
 	
+	@Override
 	public String save(ProjetoEscalaPrestador prestador) {
 		Projeto projeto = this.projetoService.findById(prestador.getProjeto().getId());
 		
@@ -121,6 +130,7 @@ public class ProjetoEscalaPrestadorService {
 		return this.projetoEscalaPrestadorDao.findAllByPrestadorIdAndProjetoIdAndExcluido(prestadorId, projetoId, false);
 	}
 
+	@Override
 	public String delete(long prestadorId) {
 		if (this.horaAprovacaoDao.existsByPrestadorId(prestadorId) ||
 			this.ausenciaSolicitacaoDao.existsByUsuarioId(prestadorId) ||
@@ -136,10 +146,12 @@ public class ProjetoEscalaPrestadorService {
 		return "";
 	}
 
+	@Override
 	public List<ProjetoEscalaPrestador> findAllProjetosByPrestadorId(long id, boolean trazerInformacaoFolga, boolean trazerInformacaoStatus, boolean trazerStatusReal, boolean trazerSomenteAtivos) {
 		return this.findAllProjetosByPrestadorId(id, trazerInformacaoFolga, trazerInformacaoStatus, trazerStatusReal, trazerSomenteAtivos, false, false, false);
 	}
 	
+	@Override
 	public List<ProjetoEscalaPrestador> findAllProjetosByPrestadorId(long id, boolean trazerInformacaoFolga, boolean trazerInformacaoStatus, boolean trazerStatusReal, boolean trazerSomenteAtivos, boolean trazerSomentePendentes, boolean trazerSomenteDataAtiva, boolean trazerSomenteInformacoesBasicas) {
 		if (id == 0) {
 			return new ArrayList<ProjetoEscalaPrestador>();
@@ -237,6 +249,7 @@ public class ProjetoEscalaPrestadorService {
 		return projetosCadastrados;
 	}
 
+	@Override
 	public String aceitePrestador(Usuario usuarioLogado, long projetoEscalaPrestadorId, int statusAceite, String motivo) {
 		ProjetoEscalaPrestador projetoEscalaPrestador = this.findById(projetoEscalaPrestadorId);
 		if (projetoEscalaPrestador.getPrestador().getId() != usuarioLogado.getId() && 
@@ -255,19 +268,23 @@ public class ProjetoEscalaPrestadorService {
 		return save(projetoEscalaPrestador);
 	}
 
+	@Override
 	public boolean existsByPrestadorId(long prestadorId) {
 		return this.projetoEscalaPrestadorDao.existsByPrestadorId(prestadorId);
 	}
 
+	@Override
 	public boolean existsByProjetoEscalaId(long projetoEscalaId) {
 		return this.projetoEscalaPrestadorDao.existsByProjetoEscalaId(projetoEscalaId);
 	}
 
+	@Override
 	public List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId) {
 		List<ProjetoEscalaPrestador> projetosCadastrados = Utilities.toList(this.projetoEscalaPrestadorDao.findAllByProjetoId(projetoId));
 		return this.trazerFiltrosAndObservacoesAdicionais(false, true, false, false, false, false, true, projetosCadastrados);
 	}
 
+	@Override
 	public List<ProjetoEscalaPrestador> findAllByPrestadorId(long prestadorId) {
 		List<ProjetoEscalaPrestador> prestadores =  this.projetoEscalaPrestadorDao.findAllByPrestadorIdAndExcluidoAndAtivo(prestadorId, false, true);
 		
@@ -281,6 +298,7 @@ public class ProjetoEscalaPrestadorService {
 				.collect(Collectors.toList());
 	}
 
+	@Override
 	public List<ProjetoEscalaPrestador> findAllByRamalIntegracaoRobo(String ramalRobo) {
 		return this.projetoEscalaPrestadorDao.findAllByRamalIntegracaoRobo(ramalRobo);
 		

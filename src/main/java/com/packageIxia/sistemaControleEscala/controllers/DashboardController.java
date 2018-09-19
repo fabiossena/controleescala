@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
@@ -22,36 +29,29 @@ import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemanaEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiasMes;
-import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaReposicaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaSolicitacaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.HoraTrabalhadaService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoFolgaSemanalService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoService;
 
 @Controller
 public class DashboardController {
 	
-	private ProjetoEscalaPrestadorService prestadorService;
+	private IProjetoEscalaPrestador prestadorService;
 	private ModelAndView modelView = new ModelAndView("projeto/projetoDashboardView");
 	private List<ProjetoEscalaPrestador> prestadores;
-	private ProjetoFolgaSemanalService projetoFolgaSemanalService;
-	private ProjetoEscalaService escalaService;
-	private ProjetoService projetoService;
-	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
-	private AusenciaReposicaoService ausenciaReposicaoService;
-	private HoraTrabalhadaService horaTrabalhadaService;
+	private IProjetoFolgaSemanal projetoFolgaSemanalService;
+	private IProjetoEscala escalaService;
+	private IProjeto projetoService;
+	private IAusenciaSolicitacao ausenciaSolicitacaoService;
+	private IAusenciaReposicao ausenciaReposicaoService;
+	private IHoraTrabalhada horaTrabalhadaService;
 
 	@Autowired
 	public DashboardController(
-			ProjetoService projetoService,
-			ProjetoEscalaService escalaService,
-			ProjetoEscalaPrestadorService prestadorService,
-			ProjetoFolgaSemanalService projetoFolgaSemanalService,
-			AusenciaSolicitacaoService ausenciaSolicitacaoService,
-			HoraTrabalhadaService horaTrabalhadaService,
-			AusenciaReposicaoService ausenciaReposicaoService) {
+			IProjeto projetoService,
+			IProjetoEscala escalaService,
+			IProjetoEscalaPrestador prestadorService,
+			IProjetoFolgaSemanal projetoFolgaSemanalService,
+			IAusenciaSolicitacao ausenciaSolicitacaoService,
+			IHoraTrabalhada horaTrabalhadaService,
+			IAusenciaReposicao ausenciaReposicaoService) {
 		this.escalaService = escalaService;
 		this.projetoService = projetoService;
 		this.prestadorService = prestadorService;

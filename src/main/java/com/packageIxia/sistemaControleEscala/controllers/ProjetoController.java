@@ -24,6 +24,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuarioTurnosDisponiveis;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
@@ -35,13 +42,6 @@ import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.referencias.TipoApontamentoHoras;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoFolgaSemanalService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoService;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
-import com.packageIxia.sistemaControleEscala.services.usuario.UsuarioService;
-import com.packageIxia.sistemaControleEscala.services.usuario.UsuarioTurnosDisponiveisService;
 
 @Controller
 public class ProjetoController {
@@ -50,31 +50,31 @@ public class ProjetoController {
 	private ModelAndView modelViewCadastro = new ModelAndView("projeto/projetoView");
 	private ModelAndView modelViewCadastros = new ModelAndView("projeto/projetosView");
 	
-	private ProjetoService projetoService;
-	private ProjetoEscalaService escalaService;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
-	private UsuarioService usuarioService;
-	private ReferenciasService referenciasService;
+	private IProjeto projetoService;
+	private IProjetoEscala escalaService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
+	private IUsuario usuarioService;
+	private IReferencias referenciasService;
 	
 	private Usuario usuarioLogado;
 	private Projeto projetoEditado;
 	private List<ProjetoEscala> escalas;
 	private List<ProjetoEscalaPrestador> prestadores;
 	private ProjetoEscala escalaSelecionada;
-	private ProjetoFolgaSemanalService projetoFolgaSemanalService;
+	private IProjetoFolgaSemanal projetoFolgaSemanalService;
 	private List<ProjetoFolgaSemanal> folgasSemanais;
-	private UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService;
+	private IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService;
 	private HttpSession session;
 	
 	@Autowired
 	public ProjetoController(
-			ProjetoService projetoService,
-			ProjetoEscalaService projetoEscalaService,
-			ProjetoEscalaPrestadorService prestadorService,
-			UsuarioService usuarioService,
-			ReferenciasService referenciasService,
-			ProjetoFolgaSemanalService projetoFolgaSemanalService,
-			UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService,
+			IProjeto projetoService,
+			IProjetoEscala projetoEscalaService,
+			IProjetoEscalaPrestador prestadorService,
+			IUsuario usuarioService,
+			IReferencias referenciasService,
+			IProjetoFolgaSemanal projetoFolgaSemanalService,
+			IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService,
 			HttpSession session) {
 		this.projetoService = projetoService;
 		this.escalaService = projetoEscalaService;

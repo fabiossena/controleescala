@@ -13,35 +13,36 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosAcesso;
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosPrincipais;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 import com.packageIxia.sistemaControleEscala.services.UsuarioAcessoService;
-import com.packageIxia.sistemaControleEscala.services.UsuarioDadosAcessoService;
-import com.packageIxia.sistemaControleEscala.services.UsuarioDadosPrincipaisService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoService;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements IUsuario {
 
     private UsuarioDao usuarioDao;
 	private UsuarioAcessoService usuarioAcessoService;
-    private UsuarioDadosAcessoService usuarioDadosAcessoService;
-    private UsuarioDadosPrincipaisService usuarioDadosPrincipaisService;
-	private ProjetoService projetoService;
-	private ProjetoEscalaService projetoEscalaService;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+    private IUsuarioDadosAcesso usuarioDadosAcessoService;
+    private IUsuarioDadosPrincipais usuarioDadosPrincipaisService;
+	private IProjeto projetoService;
+	private IProjetoEscala projetoEscalaService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
 
     @Autowired
     public UsuarioService(
     		UsuarioDao usuarioDao,
     		UsuarioAcessoService usuarioAcessoService,
-    		UsuarioDadosAcessoService usuarioDadosAcessoService,
-    		UsuarioDadosPrincipaisService usuarioDadosPrincipaisService,
-    		ProjetoService projetoService,
-    		ProjetoEscalaService projetoEscalaService,
-    		ProjetoEscalaPrestadorService projetoEscalaPrestadorService) 
+    		IUsuarioDadosAcesso usuarioDadosAcessoService,
+    		IUsuarioDadosPrincipais usuarioDadosPrincipaisService,
+    		IProjeto projetoService,
+    		IProjetoEscala projetoEscalaService,
+    		IProjetoEscalaPrestador projetoEscalaPrestadorService) 
     {
     	this.usuarioDao = usuarioDao;
     	this.usuarioAcessoService = usuarioAcessoService;
@@ -52,6 +53,7 @@ public class UsuarioService {
     	this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
     }
 
+	@Override
 	public String saveUsuario(
 			Usuario usuario, 
 			HttpSession session, 
@@ -101,6 +103,7 @@ public class UsuarioService {
 		}
 	}
 
+	@Override
 	public String validaSeguranca(
 			Usuario usuario, 
 			HttpSession session, boolean isCadastroUsuarioPage) {
@@ -130,28 +133,31 @@ public class UsuarioService {
     	
 	}
 
+	@Override
 	public List<Usuario> findAllByUsuarioLogado(Usuario usuarioLogado) {
     	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
 			return new ArrayList<Usuario>();
     	}
     	
     	List<Usuario> usuarios = Utilities.toList(this.usuarioDao.findAllByExcluido(false));
-    	//System.out.println(usuarios.get(0).getFuncao().getNome());
     	// refresh
     	usuarios.stream().forEach(x -> x.setFuncao(FuncaoEnum.GetFuncaoFromId(x.getFuncaoId())));
     	System.out.println(usuarios.get(0).getFuncao().getNome());
 		return usuarios;
 	}
 
+	@Override
 	public Usuario findByUsuarioId(long usuarioId) {
 		return usuarioDao.findById(usuarioId).orElse(null);
 	}
 
+	@Override
 	public List<Usuario> findByFuncaoId(int id) {
 		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByFuncaoIdAndExcluido(id, false));
 		return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
 	}
 
+	@Override
 	public String delete(long id) {
 		Usuario usuario = this.findByUsuarioId(id);
 		

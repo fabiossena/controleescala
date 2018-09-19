@@ -31,6 +31,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.GeradorCsv;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacaoHoras;
 import com.packageIxia.sistemaControleEscala.models.projeto.FuncaoConfiguracao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
@@ -39,14 +46,7 @@ import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.projetos.FuncaoConfiguracaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.HoraAprovacaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.HoraTrabalhadaService;
 import com.packageIxia.sistemaControleEscala.services.projetos.IntegracaoRoboService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
-import com.packageIxia.sistemaControleEscala.services.referencias.NotificacaoService;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 import com.packageIxia.sistemaControleEscala.services.storage.StorageFileNotFoundException;
 import com.packageIxia.sistemaControleEscala.services.storage.StorageService;
 
@@ -57,35 +57,33 @@ public class HoraTrabalhadaAprovacaoController {
 
 	private ModelAndView horaAprovacaoView = new ModelAndView("projeto/horasAprovacoesView");
 	private ModelAndView horaTrabalhadaView = new ModelAndView("projeto/horasTrabalhadasView");
-	private ProjetoEscalaService projetoEscalaService;
-	private HoraAprovacaoService horaAprovacaoService;
-	private HoraTrabalhadaService horaTrabalhadaService;
+	private IProjetoEscala projetoEscalaService;
+	private IHoraAprovacao horaAprovacaoService;
+	private IHoraTrabalhada horaTrabalhadaService;
 	private HttpSession session;
 	private List<HoraAprovacao> aprovacaoHoras;
 	private List<ProjetoEscala> projetoEscalas;
 	private List<HoraTrabalhada> horasTrabalhadas;
 	private HoraAprovacao aprovacaoHora;
-	private FuncaoConfiguracaoService funcaoConfiguracaoService;
+	private IFuncaoConfiguracao funcaoConfiguracaoService;
 	private StorageService storageService;
-	private ReferenciasService referenciasService;
+	private IReferencias referenciasService;
 	private int banco;
 	private int ano;
 	private int mes;
-	private NotificacaoService notificacaoService;
-	private IntegracaoRoboService integracaoRoboService;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private INotificacao notificacaoService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
     
 	public HoraTrabalhadaAprovacaoController(
-			ProjetoEscalaService projetoEscalaService,
-			HoraAprovacaoService horaAprovacaoService,
-			HoraTrabalhadaService horaTrabalhadaService,
-			FuncaoConfiguracaoService funcaoConfiguracaoService,
-			ReferenciasService referenciasService,
+			IProjetoEscala projetoEscalaService,
+			IHoraAprovacao horaAprovacaoService,
+			IHoraTrabalhada horaTrabalhadaService,
+			IFuncaoConfiguracao funcaoConfiguracaoService,
+			IReferencias referenciasService,
 			HttpSession session,
 			StorageService storageService,
-			NotificacaoService notificacaoService,
-			IntegracaoRoboService integracaoRoboService,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService) {
+			INotificacao notificacaoService,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService) {
 		this.projetoEscalaService = projetoEscalaService;
 		this.horaAprovacaoService = horaAprovacaoService;
 		this.horaTrabalhadaService = horaTrabalhadaService;
@@ -94,7 +92,6 @@ public class HoraTrabalhadaAprovacaoController {
         this.storageService = storageService;
 		this.referenciasService = referenciasService;
 		this.notificacaoService = notificacaoService;
-		this.integracaoRoboService = integracaoRoboService;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 	}
 
@@ -158,15 +155,12 @@ public class HoraTrabalhadaAprovacaoController {
 			redirectAttributes.addFlashAttribute("message", "Operação não permitida para este usuário");
 			return modelAndView;			
 		}
-        
-        //this.horaTrabalhadaService.integraDadosRobo(file);
 
 		IntegracaoRoboService job = new IntegracaoRoboService(
 				this.projetoEscalaPrestadorService, 
 				this.horaTrabalhadaService, 
 				this.horaAprovacaoService,
-				this.notificacaoService,
-				this.storageService);
+				this.notificacaoService);
 
 		
         String fileName = "integracao_robo_usuario" + usuarioLogado.getId() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss"));

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
@@ -18,10 +20,10 @@ import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class ProjetoEscalaService {
+public class ProjetoEscalaService implements IProjetoEscala {
 
 	private ProjetoEscalaDao projetoEscalaDao;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
 	private HttpSession session;
 	private ProjetoDao projetoDao;
 
@@ -29,7 +31,7 @@ public class ProjetoEscalaService {
 	public ProjetoEscalaService(
 			ProjetoDao projetoDao,
 			ProjetoEscalaDao projetoEscalaDao,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
 			HttpSession session) {
 		this.projetoEscalaDao = projetoEscalaDao;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
@@ -37,14 +39,17 @@ public class ProjetoEscalaService {
 		this.projetoDao = projetoDao;
 	}
 	
+	@Override
 	public List<ProjetoEscala> findAllByProjetoId(long projetoId) {
 		return Utilities.toList(projetoEscalaDao.findAllByProjetoIdAndExcluido(projetoId, false));
 	}
 	
+	@Override
 	public ProjetoEscala findById(long id) {
 		return projetoEscalaDao.findById(id).orElse(null);
 	}
 	
+	@Override
 	public String saveEscala(ProjetoEscala escala) {
 
 		if (!Utilities.validarHora(escala.getHoraInicio())) {
@@ -108,10 +113,12 @@ public class ProjetoEscalaService {
 		return "";
 	}
 
+	@Override
 	public boolean existsByProjetoId(long projetoId) {
 		return this.projetoEscalaDao.existsByProjetoId(projetoId);
 	}
 
+	@Override
 	public String delete(long escalaId) {
 		if (this.projetoEscalaPrestadorService.existsByProjetoEscalaId(escalaId)) {
 			ProjetoEscala escala = this.findById(escalaId);
@@ -124,18 +131,22 @@ public class ProjetoEscalaService {
 		return "";
 	}
 
+	@Override
 	public boolean existsByMonitorId(long monitorId) {
 		return this.projetoEscalaDao.existsByMonitorId(monitorId);
 	}
 
+	@Override
 	public List<ProjetoEscala> findAllByMonitorId(long monitorId) {
 		return this.projetoEscalaDao.findAllByMonitorId(monitorId);
 	}
 
+	@Override
 	public List<ProjetoEscala> findAllByPrestadorId(long id) {
 		return this.findAllByPrestadorId(id, true);
 	}
 	
+	@Override
 	public List<ProjetoEscala> findAllByPrestadorId(long id, boolean somenteTipoApontamentoSistema) {
 		List<ProjetoEscala> escalas =  this.projetoEscalaPrestadorService.findAllByPrestadorId(id)
 				.stream().filter(x-> !somenteTipoApontamentoSistema || x.getProjeto().getTipoApontamentoHorasId() == 1)
@@ -143,6 +154,7 @@ public class ProjetoEscalaService {
 		return escalas;
 	}
 	
+	@Override
 	public List<ProjetoEscala> findAllByPrestadorIdExceptPrestadorEscalaId(long usuarioId, long prestadorEscalaId) {
 		List<ProjetoEscalaPrestador> projetosEscalas = this.projetoEscalaPrestadorService.findAllByPrestadorId(usuarioId);
 		return projetosEscalas
@@ -150,10 +162,12 @@ public class ProjetoEscalaService {
 				.map(x->x.getProjetoEscala()).distinct().collect(Collectors.toList());
 	}
 
+	@Override
 	public List<ProjetoEscala> findAllByPermissao() {
 		return findAllByPermissao(false);
 	}
 	
+	@Override
 	public List<ProjetoEscala> findAllByPermissao(boolean somenteTipoApontamentoSistema) {
 		List<Projeto> projetos = Utilities.toList(this.projetoDao.findAll());
 		

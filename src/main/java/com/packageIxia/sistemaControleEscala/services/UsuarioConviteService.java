@@ -4,11 +4,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.UsuarioEmailPrimeiroAcessoDao;
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioConvite;
 import com.packageIxia.sistemaControleEscala.models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 
@@ -17,19 +19,22 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
-public class UsuarioConviteService {
+public class UsuarioConviteService implements IUsuarioConvite {
 	
 	private UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao;
 	private UsuarioDao usuarioDao;
 	private HttpServletRequest request;
+	private Environment environment;
 
 	public UsuarioConviteService(
 			HttpServletRequest request, 
 			UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao,
-			UsuarioDao usuarioDao) {
+			UsuarioDao usuarioDao,
+    		Environment environment) {
 		this.usuarioEmailPrimeiroAcessoDao = usuarioEmailPrimeiroAcessoDao;
 		this.usuarioDao = usuarioDao;
 		this.request = request;
+		this.environment = environment;
 	}
 
 	public List<UsuarioEmailPrimeiroAcesso> findAll() {
@@ -83,8 +88,17 @@ public class UsuarioConviteService {
 		
 		this.usuarioEmailPrimeiroAcessoDao.save(usuarioConvite);
 
+		String url = request.getRequestURL().toString().replace("convite", "");
+		String mensagem = "Olá, acabamos de te enviar um convite de acesso ao sistema de escala Ixia."
+				+ "<br>"
+        		+ " Faça seu cadastro clicando aqui <a href='" + url + "cadastroinicial?matricula=" + usuarioConvite.getMatricula() + "&email=" + usuarioConvite.getEmail() + "'>" + url + "cadastroinicial</a> usando a matricula " + usuarioConvite.getMatricula() + " e o seu e-mail (" + usuarioConvite.getEmail() + ")."
+        		+ "<br>"
+        		+ "Após o login poderá ser feito neste endereço <a href='" + url + "login'>" + url + "login</a>"
+        		+ "<br><br>"
+        		+ "Atenciosamente administração";
+		
 		try {
-			new EnvioEmail(usuarioConvite.getEmail(), usuarioConvite.getMatricula(), request.getRequestURL().toString().replace("convite", "")).start();
+			new EnvioEmail(this.environment, usuarioConvite.getEmail(), "Convite Ixia", mensagem).start();
 		} catch (Exception e) {
 			System.out.println("erro envio e-mail");
 			System.out.println(e.toString());

@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.referencias.NotificacaoService;
 
 @Controller
 public class NotificacaoController {
 
-	private NotificacaoService notificacaoService;
+	private INotificacao notificacaoService;
 	private HttpSession session;
 
 	public NotificacaoController(
-			NotificacaoService notificacaoService,
+			INotificacao notificacaoService,
 			HttpSession session) {
 		this.notificacaoService = notificacaoService;
 		this.session = session;

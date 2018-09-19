@@ -57,7 +57,7 @@
 			</div>
 		</div>
 
-		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+		<%-- <div class="form-group col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
 			<label for="integracaoRoboId" class="control-label">Id
 				integração robô</label>
 			<form:input path="integracaoRoboId" class='form-control'
@@ -66,9 +66,9 @@
 			<div class="invalid-feedback">
 				<form:errors path="integracaoRoboId" />
 			</div>
-		</div>
+		</div> --%>
 
-		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
 			<label for="gerenteId" class="control-label">Gerente *</label>
 			<form:select path="gerente.Id" items="${gerentes}"
 				itemLabel="nomeCompletoMatricula" itemValue="id" id="select-gerente"

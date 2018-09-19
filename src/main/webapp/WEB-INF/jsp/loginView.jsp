@@ -30,7 +30,7 @@
             
                 <div class="panel-heading">
                     <h3 class="panel-title" style="font-weight: bold;">Efetuar login</h3>
-                    <div style="float:right; font-size: 80%; position: relative"><a href="#">Esqueceu a senha? Clique aqui!</a></div>
+                    <div style="float:right; font-size: 80%; position: relative"><a href="<c:url value='/esqueceuSenha' />">Esqueceu a senha? Clique aqui!</a></div>
                 </div>
                 
                 <div style="padding-top:30px" class="panel-body" >
@@ -40,7 +40,7 @@
                         
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <form:input path="matricula" class='form-control ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="Matricula Ixia" maxlength="50" />
+                            <form:input path="matricula" class='form-control ${result.hasFieldErrors("matricula") ? "is-invalid" : ""}' placeholder="Matrícula Ixia" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='matricula' />
                             </div>

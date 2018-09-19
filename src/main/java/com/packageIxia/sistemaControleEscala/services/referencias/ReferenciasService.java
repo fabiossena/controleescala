@@ -9,6 +9,7 @@ import com.packageIxia.sistemaControleEscala.daos.referencias.EstadoDao;
 import com.packageIxia.sistemaControleEscala.daos.referencias.MotivoAusenciaDao;
 import com.packageIxia.sistemaControleEscala.daos.referencias.PaisDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.Cidade;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class ReferenciasService {
+public class ReferenciasService implements IReferencias {
 
     private BancoDao bancoDao;
 	private CidadeDao cidadeDao;
@@ -56,6 +57,7 @@ public class ReferenciasService {
     	this.session = session;   	
     }
     
+	@Override
 	public List<Banco> getBancos() {
     	
     	List<Banco> list = null;
@@ -74,15 +76,18 @@ public class ReferenciasService {
     	return list;
     }
 	
-    public List<Funcao> getFuncoes() {
+    @Override
+	public List<Funcao> getFuncoes() {
     	return Arrays.stream(FuncaoEnum.values()).map(FuncaoEnum::getFuncao).collect(Collectors.toList());
     }
     
-    public List<Funcao> getFuncoes(int tipo) {
+    @Override
+	public List<Funcao> getFuncoes(int tipo) {
     	return Arrays.stream(FuncaoEnum.values()).map(FuncaoEnum::getFuncao).filter(x->x.getTipo() == tipo).collect(Collectors.toList());
     }
     
-    public List<Pais> getPaises() {
+    @Override
+	public List<Pais> getPaises() {
     	
     	List<Pais> list = null;
     	
@@ -101,7 +106,8 @@ public class ReferenciasService {
     	return list;
     }
     
-    public List<Estado> getEstado(int idPais) {
+    @Override
+	public List<Estado> getEstado(int idPais) {
     	
     	List<Estado> list = getEstados();
     	if (list == null || list.isEmpty()) {	  
@@ -111,7 +117,8 @@ public class ReferenciasService {
     	return list.stream().filter(p-> p.getId() == idPais).collect(Collectors.toList());
     }
     
-    public List<Estado> getEstados() {
+    @Override
+	public List<Estado> getEstados() {
     	
     	List<Estado> list = null;
     	
@@ -131,7 +138,8 @@ public class ReferenciasService {
     	return list;
     }
     
-    public List<Cidade> getCidade(int idEstado) {
+    @Override
+	public List<Cidade> getCidade(int idEstado) {
     	
     	List<Cidade> list = getCidades();
     	if (list == null || list.isEmpty()) {	  
@@ -141,7 +149,8 @@ public class ReferenciasService {
     	return list.stream().filter(p-> p.getId() == idEstado).collect(Collectors.toList());
     }
     
-    public List<Cidade> getCidades() {
+    @Override
+	public List<Cidade> getCidades() {
     	
     	List<Cidade> list = null;    	
     	Object object = session.getAttribute("cidades");
@@ -161,6 +170,7 @@ public class ReferenciasService {
     	return list;
     }
 
+	@Override
 	public List<DadoGenerico> getPeriodos() {
 		List<DadoGenerico> list = new ArrayList<DadoGenerico>();
 		list.add(new DadoGenerico(1, "Manhã"));
@@ -168,15 +178,18 @@ public class ReferenciasService {
 		return list;
 	}
 
+	@Override
 	public List<DiaSemana> getDiasSemana() {
     	return Arrays.stream(DiaSemanaEnum.values()).map(DiaSemanaEnum::getDiaSemana).collect(Collectors.toList());
 	}
     
-    public List<MotivoAusencia> getMotivosAusencia(int tipo) {
+    @Override
+	public List<MotivoAusencia> getMotivosAusencia(int tipo) {
     	return Utilities.toList(this.motivoAusenciaDao.findAllByTipo(tipo));
     }
     
-    public List<MotivoAusencia> getMotivosAusencia() {    	
+    @Override
+	public List<MotivoAusencia> getMotivosAusencia() {    	
     	List<MotivoAusencia> list = null;
     	
     	Object object = session.getAttribute("motivoAusencia");
@@ -195,10 +208,12 @@ public class ReferenciasService {
     	return list;
     }
 
+	@Override
 	public List<TipoApontamentoHoras> getTipoApontamentoHoras() {
     	return Arrays.stream(TipoApontamentoHorasEnum.values()).map(TipoApontamentoHorasEnum::getTipoApontamentoHoras).collect(Collectors.toList());
 	}
 
+	@Override
 	public List<DadoGenerico> getPrioridades() {
 		List<DadoGenerico> list = new ArrayList<DadoGenerico>();
 		list.add(new DadoGenerico(1, "Média alta"));

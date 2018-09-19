@@ -6,16 +6,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaReposicaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoSolicitacaoAusencia;
@@ -23,25 +25,28 @@ import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class AusenciaSolicitacaoService {
+public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 
 	private AusenciaSolicitacaoDao ausenciaSolicitacaoDao;
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
 	private HttpSession session;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
-	private ProjetoService projetoService;
-	private ProjetoEscalaService projetoEscalaService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
+	private IProjeto projetoService;
+	private IProjetoEscala projetoEscalaService;
+	private INotificacao notificacaoService;
 	
 	@Autowired
 	public AusenciaSolicitacaoService(
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			ProjetoEscalaService projetoEscalaService,
-			ProjetoService projetoService,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IProjetoEscala projetoEscalaService,
+			IProjeto projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
+			INotificacao notificacaoService,
 			HttpSession session) {
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
@@ -49,12 +54,15 @@ public class AusenciaSolicitacaoService {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.projetoEscalaService = projetoEscalaService;
 		this.projetoService = projetoService;
+		this.notificacaoService = notificacaoService;
 	}
 	
+	@Override
 	public List<AusenciaSolicitacao> findAll() {
 		return this.findAll(false);
 	}
 	
+	@Override
 	public List<AusenciaSolicitacao> findAll(boolean isSomenteComAcesso) {
 
 		List<AusenciaSolicitacao> ausencias = new ArrayList<AusenciaSolicitacao>();
@@ -133,6 +141,7 @@ public class AusenciaSolicitacaoService {
 				.thenComparing(Comparator.comparing(AusenciaSolicitacao::getDataCriacao).reversed())).collect(Collectors.toList());
 	}
 	
+	@Override
 	@Transactional
 	public String save(AusenciaSolicitacao solicitacao) {
 
@@ -144,6 +153,10 @@ public class AusenciaSolicitacaoService {
     	Usuario usuario = usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.getFuncao().getId() ? solicitacao.getUsuario() : usuarioLogado;
 		if (usuario == null || usuario.getId() == 0) {
 	    	return "Preencha o campo prestador";
+	    }
+		
+		if (solicitacao.getProjetoEscala() == null || solicitacao.getProjetoEscala().getId() == 0) {
+	    	return "Preencha o campo escala";
 	    }
 		
     	ProjetoEscalaPrestador projetoEscalaPrestador = projetoEscalaPrestadorService.findByProjetoEscalaIdAndPrestadorIdAndExcluido(
@@ -453,15 +466,18 @@ public class AusenciaSolicitacaoService {
 		return "";
 	}
 
+	@Override
 	public String delete(long ausenciaSolicitacaoId) {
 		this.ausenciaSolicitacaoDao.deleteById(ausenciaSolicitacaoId);
 		return "";
 	}
 
+	@Override
 	public AusenciaSolicitacao findById(long id) {
 		return this.ausenciaSolicitacaoDao.findById(id).orElse(null);
 	}
 
+	@Override
 	public String aceita(
 			long id,
 			boolean aceita, 
@@ -550,6 +566,7 @@ public class AusenciaSolicitacaoService {
 		
 		if (!aceita) {
 			item.setAtivo(2);
+			this.notificacaoService.save(new Notificacao(3, "Sua solicitação de ausência foi ''recusada''! Por favor verifique e caso necessário realize os ajustes.", "Solicitação de ausência", item.getUsuario()));
 		}
 		else {
 			item.setAtivo(1);
@@ -578,12 +595,14 @@ public class AusenciaSolicitacaoService {
 		
 		if (todosAceitos) {
 			item.setAtivo(3); // finalizado
+			this.notificacaoService.save(new Notificacao(1, "Sua solicitação de ausência foi aceita!", "Solicitação de ausência", item.getUsuario()));
 		}
 		
 		this.ausenciaSolicitacaoDao.save(item);
 		return "";
 	}
 
+	@Override
 	public List<AusenciaSolicitacao> findAllByProjetoId(int year, int mount, long projetoId, int aceito) {
 		List<Long> ids = this.projetoEscalaService.findAllByProjetoId(projetoId).stream().map(x->x.getId()).collect(Collectors.toList());
 		List<AusenciaSolicitacao> solicitacaoAusencias = new ArrayList<AusenciaSolicitacao>();
@@ -594,6 +613,7 @@ public class AusenciaSolicitacaoService {
 		return solicitacaoAusencias;		
 	}
 
+	@Override
 	public List<AusenciaSolicitacao> findAllByProjetoEscalaId(int year, int mount, long projetoEscalaId, int aceito) { 
 		// todo: usar query sql
 		List<AusenciaSolicitacao> solicitacaoAusencias = Utilities.toList(ausenciaSolicitacaoDao.findAllByProjetoEscalaId(projetoEscalaId));
@@ -603,6 +623,7 @@ public class AusenciaSolicitacaoService {
 			x.getDataInicio().getMonthValue() == mount).collect(Collectors.toList());		
 	}
 
+	@Override
 	public boolean existsByUsuarioId(long prestadorId) {
 		return this.ausenciaSolicitacaoDao.existsByUsuarioId(prestadorId);
 	}

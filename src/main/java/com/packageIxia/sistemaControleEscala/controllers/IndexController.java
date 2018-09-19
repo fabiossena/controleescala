@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacaoHoras;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaSolicitacaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.FuncaoConfiguracaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.HoraTrabalhadaService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
 
 @Controller
 public class IndexController {
 
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
-	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
-	private ProjetoEscalaService projetoEscalaService;
-	private HoraTrabalhadaService horaTrabalhadaService;	
-	private FuncaoConfiguracaoService funcaoConfiguracaoService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
+	private IAusenciaSolicitacao ausenciaSolicitacaoService;
+	private IProjetoEscala projetoEscalaService;
+	private IHoraTrabalhada horaTrabalhadaService;	
+	private IFuncaoConfiguracao funcaoConfiguracaoService;
 
 	public IndexController(
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			AusenciaSolicitacaoService ausenciaSolicitacaoService,
-			HoraTrabalhadaService horaTrabalhadaService,
-			ProjetoEscalaService projetoEscalaService,
-			FuncaoConfiguracaoService funcaoConfiguracaoService) {
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IAusenciaSolicitacao ausenciaSolicitacaoService,
+			IHoraTrabalhada horaTrabalhadaService,
+			IProjetoEscala projetoEscalaService,
+			IFuncaoConfiguracao funcaoConfiguracaoService) {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.projetoEscalaService = projetoEscalaService;

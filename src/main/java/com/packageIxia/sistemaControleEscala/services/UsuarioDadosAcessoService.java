@@ -2,10 +2,11 @@ package com.packageIxia.sistemaControleEscala.services;
 
 import org.springframework.stereotype.Service;
 
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosAcesso;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class UsuarioDadosAcessoService {
+public class UsuarioDadosAcessoService implements IUsuarioDadosAcesso {
 
 	public String validateUsuario(Usuario usuario) {
 

@@ -2,6 +2,7 @@ package com.packageIxia.sistemaControleEscala.services.projetos;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,42 +13,53 @@ import org.springframework.stereotype.Service;
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraAprovacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraTrabalhadaDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacaoHoras;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class HoraAprovacaoService {
+public class HoraAprovacaoService implements IHoraAprovacao {
 	
 	private HoraAprovacaoDao horaAprovacaoDao;
 	private HttpSession session;
-	private ProjetoService projetoService;
+	private IProjeto projetoService;
 	private HoraTrabalhadaDao horaTrabalhadaDao;
-	private FuncaoConfiguracaoService funcaoConfiguracaoService;
+	private IFuncaoConfiguracao funcaoConfiguracaoService;
+	private INotificacao notificacaoService;
 
 	@Autowired
 	public HoraAprovacaoService(
 			HoraAprovacaoDao horaAprovacaoDao,
 			HoraTrabalhadaDao horaTrabalhadaDao,
-			ProjetoService projetoService,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			FuncaoConfiguracaoService funcaoConfiguracaoService,
+			IProjeto projetoService,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IFuncaoConfiguracao funcaoConfiguracaoService,
+			INotificacao notificacaoService,
 			HttpSession session) {
 		this.horaAprovacaoDao = horaAprovacaoDao;
 		this.horaTrabalhadaDao = horaTrabalhadaDao;
 		this.projetoService = projetoService;
 		this.funcaoConfiguracaoService = funcaoConfiguracaoService;
 		this.session = session;
+		this.notificacaoService = notificacaoService;
 	}
 
 	
+	@Override
 	public List<HoraAprovacao> findAll() throws Exception {
 		return this.findAll(0, 0);
 	}
 	
+	@Override
 	public List<HoraAprovacao> findAll(int ano, int mes) throws Exception {
 		
 		if (mes == 0 || ano == 0) {
@@ -84,6 +96,7 @@ public class HoraAprovacaoService {
 		return all;		
 	}
 	
+	@Override
 	public HoraAprovacao findByDateAndPrestadorId(long prestadorId, int ano, int mes) throws Exception {
 		if (mes == 0 || ano == 0) {
 			throw new Exception("Escolha uma data");
@@ -102,6 +115,7 @@ public class HoraAprovacaoService {
 				
 	}
 	
+	@Override
 	public HoraAprovacao findLastByPrestadorIdOrInsert(long prestadorId, int ano, int mes) throws Exception {
 		
 		if (mes == 0 || ano == 0 || prestadorId == 0) {
@@ -136,6 +150,7 @@ public class HoraAprovacaoService {
 		return horaAprovacao;
 	}
 	
+	@Override
 	public HoraAprovacao findById(Long id) {
 		HoraAprovacao horaAprovacao = this.horaAprovacaoDao.findById(id).orElse(null);
 		this.setProjetos(horaAprovacao);
@@ -162,20 +177,24 @@ public class HoraAprovacaoService {
 		}
 	}	
 	
+	@Override
 	public String save(HoraAprovacao horaAprovacao) {
 		this.horaAprovacaoDao.save(horaAprovacao);
 		this.setProjetos(horaAprovacao);
 		return "";
 	}
 
+	@Override
 	public String delete(long id) {
 		return "";
 	}
 
+	@Override
 	public void updateAprovacaoReset(long id, double horas, double valor) {
 		this.horaAprovacaoDao.updateAprovacaoReset(id,  "Alterações", horas, valor);		
 	}
 	
+	@Override
 	public void updateAprovacao(boolean aprovar, long id, String motivo, HoraAprovacao aprovacaoHora) throws Exception {
 		
 		aprovacaoHora = aprovacaoHora != null ? aprovacaoHora : this.horaAprovacaoDao.findById(id).get();
@@ -192,10 +211,21 @@ public class HoraAprovacaoService {
 			this.horaAprovacaoDao.updateAprovacaoResponsavel(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
 			if (!aprovar) {
 				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
+				Collection<Long> enviadoMonitor = new ArrayList<Long>();
 				for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {	
 					this.horaTrabalhadaDao.updateAprova(hora.getId(), hora.getResponsavelAprovacao().getId(), 0, "");
+					if (!enviadoMonitor .stream().anyMatch(x->x == hora.getResponsavelAprovacao().getId())) {
+						this.notificacaoService.save(new Notificacao(3, "As horas trabalhadas do prestador ''" + aprovacaoHora.getPrestador().getNomeCompleto()  + "'' foram recusadas pelo financeiro, para que sejam efetuados os ajustes necessários (após retornando para sua aprovação)!", "Aprovação de horas", aprovacaoHora.getPrestador()));
+						enviadoMonitor.add(hora.getResponsavelAprovacao().getId());
+					}
 				}
+				
+				this.notificacaoService.save(new Notificacao(3, "Suas horas trabalhadas foram ''recusadas'', por favor verifique e realize os ajustes necessários!", "Aprovação de horas", aprovacaoHora.getPrestador()));
 			}
+			else {
+				this.notificacaoService.save(new Notificacao(1, "Suas horas trabalhadas foram aprovadas!", "Aprovação de horas", aprovacaoHora.getPrestador()));				
+			}
+			
 			return;
 		}
 			
@@ -215,6 +245,7 @@ public class HoraAprovacaoService {
 			
 			if (!aprovar) {
 				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
+				this.notificacaoService.save(new Notificacao(3, "Suas horas trabalhadas foram ''recusadas'', por favor verifique e realize os ajustes necessários!", "Aprovação de horas", aprovacaoHora.getPrestador()));
 			}
 			
 			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas().stream().filter(x->x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()).collect(Collectors.toList())) {	
@@ -223,10 +254,12 @@ public class HoraAprovacaoService {
 		}
 	}
 
+	@Override
 	public void uploadNota(long id, String arquivoNota) {
 		this.horaAprovacaoDao.updateNota(id, arquivoNota);
 	}
 
+	@Override
 	public void updateCsvGerado(List<Long> itens) {		
 		this.horaAprovacaoDao.updateCsvGerado(itens);		
 	}

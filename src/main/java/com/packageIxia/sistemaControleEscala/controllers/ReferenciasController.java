@@ -9,15 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.referencias.Cidade;
 import com.packageIxia.sistemaControleEscala.models.referencias.Estado;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 
 @Controller
 public class ReferenciasController {
 
 	@Autowired
-	public ReferenciasService referenciasRepository;
+	public IReferencias referenciasRepository;
 	
 	@RequestMapping(value = "/referencias/estados", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

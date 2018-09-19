@@ -11,48 +11,43 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.referencias.NotificacaoService;
-import com.packageIxia.sistemaControleEscala.services.storage.StorageService;
 
 @Service
 public class IntegracaoRoboService extends Thread  {
 
-    private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
-	private HoraTrabalhadaService horaTrabalhadaService;
-	private HoraAprovacaoService horaAprovacaoService;
-	private NotificacaoService notificacaoService;
-	private MultipartFile file;
+    private IProjetoEscalaPrestador projetoEscalaPrestadorService;
+	private IHoraTrabalhada horaTrabalhadaService;
+	private IHoraAprovacao horaAprovacaoService;
+	private INotificacao notificacaoService;
 	private Usuario usuario;
-	private StorageService storageService;
 	private String nomeCompleto;
     
 	@Autowired
     public IntegracaoRoboService(
-    		ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			HoraTrabalhadaService horaTrabalhadaService, 
-			HoraAprovacaoService horaAprovacaoService,
-			NotificacaoService notificacaoService,
-			StorageService storageService) {
+    		IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IHoraTrabalhada horaTrabalhadaService, 
+			IHoraAprovacao horaAprovacaoService,
+			INotificacao notificacaoService) {
     	this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.horaTrabalhadaService = horaTrabalhadaService;
 		this.horaAprovacaoService = horaAprovacaoService;
 		this.notificacaoService = notificacaoService;
-		this.storageService = storageService;
 	}
     
 	@Override
@@ -277,7 +272,7 @@ public class IntegracaoRoboService extends Thread  {
 				}
 			}
 
-		/*	if (horasTrabalhadas.stream().anyMatch(x->x.getAprovadoResponsavel() != 0 || x.getHoraAprovacao().getAceitePrestador() != 0 || x.getHoraAprovacao().getAceiteAprovador() != 0)) {
+			/*if (horasTrabalhadas.stream().anyMatch(x->x.getAprovadoResponsavel() != 0 || x.getHoraAprovacao().getAceitePrestador() != 0 || x.getHoraAprovacao().getAceiteAprovador() != 0)) {
 				
 			}*/
 
@@ -308,10 +303,6 @@ public class IntegracaoRoboService extends Thread  {
 		}
         
         return mensagens;
-	}
-
-	public void setFile(MultipartFile file) {
-		this.file = file;		
 	}
 
 	public void setUsuario(Usuario usuario) {

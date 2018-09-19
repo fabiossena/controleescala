@@ -11,64 +11,73 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.core.env.Environment;
+
 public class EnvioEmail extends Thread  {
 	
-    private String email;
-	private String matricula;
-	private String url;
+    private String emailEnvio;
+	private String mensagem;
+	private String assunto;
+	private Environment environment;
     
-    public EnvioEmail(String email, String matricula, String url) {
-	    this.email = email;
-	    this.matricula = matricula;
-	    this.url = url;
+    public EnvioEmail(
+    		Environment environment,
+    		String emailEnvio, 
+    		String assunto, 
+    		String mensagem) {
+    	this.environment = environment;
+	    this.emailEnvio = emailEnvio;
+	    this.assunto = assunto;
+	    this.mensagem = mensagem;
     }
     
     @Override
     public void run() {
+    	
+    	String email = this.environment.getProperty("ixia.sistema.escala.email");
+    	String senha = this.environment.getProperty("ixia.sistema.escala.senha");
+    	String smtp = this.environment.getProperty("ixia.sistema.escala.smtp");
+    	String port = this.environment.getProperty("ixia.sistema.escala.port");
+    	String socket = this.environment.getProperty("ixia.sistema.escala.socket");
+    	String auth = this.environment.getProperty("ixia.sistema.escala.auth");
+
     	Properties props = new Properties();
-          props.put("mail.smtp.host", "smtp.gmail.com");
-          props.put("mail.smtp.socketFactory.port", "465");
-          props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-          props.put("mail.smtp.auth", "true");
-          props.put("mail.smtp.port", "465");
-
-          Session session = Session.getDefaultInstance(props,
-                      new javax.mail.Authenticator() {
-                           protected PasswordAuthentication getPasswordAuthentication() 
-                           {
-                                 return new PasswordAuthentication("fss.naoresponda@gmail.com", "1234.abcd");
-                           }
-                      });
-
-          session.setDebug(true);
-
-          try {
-
-                Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress("fss.naoresponda@gmail.com")); //Remetente
-
-                Address[] toUser = InternetAddress //Destinatário(s)
-                           .parse(email);  
-
-                message.setRecipients(Message.RecipientType.TO, toUser);
-                //message.setHeader("Content-Type", "text/html");
-                message.setSubject("Convite Ixia");//Assunto
-                message.setContent("Olá, acabamos de te enviar um convite de acesso ao sistema de escala Ixia."
-        				+ "<br>"
-                		+ " Faça seu cadastro no site <a href='" + this.url + "cadastroinicial'>" + this.url + "cadastroinicial</a> usando a matricula " + this.matricula + " e o seu e-mail (" + email + ")."
-                		+ "<br>"
-                		+ "Após efetue o login neste link <a href='" + this.url + "login'>" + this.url + "login</a>"
-                		+ "<br><br>"
-                		+ "Atenciosamente administração", "text/html");
-                
-                /**Método para enviar a mensagem criada*/
-                Transport.send(message);
-
-                System.out.println("Enviado");
-
-           } catch (MessagingException e) {
-                throw new RuntimeException(e);
-          }
-    }
-
+		  props.put("mail.smtp.host", smtp);
+		  props.put("mail.smtp.socketFactory.port", port);
+		  props.put("mail.smtp.socketFactory.class", socket);
+		  props.put("mail.smtp.auth", auth);
+		  props.put("mail.smtp.port", port);
+		
+		  Session session = Session.getDefaultInstance(props,
+		              new javax.mail.Authenticator() {
+		                   protected PasswordAuthentication getPasswordAuthentication() 
+		                   {
+		                         return new PasswordAuthentication(
+		                        		 email,
+		                        		 senha);
+		                   }
+		              });
+		
+		  session.setDebug(true);
+		
+		  try {
+		
+		        Message message = new MimeMessage(session);
+		        message.setFrom(new InternetAddress(this.emailEnvio));
+		
+		        Address[] toUser = InternetAddress 
+		                   .parse(this.emailEnvio);  
+		
+		        message.setRecipients(Message.RecipientType.TO, toUser);
+		        message.setSubject(this.assunto);
+		        message.setContent(this.mensagem, "text/html");
+		
+		Transport.send(message);
+		
+		System.out.println("Enviado");
+		
+		       } catch (MessagingException e) {
+		            throw new RuntimeException(e);
+		      }
+		}
 }

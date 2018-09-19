@@ -13,14 +13,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
 import com.packageIxia.sistemaControleEscala.services.UsuarioAcessoService;
 
 @Controller
-@RequestMapping(value = "/login")
 public class LoginController {
 
 	@Autowired
@@ -28,14 +27,17 @@ public class LoginController {
 	
 	ModelAndView mv = new ModelAndView("loginView");
 	
-    @GetMapping
-	public ModelAndView login()  {
+    @GetMapping(value = "/login")
+	public ModelAndView login(
+			@RequestParam(value="matricula", defaultValue="") String matricula)  {
 		System.out.println("login inicializado");
-		mv.addObject("login", new LoginPage()); 
+		LoginPage login = new LoginPage();
+		login.setMatricula(matricula);
+		mv.addObject("login", login); 
 		return mv;
 	}
 
-    @PostMapping
+    @PostMapping(value = "/login")
     public ModelAndView submit(
     		@Valid @ModelAttribute("login")LoginPage login,
     		BindingResult result,

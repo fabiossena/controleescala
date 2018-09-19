@@ -28,6 +28,7 @@ public class AuthorizatorInterceptor extends HandlerInterceptorAdapter {
 		
         if(uri.endsWith("login") ||
            uri.endsWith("cadastroinicial") ||
+           uri.endsWith("esqueceuSenha") ||
            uri.endsWith("error")) {
         	
         	// grava se é ou não a pagina de login

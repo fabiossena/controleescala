@@ -10,26 +10,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoFolgaSemanalDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoFolgaSemanal;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemana;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 
 @Service
-public class ProjetoFolgaSemanalService {
+public class ProjetoFolgaSemanalService implements IProjetoFolgaSemanal {
 
 	private ProjetoFolgaSemanalDao projetoFolgaSemanalDao;
-	private ReferenciasService referenciasService;
+	private IReferencias referenciasService;
 
 	@Autowired
 	public ProjetoFolgaSemanalService(
 			ProjetoFolgaSemanalDao projetoFolgaSemanalDao,
-    		ReferenciasService referenciasService) {
+    		IReferencias referenciasService) {
 		this.projetoFolgaSemanalDao = projetoFolgaSemanalDao;
 		this.referenciasService = referenciasService;
 	}
 	
+	@Override
 	public List<ProjetoFolgaSemanal> findAllByProjetoEscalaPrestadorId(long projetoEscalaPrestadorId) {
 		if (projetoEscalaPrestadorId == 0) {
 			return new ArrayList<ProjetoFolgaSemanal>();
@@ -45,6 +47,7 @@ public class ProjetoFolgaSemanalService {
 		return list;
 	}
 
+	@Override
 	public String validaFolgasSemanais(List<ProjetoFolgaSemanal> folgasSemanais, ProjetoEscala escalaPrestador, List<ProjetoEscala> escalas) {
 
 		for (ProjetoFolgaSemanal item : folgasSemanais) {		
@@ -94,6 +97,7 @@ public class ProjetoFolgaSemanalService {
 		return "";
 	}
 	
+	@Override
 	public void saveFolgasSemanais(List<ProjetoFolgaSemanal> folgasSemanais, Long projetoEscalaPrestadorId) {		
 
 		folgasSemanais = folgasSemanais != null ? folgasSemanais : new ArrayList<ProjetoFolgaSemanal>();
@@ -116,12 +120,14 @@ public class ProjetoFolgaSemanalService {
 		this.projetoFolgaSemanalDao.saveAll(folgasSemanais);
 	}
 
+	@Override
 	public String delete(long id) {
 		
 		this.projetoFolgaSemanalDao.deleteById(id);
 		return "";
 	}
 
+	@Override
 	public long preSaveFolgaSemanal(List<ProjetoFolgaSemanal> folgasSemanais,
 			ProjetoFolgaSemanal folgaSemanal) {
 		folgasSemanais = folgasSemanais != null ? folgasSemanais : new ArrayList<ProjetoFolgaSemanal>();
@@ -147,6 +153,7 @@ public class ProjetoFolgaSemanalService {
 		return id;
 	}
 
+	@Override
 	public int preDeleteFolgaSemanal(
 			List<ProjetoFolgaSemanal> folgasSemanais,
 			int id) {
@@ -164,6 +171,7 @@ public class ProjetoFolgaSemanalService {
 		return id;
 	}
 
+	@Override
 	public String findEscalaFolgaSemanal(long id) {		
 		
 		String folgaSemanalSugerida = "";		
@@ -179,6 +187,7 @@ public class ProjetoFolgaSemanalService {
 		return folgaSemanalSugerida;
 	}
 	
+	@Override
 	@Transactional
 	public String deleteByProjetoEscalaPrestadorId(long id) {
 		this.projetoFolgaSemanalDao.deleteByProjetoEscalaPrestadorId(id);

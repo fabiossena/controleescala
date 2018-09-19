@@ -25,6 +25,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoSolicitacaoAusencia;
@@ -32,41 +37,36 @@ import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaReposicaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaSolicitacaoService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaService;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 
 @Controller
 public class AusenciaController {
 	
-	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
+	private IAusenciaSolicitacao ausenciaSolicitacaoService;
 
 	private ModelAndView modelViewSolicitacoes = new ModelAndView("projeto/ausencias");
 	private ModelAndView modelViewSolicitacao = new ModelAndView("projeto/ausencia");
 
 	private AusenciaSolicitacao solicitacaoEditada;
 
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
 
-	private ReferenciasService referenciasService;
+	private IReferencias referenciasService;
 
 	private HttpSession session;
 
-	private ProjetoEscalaService projetoEscalaService;
+	private IProjetoEscala projetoEscalaService;
 
-	private AusenciaReposicaoService ausenciaReposicaoService;
+	private IAusenciaReposicao ausenciaReposicaoService;
 
 	private Usuario usuarioLogado;	
 	
 	@Autowired
 	public AusenciaController(
-		AusenciaSolicitacaoService ausenciaSolicitacaoService,
-		AusenciaReposicaoService ausenciaReposicaoService,
-		ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-		ProjetoEscalaService projetoEscalaService,
-		ReferenciasService referenciasService,
+		IAusenciaSolicitacao ausenciaSolicitacaoService,
+		IAusenciaReposicao ausenciaReposicaoService,
+		IProjetoEscalaPrestador projetoEscalaPrestadorService,
+		IProjetoEscala projetoEscalaService,
+		IReferencias referenciasService,
 		HttpSession session) {
 		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;

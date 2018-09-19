@@ -9,31 +9,34 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.usuario.FolgaSemanalPlanejadaUsuarioDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuarioTurnosDisponiveis;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemana;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.usuario.FolgaSemanalPlanejadaUsuario;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 
 @Service
-public class UsuarioTurnosDisponiveisService {
+public class UsuarioTurnosDisponiveisService implements IUsuarioTurnosDisponiveis {
 
     private FolgaSemanalPlanejadaUsuarioDao folgaSemanalPlanejadaUsuarioDao;
-    private ReferenciasService referenciasService;
-	private UsuarioService usuarioService;
+    private IReferencias referenciasService;
+	private IUsuario usuarioService;
     
     @Autowired
 	public UsuarioTurnosDisponiveisService(
     		FolgaSemanalPlanejadaUsuarioDao folgaSemanalPlanejadaUsuarioDao,
-    		UsuarioService usuarioService,
-    		ReferenciasService referenciasService) {
+    		IUsuario usuarioService,
+    		IReferencias referenciasService) {
 
     	this.folgaSemanalPlanejadaUsuarioDao = folgaSemanalPlanejadaUsuarioDao;
     	this.referenciasService = referenciasService;
     	this.usuarioService = usuarioService;
 	}
 	
+	@Override
 	public List<FolgaSemanalPlanejadaUsuario> getFolgasSemanaisPlanejadasUsuario(long usuarioId) {
 		
 		List<FolgaSemanalPlanejadaUsuario> list = Utilities.toList(this.folgaSemanalPlanejadaUsuarioDao.findAllByUsuarioId(usuarioId)); // new ArrayList<FolgaSemanalPlanejadaUsuario>();
@@ -47,7 +50,8 @@ public class UsuarioTurnosDisponiveisService {
 		
 		return list;
 	}
-
+	
+	@Override
 	public void saveFolgasSemanaisPlanejadasUsuario(List<FolgaSemanalPlanejadaUsuario> folgasSemanaisPlanejadas, Long usuarioId) {		
 
 		for (FolgaSemanalPlanejadaUsuario item : Utilities.toList(this.folgaSemanalPlanejadaUsuarioDao.findAllByUsuarioId(usuarioId))) {
@@ -68,6 +72,7 @@ public class UsuarioTurnosDisponiveisService {
 		this.folgaSemanalPlanejadaUsuarioDao.saveAll(folgasSemanaisPlanejadas);
 	}
 
+	@Override
 	public int preSaveFolgaSemanalPlanejadaUsuario(List<FolgaSemanalPlanejadaUsuario> folgasSemanaisPlanejadas,
 			FolgaSemanalPlanejadaUsuario folgaSemanalPlanejada) {
 		int id = folgaSemanalPlanejada.getId();
@@ -92,6 +97,8 @@ public class UsuarioTurnosDisponiveisService {
 		return id;
 	}
 
+
+	@Override
 	public int preDeleteFolgaSemanalPlanejadaUsuario(
 			List<FolgaSemanalPlanejadaUsuario> folgasSemanaisPlanejadas,
 			int id) {
@@ -108,6 +115,8 @@ public class UsuarioTurnosDisponiveisService {
 		return id;
 	}
 
+
+	@Override
 	public List<String> findEscalaFolgaSugerida(long id) {
 		List<String> resultado = new ArrayList<String>();
 		

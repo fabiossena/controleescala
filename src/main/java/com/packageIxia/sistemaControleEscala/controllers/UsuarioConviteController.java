@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioConvite;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
-import com.packageIxia.sistemaControleEscala.services.UsuarioConviteService;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
 
 @Controller
 @RequestMapping(value = "/convite")
 public class UsuarioConviteController {
 
 	@Autowired
-    private UsuarioConviteService usuarioConviteService;
+    private IUsuarioConvite usuarioConviteService;
 	@Autowired
-	private ReferenciasService referenciasService;
+	private IReferencias referenciasService;
 	
 	ModelAndView mv = new ModelAndView("usuarioConviteView");
 	

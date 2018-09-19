@@ -4,10 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosPrincipais;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
-public class UsuarioDadosPrincipaisService {
+public class UsuarioDadosPrincipaisService implements IUsuarioDadosPrincipais {
 
 	@Autowired
 	private UsuarioDao usuarioDao;

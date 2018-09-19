@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuarioTurnosDisponiveis;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
@@ -34,18 +38,14 @@ import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.referencias.Pais;
 import com.packageIxia.sistemaControleEscala.models.usuario.FolgaSemanalPlanejadaUsuario;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
-import com.packageIxia.sistemaControleEscala.services.projetos.ProjetoEscalaPrestadorService;
-import com.packageIxia.sistemaControleEscala.services.referencias.ReferenciasService;
-import com.packageIxia.sistemaControleEscala.services.usuario.UsuarioService;
-import com.packageIxia.sistemaControleEscala.services.usuario.UsuarioTurnosDisponiveisService;
 
 @Controller
 public class UsuarioController {
 
-	private UsuarioService usuarioService;
-	private ReferenciasService referenciasService;
-	private UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService;
-	private ProjetoEscalaPrestadorService projetoEscalaPrestadorService;
+	private IUsuario usuarioService;
+	private IReferencias referenciasService;
+	private IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService;
+	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
 	
 	private ModelAndView modelViewCadastro = new ModelAndView("usuario/usuarioView");
 	private ModelAndView modelViewCadastros = new ModelAndView("usuario/usuariosView");	
@@ -54,15 +54,15 @@ public class UsuarioController {
 	private List<FolgaSemanalPlanejadaUsuario> folgasSemanaisPlanejadas;
 	private boolean isDisableCamposChaves;
 	private List<ProjetoEscalaPrestador> projetosCadastrados;
-	private ProjetoEscalaPrestadorService prestadorService;
+	private IProjetoEscalaPrestador prestadorService;
 	
 	@Autowired
 	public UsuarioController(
-			UsuarioService usuarioService,
-			ReferenciasService referenciasService,
-			UsuarioTurnosDisponiveisService usuarioTurnosDisponiveisService,
-			ProjetoEscalaPrestadorService projetoEscalaPrestadorService,
-			ProjetoEscalaPrestadorService prestadorService) {
+			IUsuario usuarioService,
+			IReferencias referenciasService,
+			IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IProjetoEscalaPrestador prestadorService) {
 		this.usuarioService = usuarioService;
 		this.referenciasService = referenciasService;
 		this.usuarioTurnosDisponiveisService = usuarioTurnosDisponiveisService;

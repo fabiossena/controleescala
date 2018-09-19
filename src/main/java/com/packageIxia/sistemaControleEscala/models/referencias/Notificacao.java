@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -40,6 +39,7 @@ public class Notificacao {
 
 	private LocalDateTime aberta; 
 	
+	// 1 success, 2 alert, 3 error
 	private int nivel;  
 	
 	@CreationTimestamp
@@ -53,6 +53,13 @@ public class Notificacao {
 	public Notificacao(int nivel, String mensagem) {
 		this.nivel = nivel;
 		this.mensagem = mensagem;
+	}
+
+	public Notificacao(int nivel, String mensagem, String titulo, Usuario usuario) {
+		this.nivel = nivel;
+		this.mensagem = mensagem;
+		this.titulo = titulo;
+		this.usuario = usuario;
 	}
 
 	public long getId() {

@@ -10,36 +10,42 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaReposicaoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 @Service
-public class AusenciaReposicaoService {
+public class AusenciaReposicaoService implements IAusenciaReposicao {
 	
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
-	private ProjetoEscalaService projetoEscalaService;
-	private ProjetoService projetoService;
+	private IProjetoEscala projetoEscalaService;
+	private IProjeto projetoService;
 
 	@Autowired
 	public AusenciaReposicaoService(
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			ProjetoEscalaService projetoEscalaService,
-			ProjetoService projetoService) {
+			IProjetoEscala projetoEscalaService,
+			IProjeto projetoService) {
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
 		this.projetoEscalaService = projetoEscalaService;
 		this.projetoService = projetoService;
 	}
 	
+	@Override
 	public String save(AusenciaReposicao ausenciaReposicao) {
 		this.ausenciaReposicaoDao.save(ausenciaReposicao);
 		return "";
 	}
 
+	@Override
 	public String delete(long ausenciaReposicaoId) {
 		this.ausenciaReposicaoDao.deleteById(ausenciaReposicaoId);
 		return "";
 	}
 
+	@Override
 	public long preSaveReposicoes(AusenciaReposicao ausenciaReposicao, AusenciaSolicitacao solicitacaoEditada) {
 			long id = ausenciaReposicao.getId();
 			if (solicitacaoEditada.getAusenciaReposicoes() == null) {
@@ -80,6 +86,7 @@ public class AusenciaReposicaoService {
 			return id;
 		}
 
+	@Override
 	public List<AusenciaReposicao> findAllByProjetoEscalaId(int anoAtual, int mesAtual, long escalaId, int aceito) {
 		// todo: usar query sql
 		List<AusenciaReposicao> solicitacaoReposicoes = Utilities.toList(this.ausenciaReposicaoDao.findAllByProjetoEscalaTrocaId(escalaId));
@@ -91,6 +98,7 @@ public class AusenciaReposicaoService {
 				
 	}
 
+	@Override
 	public List<AusenciaReposicao> findAllByProjetoId(int anoAtual, int mesAtual, long projetoId, int aceito) {
 		List<Long> ids = this.projetoEscalaService.findAllByProjetoId(projetoId).stream().map(x->x.getId()).collect(Collectors.toList());
 		List<AusenciaReposicao> solicitacaoReposicoes = new ArrayList<AusenciaReposicao>();
@@ -101,6 +109,7 @@ public class AusenciaReposicaoService {
 		return solicitacaoReposicoes;		
 	}
 
+	@Override
 	public boolean existsByUsuarioTrocaId(long prestadorId) {
 		return this.ausenciaReposicaoDao.existsByUsuarioTrocaId(prestadorId);
 	}

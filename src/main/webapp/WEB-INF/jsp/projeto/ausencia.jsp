@@ -61,7 +61,7 @@
 	 
 
 	function aceita(id, aceita) {
-		aceitaRecusaSolicitacaoAusencia(id, aceita, $("#motivo-recusa"), 1);
+		aceitaRecusaSolicitacaoAusencia(id, aceita, $("#motivo-recusa").val(), 1);
 	}
 
 	function aceitaRecusaSolicitacaoAusencia(id, aceita, motivo, origem)
@@ -261,6 +261,9 @@
 							  </div> 
 				
 								
+							  <c:if test="${solicitacao.id != 0}">
+							  	<span style="font-size: 12; font-weight: bold;">Dados aprovação:</span>
+							  </c:if>
 							  <c:forEach items="${solicitacao.dadosAcesso.dadosAprovacao}" var="aprovacao">
 							  	<c:if test='${aprovacao.nome.contains("Pendente") || aprovacao.nome.contains("Não enviada")}'>
 								  	<div class="text-primary col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="font-size: 10pt">
