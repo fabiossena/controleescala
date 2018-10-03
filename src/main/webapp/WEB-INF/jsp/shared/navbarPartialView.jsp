@@ -144,6 +144,11 @@ $(document).ready(function() {
 	     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/aprova')}">active</c:if>">
 		  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/aprovacaoHoras' />">Aprovação horas</a>
 	      		</li>	
+				<c:if test="${isAtendimento || isMonitoramento}">			      
+		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/extratoHoras')}">active</c:if>">
+			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/extratoHoras' />">Extrato banco de horas</a>
+		      		</li>	
+				</c:if>	
 			</c:if>
 			
 			

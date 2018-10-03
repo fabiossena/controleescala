@@ -85,8 +85,7 @@
 	
 	<div style="border: 0; height: 100%">
 
-		<fmt:parseDate pattern="yyyy-MM-dd" value="${data}"
-			var="dataFormatada" />
+		<fmt:parseDate pattern="yyyy-MM-dd" value="${data}" var="dataFormatada" />
 
 		<div class="border-bottom" style="padding: 20px 20px 20px 20px"
 			style="widht: 100%">
@@ -172,8 +171,8 @@
 								style="vertical-align: top; font-size: 11pt">Qtd
 								(real/planejada):
 								${escala.quantidadePrestadoresReal}/${escala.quantidadePrestadoresPlanejada}</th>
+			
 							<c:forEach items="${diasMes}" var="dia">
-							
 												
 								<td class="border-left"
 									style="font-size: 14pt; vertical-align: top">

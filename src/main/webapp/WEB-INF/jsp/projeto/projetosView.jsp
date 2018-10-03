@@ -19,7 +19,7 @@
         	  
 				<h3>Projetos cadastrados</h3>
 				<div class="container border-top panel-custom"> 
-        	  		<a id="btn-novo" class="btn btn-primary" href="<c:url value='/projeto' />">Novo</a>
+        	  		<a id="btn-novo" class="btn btn-sm btn-primary" href="<c:url value='/projeto' />">Novo</a>
         	  		<br />
 					<br />
 					<div class="table-container table-responsive">

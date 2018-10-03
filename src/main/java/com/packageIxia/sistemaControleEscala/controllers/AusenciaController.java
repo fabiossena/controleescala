@@ -40,24 +40,15 @@ import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Controller
 public class AusenciaController {
-	
-	private IAusenciaSolicitacao ausenciaSolicitacaoService;
-
 	private ModelAndView modelViewSolicitacoes = new ModelAndView("projeto/ausencias");
 	private ModelAndView modelViewSolicitacao = new ModelAndView("projeto/ausencia");
-
+	private IAusenciaSolicitacao ausenciaSolicitacaoService;
 	private AusenciaSolicitacao solicitacaoEditada;
-
 	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
-
 	private IReferencias referenciasService;
-
 	private HttpSession session;
-
 	private IProjetoEscala projetoEscalaService;
-
 	private IAusenciaReposicao ausenciaReposicaoService;
-
 	private Usuario usuarioLogado;	
 	
 	@Autowired
@@ -149,8 +140,7 @@ public class AusenciaController {
 			return new ModelAndView("redirect:/ausencia/"+solicitacao.getId());
 		}
 		
-		return new ModelAndView("redirect:/ausencia/"+solicitacao.getId()+"/editar");
-		
+		return new ModelAndView("redirect:/ausencia/"+solicitacao.getId()+"/editar");		
 	}
 
 	private void setUsuarioSolicitacao(AusenciaSolicitacao solicitacao, ModelAndView modelViewSolicitacao) {
@@ -395,5 +385,4 @@ public class AusenciaController {
 
 		return modelView;
     }
-
 }

@@ -50,8 +50,8 @@
                             </div>
                         </div>
                
-                         <div class="border-top" style="padding-top:15px; font-size:85%" >
-                             Não tem conta ainda! 
+                         <div class="border-top" style="padding: 10px 0 0 5px; font-size:10pt" >
+                             Recebeu o convite por e-mail! 
                              <a href="<c:url value='/cadastroinicial' />">
                              Clique aqui para se cadastrar
                              </a>

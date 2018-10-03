@@ -1,6 +1,7 @@
 package com.packageIxia.sistemaControleEscala.controllers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraExtrato;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
@@ -55,6 +57,7 @@ public class UsuarioController {
 	private boolean isDisableCamposChaves;
 	private List<ProjetoEscalaPrestador> projetosCadastrados;
 	private IProjetoEscalaPrestador prestadorService;
+	private IHoraExtrato horaExtratoService;
 	
 	@Autowired
 	public UsuarioController(
@@ -62,12 +65,14 @@ public class UsuarioController {
 			IReferencias referenciasService,
 			IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService,
 			IProjetoEscalaPrestador projetoEscalaPrestadorService,
-			IProjetoEscalaPrestador prestadorService) {
+			IProjetoEscalaPrestador prestadorService,
+			IHoraExtrato horaExtratoService) {
 		this.usuarioService = usuarioService;
 		this.referenciasService = referenciasService;
 		this.usuarioTurnosDisponiveisService = usuarioTurnosDisponiveisService;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.prestadorService = prestadorService;
+		this.horaExtratoService = horaExtratoService;
 	}
 
 	@GetMapping("/usuarios")
@@ -90,7 +95,29 @@ public class UsuarioController {
 				
 		return modelViewCadastros;
 	}
+	
+	@GetMapping("/extratoHoras")
+	public ModelAndView extrato(
+			@RequestParam(value = "ano", defaultValue = "0") int ano,
+			@RequestParam(value = "ano", defaultValue = "0") int mes,
+    		HttpServletRequest request) {		
+		return this.getExtrato(ano, mes, request);
+	}
 
+	private ModelAndView getExtrato(int ano, int mes, HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("usuario/usuarioHoraExtratoView");
+		this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+		
+		ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
+		ano = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
+
+		mv.addObject("anos", new int[] {2018, 2019});
+		mv.addObject("meses", new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+		mv.addObject("extratoHoras", this.horaExtratoService.findAllByUsuarioIdAndData(this.usuarioLogado.getId(), ano, mes));
+		
+		return mv;
+	}
+	
 	@GetMapping("/usuario/meucadastro")
 	public ModelAndView meuCadastro(
     		HttpServletRequest request) {	

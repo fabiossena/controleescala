@@ -41,13 +41,10 @@ public class AusenciaReposicao {
 	
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	//@NotNull(message="Preencha o campo data")
 	private LocalDate data;
 
-	//@NotEmpty(message="Preencha o campo hora início")
 	private String horaInicio;
 
-	//@NotEmpty(message="Preencha o campo hora fim")
 	private String horaFim;
 	
 	private String observacao;
@@ -62,20 +59,17 @@ public class AusenciaReposicao {
 	
 	private boolean indicadoOutroUsuario;
 	
-	//@NotNull(message="Preencha o campo ausência")
-	@ManyToOne //(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="ausenciaSolicitacaoId")
 	private AusenciaSolicitacao ausenciaSolicitacao;
 
-	//private long ausenciaSolicitacaoId;
 	
-	
-	@ManyToOne //(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name="usuarioTrocaId") //, nullable = true, insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name="usuarioTrocaId")
 	private Usuario usuarioTroca;
 
-	@ManyToOne // (fetch = FetchType.EAGER)
-	@JoinColumn(name="usuarioAprovacaoId") // , nullable = true
+	@ManyToOne
+	@JoinColumn(name="usuarioAprovacaoId")
 	private Usuario usuarioAprovacao;
 
 	private int aceitoUsuarioAprovacao;
@@ -84,10 +78,16 @@ public class AusenciaReposicao {
 
 	private LocalDateTime dataAceiteUsuarioAprovacao;
 
-	@ManyToOne //(fetch = FetchType.EAGER)
-	@JoinColumn(name="gerenciaAprovacaoId") // , nullable = true
+	@ManyToOne
+	@JoinColumn(name="gerenciaAprovacaoId")
 	private Usuario gerenciaAprovacao;
 
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private LocalDate dataTroca;
+
+	private String horaInicioTroca;
+
+	private String horaFimTroca;
 
 	public long getId() {
 		return id;
@@ -237,6 +237,18 @@ public class AusenciaReposicao {
 		return Utilities.horaDiff(horaInicio, horaFim);
 	}
 
+	public String getHorasTroca() {
+		return Utilities.horaDiff(horaInicioTroca, horaFimTroca);
+	}
+
+	public double getHorasValue() {
+		return Utilities.horaValueDiff(horaInicio, horaFim);
+	}
+
+	public double getHorasValueTroca() {
+		return Utilities.horaValueDiff(horaInicioTroca, horaFimTroca);
+	}
+
 	public void setMotivoRecusaUsuarioAprovacao(String motivoRecusaUsuarioAprovacao) {
 		this.motivoRecusaUsuarioAprovacao = motivoRecusaUsuarioAprovacao;
 	}
@@ -255,5 +267,29 @@ public class AusenciaReposicao {
 
 	public void setIndicadoOutroUsuario(boolean indicadoOutroUsuario) {
 		this.indicadoOutroUsuario = indicadoOutroUsuario;
+	}
+
+	public String getHoraInicioTroca() {
+		return horaInicioTroca;
+	}
+
+	public void setHoraInicioTroca(String horaInicioTroca) {
+		this.horaInicioTroca = horaInicioTroca;
+	}
+
+	public LocalDate getDataTroca() {
+		return dataTroca;
+	}
+
+	public void setDataTroca(LocalDate dataTroca) {
+		this.dataTroca = dataTroca;
+	}
+
+	public String getHoraFimTroca() {
+		return horaFimTroca;
+	}
+
+	public void setHoraFimTroca(String horaFimTroca) {
+		this.horaFimTroca = horaFimTroca;
 	}
 }

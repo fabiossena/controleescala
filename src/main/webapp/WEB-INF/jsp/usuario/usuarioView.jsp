@@ -86,7 +86,6 @@
 							  <a class="nav-link" id="pills-projetos-tab" data-toggle="pill" href="#pills-projetos" role="tab" aria-controls="pills-projetos aria-selected="false">Projetos cadastrados</a>
 							  <a class="nav-link" id="pills-bancarios-tab" data-toggle="pill" href="#pills-bancarios" role="tab" aria-controls="pills-bancarios aria-selected="false">Dados bancários</a>
 							  <a class="nav-link" id="pills-administrativos-tab" data-toggle="pill" href="#pills-administrativos" role="tab" aria-controls="pills-administrativos aria-selected="false">Dados administrativos</a>
-							  <a class="nav-link" id="pills-acesso-tab" data-toggle="pill" href="#pills-acesso" role="tab" aria-controls="pills-acesso aria-selected="false">Dados de acesso</a>
 							</div>
             				                      
 						</div>

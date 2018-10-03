@@ -89,11 +89,14 @@ public class DadosAcessoAprovacaoHoras {
 	
 		for (HoraTrabalhada horaTrabalhada : horasTrabalhadas) {
 			boolean encontrou = false;
-			
-			double hora = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras();
-			double segundos = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+
 			String funcao = FuncaoEnum.GetFuncaoFromId(horaTrabalhada.getHoraAprovacao().getPrestador().getFuncaoId()).getNome();
 			FuncaoConfiguracao config = funcaoConfiguracoes.stream().filter(x->x.getChave().toLowerCase().equals(funcao.toLowerCase())).findFirst().orElse(new FuncaoConfiguracao("", 0));
+			
+			double horas = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras();
+			double segundos = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+			double valor = ((segundos/60)  * config.getValorMinuto());
+			//double totalHorasDiaEscala = Utilities.horaValueDiff(horaTrabalhada.getProjetoEscala().getHoraFim(), horaTrabalhada.getProjetoEscala().getHoraInicio());
 			
 			for (DadoGenerico dadoGenerico : this.dadosAprovacao) {
 				if (dadoGenerico.getId() == horaTrabalhada.getProjetoEscala().getId()) {
@@ -102,14 +105,14 @@ public class DadosAcessoAprovacaoHoras {
 									dadoGenerico.getDoubleValue() + (horaTrabalhada.isExcluido() ? 0 : 
 										(horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras())), 3));
 					if (horaTrabalhada.getTipoAcao() == 1) {
-						this.totalValor += ((segundos/60) * config.getValorMinuto());
-						this.totalHoras += hora;
+						this.totalValor += valor;
+						this.totalHoras += horas;
 						this.totalSegundos +=  segundos;
 					}
 					else {
-						this.totalHoras -= (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
-						this.totalValor -= ((segundos/60)  * config.getValorMinuto());
-						this.totalSegundos -= horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+						this.totalValor -= valor;
+						this.totalHoras -= horas;
+						this.totalSegundos -= segundos;
 					}
 					
 					encontrou = true;
@@ -126,8 +129,8 @@ public class DadosAcessoAprovacaoHoras {
 								(horaTrabalhada.getMotivoRecusa() != null && horaTrabalhada.getMotivoRecusa().trim().isEmpty() ? "" : "<i>Motivo: " + horaTrabalhada.getMotivoRecusa() + "</i><br>") + 
 								"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "</i>", 
 								
-								
 								Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3)));
+				
 				if (horaTrabalhada.getTipoAcao() == 1) {
 					this.totalValor += ((segundos/60) * config.getValorMinuto());
 					this.totalHoras += (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());

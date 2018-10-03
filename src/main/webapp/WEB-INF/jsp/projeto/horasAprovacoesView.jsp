@@ -221,14 +221,10 @@
 				        <thead>
 				            <tr>
 				                <th>Ação</th>
-				                <th>Id</th>
-								<th>Nome prestador</th>
-				                <th>Data</th> 
-				                <th>Horas</th>
-				                <th>Valor</th>
-				                <th>Etapa 1 (prestador)</th>
-				                <th>Etapa 2 (monitor)</th>
-				                <th>Etapa 3 (financeiro)</th>
+				                <th>Dados aprovação</th>
+				                <th>Aprovação etapa 1 (prestador)</th>
+				                <th>Aprovação etapa 2 (monitor)</th>
+				                <th>Aprovação etapa 3 (financeiro)</th>
 				            </tr>
 				        </thead>
 				        <tbody>        
@@ -261,12 +257,15 @@
 									     </c:if>
 	                				</td>
 	                				
-					                <td>${item.id}</td>
-					                <td>${item.prestador.nomeCompletoMatricula}</td>
-					                <td><fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /></td>
-				                
-								  	<td>${item.totalHoras}</td>
-				                	<td>${item.totalValor}</td> 
+					                <td style="font-size: 10pt">
+					                  <div style="width: 200px">
+					                	<b>Id:</b> ${item.id}<br>
+					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
+					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
+									  	<b>Horas:</b> ${item.totalHoras}<br>
+										<b>Valor:</b> ${item.totalValor}
+									  </div>
+									</td> 
 				                							
 								  	<td style="font-size: 10pt">
 		                				<div style="width: 200px">
@@ -285,7 +284,7 @@
 										   </div>
 									  </td>
 				                	  <td style="font-size: 10pt">
-		                				  <div style="width: 200px">
+		                				  <div style="width: 300px">
 										  	
 									         <c:forEach items="${item.dadosAcessoAprovacaoHoras.dadosAprovacao}" var="item2">
 		               			

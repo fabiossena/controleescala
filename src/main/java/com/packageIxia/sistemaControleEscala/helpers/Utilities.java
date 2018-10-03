@@ -60,8 +60,18 @@ public class Utilities {
 	}
 	
 	public static String horaDiff(String hora1, String hora2) {
-		if (!validarHora(hora1) || !validarHora(hora1)) {
+		double diff = horaValueDiff(hora1, hora2);
+		if (diff == 0) {
 			return "";
+		}
+		
+		DecimalFormat df = new DecimalFormat("#.##");
+		return df.format(diff) + (diff > 1 ? "hrs" : "hr");
+	}
+	
+	public static double horaValueDiff(String hora1, String hora2) {
+		if (!validarHora(hora1) || !validarHora(hora1)) {
+			return 0;
 		}
 		
 		String[] hrs1 = hora1.split(":");
@@ -69,13 +79,8 @@ public class Utilities {
 
 		String[] hrs2 = hora2.split(":");
 		double hr2 = Double.parseDouble(hrs2[0]) + ((Double.parseDouble(hrs2[1])/0.6)/100);
-		double diff = hr2 - hr1;
-		if (diff == 0) {
-			return "";
-		}
-		
-		DecimalFormat df = new DecimalFormat("#.##");
-		return df.format(hr2 - hr1) + (diff > 1 ? "hrs" : "hr");
+		double diff = hr2 - hr1;		
+		return diff;
 	}
 	
 	public static boolean dataEstaEntreDiasDaSemana(LocalDate dataInicio, int diaSemanaInicio, int diaSemanaFim) {

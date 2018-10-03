@@ -22,6 +22,33 @@
 			class="card bg-light" style="position: absolute; display: none">
 			<div class="card-body">
 
+				<!-- Data inicio e fim -->
+				<fmt:parseDate pattern="yyyy-MM-dd"
+					value="${solicitacao.dataInicio}"
+					var="dtIni" />					
+				<c:set var="dataInicio">
+					<fmt:formatDate value="${dtIni}" pattern="dd/MM/yyyy" />
+				</c:set>
+				
+				<c:if
+					test="${solicitacao.dataFim != null}">
+
+					<fmt:parseDate pattern="yyyy-MM-dd"
+						value="${solicitacao.dataFim}"
+						var="dtFim" />
+					<c:set var="dataFim">
+						<fmt:formatDate value="${dtFim}" pattern="dd/MM/yyyy" />
+					</c:set>
+
+				</c:if>
+				
+				<c:set var="dataAusencia">
+					<c:if test="${solicitacao.dataFim == null}">Data: </b>${dataInicio}</c:if>
+					<c:if test="${solicitacao.dataFim != null}">De ${dataInicio} até ${dataFim}</c:if>
+				</c:set>
+				
+				
+
 				<b>Solicitação efetuada</b> <a target="_blank"
 					style="font-size: 10pt; font-weight: bold"
 					class="btn btn-sm btn-warning"
@@ -38,14 +65,23 @@
 				</div>
 
 				<div style="font-size: 10pt">
-					<b>Solicitada por: </b>${solicitacao.usuario.nomeCompletoMatricula}
+					<b>Solicitante: </b>${solicitacao.usuario.nomeCompletoMatricula}
 				</div>
 
-				<div class="badge badge-info" style="font-size: 10pt">${solicitacao.motivoAusencia.nome}
-					(${solicitacao.horaInicio} - ${solicitacao.horaFim} |
-					${solicitacao.horas}/dia)
-				</div>
 
+				<b style="font-size: 10pt">Horário ausência:</b>
+				<div style="font-size: 10pt" class="badge badge-info"> ${dataAusencia} |
+					${solicitacao.horaInicio} -
+					${solicitacao.horaFim} 
+					(${solicitacao.horas}/dia)</div><br>
+
+
+				<b style="font-size: 10pt">Motivo:</b>
+				<span style="font-size: 10pt"> 
+					${solicitacao.motivoAusencia.nome}
+				</span><br> 
+				
+								
 				<div style="font-size: 10pt">
 					<b>Projeto/escala: </b> <a target="_blank"
 						href="<c:url value='/projeto' />/${solicitacao	.projetoEscala.projetoId}">
@@ -85,6 +121,7 @@
 						var="reposicao">
 						<fmt:parseDate pattern="yyyy-MM-dd"
 							value="${reposicao.data}" var="data" />
+						<b style="font-size: 10pt">Fará a reposição na data:</b>
 						<div class="badge badge-info" style="font-size: 10pt">
 							<fmt:formatDate value="${data}" pattern="dd/MM/yyyy" />
 							| ${reposicao.horaInicio} - ${reposicao.horaFim}
@@ -93,8 +130,17 @@
 
 						<c:if test='${reposicao.indicadoOutroUsuario}'>
 							<div style="font-size: 10pt">
-								<b>Solicitada para: </b>${reposicao.usuarioTroca.nomeCompletoMatricula}
+								<b>Trocará com o prestador: </b>${reposicao.usuarioTroca.nomeCompletoMatricula}
 							</div>
+						
+							<fmt:parseDate pattern="yyyy-MM-dd" value="${reposicao.dataTroca}" var="dataTroca" />
+							<b style="font-size: 10pt">Que o substituirá na data:</b>
+							<div class="badge badge-info" style="font-size: 10pt">
+								<fmt:formatDate value="${dataTroca}" pattern="dd/MM/yyyy" />
+								| ${reposicao.horaInicioTroca} - ${reposicao.horaFimTroca}
+								<c:if test="${reposicao.horasTroca != ''}">(${reposicao.horasTroca})</c:if>
+							</div>
+							
 						</c:if>
 
 						<div style="font-size: 10pt">
@@ -120,13 +166,13 @@
 			<c:if test='${solicitacao.aceito == 4}'>Finalizada</c:if>
 		</div>
 
-		<div style="font-size: 10pt">
-			<b>Solicitada por: </b>${solicitacao.usuario.nomeCompletoMatricula}
-		</div>
-
 		<div class="badge badge-info" style="font-size: 10pt">${solicitacao.motivoAusencia.nome}
 			(${solicitacao.horaInicio} - ${solicitacao.horaFim} |
 			${solicitacao.horas}/dia)</div>
+
+		<div style="font-size: 10pt">
+			<b>Solicitante: </b>${solicitacao.usuario.nomeCompletoMatricula}
+		</div>
 
 		<c:if test="${solicitacaoId == solicitacao.id}">
 			<input type="hidden"

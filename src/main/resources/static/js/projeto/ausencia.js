@@ -41,7 +41,7 @@
 				$("#colocar-horario-a-disposicao").prop("checked", false);
 				$("#panel-horario-reposicao").show();
 			} else {
-				$("#panel-horario-reposicao").hide();				
+				$("#panel-horario-reposicao").hide();		
 			}
 		});	
 		
@@ -59,10 +59,12 @@
 		function motivoAusenciaEscondePaineis() {
 			if ($("#motivo-ausencia").val() == 2) {
 				$("#indicar-horario-para-repor").prop("checked", false);
+				$("#observacao-motivo-ausencia").html("Ausencia não descontada do banco de horas");
 				$("#panel-horario-reposicao").hide();	
 				$("#panel-indicar-horario-para-repor").hide();				
 			} 
 			else {
+				$("#observacao-motivo-ausencia").html("Ausencia descontada do banco de horas");
 				$("#panel-indicar-horario-para-repor").show();				
 			}
 		}
@@ -77,14 +79,26 @@
 			}
 		}); 
 		
-		
-
 		$("#selected-usuario-troca").prop("disabled", true);
+		$(".campos-troca-usuario-reposicao").hide();
+		$("#selected-usuario-troca").hide();
 		
 		$("#checkbox-indicar-outro-usuario-troca").change(function() {			
 			if (this.checked) {
 				$("#selected-usuario-troca").prop("disabled", false);
+
+				$("#selected-usuario-troca").show();
+				$(".campos-troca-usuario-reposicao").show();
+					
+				if ($("#data-troca").val()=="") {
+					$("#data-troca").val($("#dataInicio").val());
+					$("#hora-inicio-troca").val($("#horaInicio").val());
+					$("#hora-fim-troca").val($("#horaFim").val()); 
+				}
 			} else {
+				//$("#panel-horario-reposicao").hide();	
+				$(".campos-troca-usuario-reposicao").hide();
+				$("#selected-usuario-troca").hide();
 				$("#selected-usuario-troca").prop("disabled", true);	
 				 $("#selected-usuario-troca option").each(function () { 
 			         $(this).removeAttr("selected");
@@ -112,7 +126,23 @@
 			preencherProjetoEscalaPorUsuarioId(this.value, '#selected-projeto-escala-troca', '#selected-usuario-troca', true)
 		});
 
+		
+		$("#selected-usuario-troca").prop("disabled", true);
+		$(".campos-troca-usuario-reposicao").hide();
+		$("#selected-usuario-troca").hide();
+		
 	});
+	
+	function showHideCamposTroca() {
+		if ($("#checkbox-indicar-outro-usuario-troca").prop("checked")) {
+			$("#selected-usuario-troca").show();
+			$(".campos-troca-usuario-reposicao").show();						
+		}
+		else {
+			$(".campos-troca-usuario-reposicao").hide();
+			$("#selected-usuario-troca").hide();						
+		}
+	}
 	
 	function selectReposicao(id) {
 		cancelarReposicao();
@@ -123,6 +153,9 @@
 		$("#hora-fim-reposicao").val($("#hora-fim-reposicao"+id).val()); 
 		$("#observacao-reposicao").val($("#observacao-reposicao"+id).val());
 
+		$("#data-troca").val($("#data-troca"+id).val());
+		$("#hora-inicio-troca").val($("#hora-inicio-troca"+id).val());
+		$("#hora-fim-troca").val($("#hora-fim-troca"+id).val()); 
 		
 		var projeto = null;
 		 $("#selected-projeto-escala-troca option").each(function () { 
@@ -152,6 +185,7 @@
 	            $(this).attr("selected", "selected");
 		         $(this).prop("selected", true);
 	    		$("#checkbox-indicar-outro-usuario-troca").prop("checked", true);
+	    		showHideCamposTroca();
 	        }
 		 });		
 		 
@@ -160,6 +194,9 @@
 	function editarReposicao(id) {
 		if ($("#btn-editar-reposicao").val() == "Novo"){
 			cancelarReposicao();
+			$("#data-troca").val($("#dataInicio").val());
+			$("#hora-inicio-troca").val($("#horaInicio").val());
+			$("#hora-fim-troca").val($("#horaFim").val()); 
 		} 
 
 		$("#btn-editar-reposicao").hide();
@@ -169,12 +206,17 @@
 		$("#hora-inicio-reposicao").prop("disabled", false);
 		$("#hora-fim-reposicao").prop("disabled", false);
 		$("#observacao-reposicao").prop("disabled", false);
+		 
+		$("#data-troca").prop("disabled", false);
+		$("#hora-inicio-troca").prop("disabled", false);
+		$("#hora-fim-troca").prop("disabled", false);
 
 		$("#checkbox-indicar-outro-usuario-troca").prop("disabled", false);
 		$("#selected-projeto-escala-troca").prop("disabled", false);
 		if ($("#selected-usuario-troca").val() != null && $("#selected-usuario-troca").val() > 0) { 
 			 $("#selected-usuario-troca").prop("disabled", false);
 		}
+		
 		$(".btn-class-apagar-reposicao").prop("disabled", false);
 	}
 	
@@ -207,7 +249,13 @@
 		$("#selected-projeto-escala-troca").prop("disabled", true);
 		$("#selected-usuario-troca").prop("disabled", true);
 
+		$("#data-troca").prop("disabled", true);
+		$("#hora-inicio-troca").prop("disabled", true);
+		$("#hora-fim-troca").prop("disabled", true);
 
+		$("#selected-usuario-troca").hide();
+		$(".campos-troca-usuario-reposicao").hide();
+		
 		$("#checkbox-indicar-outro-usuario-troca").prop("disabled", true);
 	}
 
@@ -310,12 +358,8 @@
 
        return false;
    }
-	
-	
-	
-	
 
-	 function salvarReposicao() { 	
+	 function salvarReposicao() {
      	
 		$("#feedback-data-reposicao").val("");
 		$("#feedback-hora-inicio-reposicao").val("");
@@ -328,83 +372,40 @@
 		$("#hora-fim-reposicao").removeClass("is-invalid");
 		$("#selected-projeto-escala-troca").removeClass("is-invalid");
 		$("#selected-usuario-troca").removeClass("is-invalid");
+
+		$("#data-troca").removeClass("is-invalid");
+		$("#hora-inicio-troca").removeClass("is-invalid");
+		$("#hora-fim-troca").removeClass("is-invalid");
 		
+		validaReposicao();	  	
 	  	
-	 	if ($("#data-reposicao").val().length <  10) { 		
-	 		$("#hora-data-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo data reposição");
-	 		return;
-	 	}
-	  	
-	 	if ($("#hora-inicio-reposicao").val().length <  5) { 		
-	 		$("#hora-inicio-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo hora início reposição");
-	 		return;
-	 	}
-
-	 	if ($("#hora-fim-reposicao").val().length <  5) { 		
-	 		$("#hora-fim-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-fim-reposicao").html("Preencha o campo hora fim reposição");
-	 		return;
-	 	}
-
-
-	 	if (parseInt($("#hora-inicio-reposicao").val().replace(":", "")) > parseInt($("#hora-fim-reposicao").val().replace(":", ""))) { 		
-	 		$("#hora-fim-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-fim-reposicao").html("A hora início deve ser menor do que a hora fim");
-	 		return;
-	 	}
-	 	
-	 	
-	 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-inicio-reposicao").val())) {
-	 		$("#hora-inicio-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo hora início corretamente");
-	 		return;
-	 	}
-
-	 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-fim-reposicao").val())) {
-	 		$("##hora-fim-reposicao").addClass("is-invalid");
-	 		$("#feedback-hora-fim-reposicao").html("Preencha o campo hora fim corretamente");
-	 		return;
-	 	}
-
-
-
-	  	if ($("#selected-projeto-escala-troca").val() == "" || 
-		  	    $("#selected-projeto-escala-troca").val() == "0" ||
-		  	    $("#selected-projeto-escala-troca").val() == null) {
-	  		$("#selected-projeto-escala-troca").addClass("is-invalid");
-	  		$("#feedback-selected-projeto-escala-troca").html("Preencha o campo escala projeto");
-	  		return;
-	  	}
-	  	
-	  	
-		if ($("#checkbox-indicar-outro-usuario-troca").prop("checked") &&
-				($("#selected-usuario-troca").val() == "" || 
-		  	    $("#selected-usuario-troca").val() == "0" ||
-		  	    $("#selected-usuario-troca").val() == null)) {
-	  		$("#selected-usuario-troca").addClass("is-invalid");
-	  		$("#feedback-select-usuario-troca").html("Preencha o campo usuário reposição");
-	  		return;
-	  	}
-	  	
+		if ($("#checkbox-indicar-outro-usuario-troca").prop("checked")) {
+			validaTroca();
+		}	  	
 	  	
 	  	
 	 	var projetoEscalaSelected = $("#selected-projeto-escala-troca option:selected");
 	 	var usuarioTrocaSelected =  $("#selected-usuario-troca option:selected");
 	 	
-		 	var data = $("#data-reposicao").val().split("/");
-		 	console.log("#id-reposicao " +  $("#id-reposicao").val());
-		 	var item = {
-				id : $("#id-reposicao").val(),
-				data : data[2]+"-"+data[1]+"-"+data[0], 
-				dataFormatada :  $("#data-reposicao").val(), 
-				horaInicio : $("#hora-inicio-reposicao").val(), 
-				horaFim : $("#hora-fim-reposicao").val(),
-				projetoEscalaTroca : { id: projetoEscalaSelected.val(), descricaoPrestador: projetoEscalaSelected.text() },
-				indicadoOutroUsuario : $("#checkbox-indicar-outro-usuario-troca").prop("checked"),
-				usuarioTroca : { id: usuarioTrocaSelected.val(), descricaoPrestador: usuarioTrocaSelected.text() },
-				observacao : $("#observacao-reposicao").val()
+	 	var data = $("#data-reposicao").val().split("/");
+	 	var dataTroca = $("#data-troca").val().split("/");
+	 	console.log("#id-reposicao " +  $("#id-reposicao").val());
+	 	var item = {
+			id : $("#id-reposicao").val(),
+			data : data[2]+"-"+data[1]+"-"+data[0], 
+			dataFormatada :  $("#data-reposicao").val(), 
+			horaInicio : $("#hora-inicio-reposicao").val(), 
+			horaFim : $("#hora-fim-reposicao").val(),
+			
+			dataTroca : dataTroca[2]+"-"+dataTroca[1]+"-"+dataTroca[0], 
+			dataTrocaFormatada :  $("#data-troca").val(), 
+			horaInicioTroca : $("#hora-inicio-troca").val(), 
+			horaFimTroca : $("#hora-fim-troca").val(),
+			
+			projetoEscalaTroca : { id: projetoEscalaSelected.val(), descricaoPrestador: projetoEscalaSelected.text() },
+			indicadoOutroUsuario : $("#checkbox-indicar-outro-usuario-troca").prop("checked"),
+			usuarioTroca : { id: usuarioTrocaSelected.val(), descricaoPrestador: usuarioTrocaSelected.text() },
+			observacao : $("#observacao-reposicao").val()
 	 	};
 		 	
 	 	console.log(JSON.stringify(item));
@@ -426,9 +427,8 @@
 				if (item.id == null || item.id == "" || item.id == "0") {
 	 				var row = 
 	 					  '<tr id="reposicao' + id + '"  onclick="selectReposicao(' + id  + ')">' +
-							'<td id="xdata-reposicao' + id + '" class="rowclick">' + item.dataFormatada  + '</td></td>' +
-							'<td id="xhora-inicio-fim-reposicao' + id + '" class="rowclick">' + item.horaInicio + ' - ' + item.horaFim + '</td></td>' +
-							'<td id="xdetalhes-reposicao' + id + '" class="rowclick" style="font-size: 10pt">' + (item.usuarioTroca.nome == null ? '' : item.usuarioTroca.nome+'<br>') + item.projetoEscalaTroca.descricaoPrestador + '</td></td>' +
+							'<td id="xdetalhes-reposicao' + id + '" class="rowclick" style="font-size: 10pt">' + (item.usuarioTroca.nome == null ? '' : item.usuarioTroca.nome+'<br>') + item.projetoEscalaTroca.descricaoPrestador + '</td>' +
+							'<td id="xhora-inicio-fim-reposicao' + id + '" class="rowclick" style="font-size: 10pt">Reposição ' + item.dataFormatada  + ' ' + item.horaInicio + ' - ' + item.horaFim + '</td>' +
 							'<td>' +
 								'<input type="button" onclick="apagarReposicao('+ id +')" class="btn-apagar-folga btn btn-sm btn-danger" value="apagar" />' +
 								
@@ -436,6 +436,11 @@
 								'<input id="data-reposicao' + id  + '" type="hidden" value="' + item.dataFormatada + '" />' +
 								'<input id="hora-inicio-reposicao' + id  + '" type="hidden" value="' + item.horaInicio + '" />' +
 								'<input id="hora-fim-reposicao' + id  + '" type="hidden" value="' + item.horaFim + '" />' +
+								
+								'<input id="data-troca' + id  + '" type="hidden" value="' + item.dataTrocaFormatada + '" />' +
+								'<input id="hora-inicio-troca' + id  + '" type="hidden" value="' + item.horaInicioTroca + '" />' +
+								'<input id="hora-fim-troca' + id  + '" type="hidden" value="' + item.horaFimTroca + '" />' +
+								
 								'<input id="observacao-reposicao' + id  + '" type="hidden" value="' + item.observacao + '" />' +
 								'<input id="selected-projeto-escala-troca' + id  + '" type="hidden" value="' + item.projetoEscalaTroca.id + '" />' +
 								'<input id="selected-usuario-troca' + id  + '" type="hidden" value="' + item.usuarioTroca.id + '" />' +
@@ -443,7 +448,9 @@
 						  '</tr>';
 						  
 
-	 			   $('#tabela-reposicao tbody tr.odd').remove();	
+	 				if ($('#tabela-reposicao input').html() == null || $('#tabela-reposicao input').html() == "") {
+	 					$('#tabela-reposicao tbody tr.odd').remove();
+	 				}
 				   $('#tabela-reposicao tbody').prepend(row);
 				   aplicarSelecionarTabela();
 	    		}
@@ -451,6 +458,11 @@
 			    	$("#tabela-reposicao tbody #data-reposicao" + item.id).val(item.dataFormatada);
 			    	$("#tabela-reposicao tbody #hora-inicio-reposicao" + item.id).val(item.horaInicio);
 			    	$("#tabela-reposicao tbody #hora-fim-reposicao" + item.id).val(item.horaFim);
+
+			    	$("#tabela-reposicao tbody #data-troca" + item.id).val(item.dataTrocaFormatada);
+			    	$("#tabela-reposicao tbody #hora-inicio-troca" + item.id).val(item.horaInicioTroca);
+			    	$("#tabela-reposicao tbody #hora-fim-troca" + item.id).val(item.horaFimTroca);
+			    	
 			    	$("#tabela-reposicao tbody #observacao-reposicao" + item.id).val(item.observacao);
 			    	$("#tabela-reposicao tbody #selected-projeto-escala-troca" + item.id).val(item.projetoEscalaTroca.id);
 			    	$("#tabela-reposicao tbody #selected-usuario-troca" + item.id).val(item.usuarioTroca.id);
@@ -462,6 +474,7 @@
 
 				cancelarReposicao();
 	        	$("#btn-salvar-reposicao").prop("disabled",false);
+	        	$("#alerta-salvar-reposicao").html("clique em salvar (acima) para enviar as informações e ver os totais atualizados");
 
 			},
 			error : function(e) {
@@ -470,5 +483,108 @@
 	        	$("#btn-salvar-reposicao").prop("disabled",false);
 			}
 		});
+	 }
+	 
+	 function validaTroca() {
+
+	  	if ($("#selected-projeto-escala-troca").val() == "" || 
+		  	    $("#selected-projeto-escala-troca").val() == "0" ||
+		  	    $("#selected-projeto-escala-troca").val() == null) {
+	  		$("#selected-projeto-escala-troca").addClass("is-invalid");
+	  		$("#feedback-selected-projeto-escala-troca").html("Preencha o campo escala projeto");
+	  		return;
+	  	}
+	  	
+		if ($("#selected-usuario-troca").val() == "" || 
+		  	    $("#selected-usuario-troca").val() == "0" ||
+		  	    $("#selected-usuario-troca").val() == null) {
+	  		$("#selected-usuario-troca").addClass("is-invalid");
+	  		$("#feedback-select-usuario-troca").html("Preencha o campo usuário reposição");
+	  		return;
+	  	}
+		
+	  	
+	 	if ($("#data-troca").val().length <  10) { 		
+	 		$("#data-troca").addClass("is-invalid");
+	 		$("#feedback-data-troca").html("Preencha o campo data troca");
+	 		return;
+	 	}
+	  	
+	 	if ($("#hora-inicio-troca").val().length <  5) { 		
+	 		$("#hora-inicio-troca").addClass("is-invalid");
+	 		$("#feedback-hora-inicio-troca").html("Preencha o campo hora início troca");
+	 		return;
+	 	}
+
+	 	if ($("#hora-fim-troca").val().length <  5) { 		
+	 		$("#hora-fim-troca").addClass("is-invalid");
+	 		$("#feedback-hora-fim-troca").html("Preencha o campo hora fim troca");
+	 		return;
+	 	}
+
+
+	 	if (parseInt($("#hora-inicio-troca").val().replace(":", "")) > parseInt($("#hora-fim-troca").val().replace(":", ""))) { 		
+	 		$("#hora-fim-troca").addClass("is-invalid");
+	 		$("#feedback-hora-fim-troca").html("A hora início troca deve ser menor do que a hora fim");
+	 		return;
+	 	}
+	 	
+	 	
+	 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-inicio-troca").val())) {
+	 		$("#hora-inicio-reposicao").addClass("is-invalid");
+	 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo hora início troca corretamente");
+	 		return;
+	 	}
+
+	 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-fim-troca").val())) {
+	 		$("##hora-fim-troca").addClass("is-invalid");
+	 		$("#feedback-hora-fim-troca").html("Preencha o campo hora fim troca corretamente");
+	 		return;
+	 	}		 
+	 }
+	 
+	 function validaReposicao() {
+
+			$("#data-troca").removeClass("is-invalid");
+			$("#hora-inicio-troca").removeClass("is-invalid");
+			$("#hora-fim-troca").removeClass("is-invalid");
+			
+		 	if ($("#data-reposicao").val().length <  10) { 		
+		 		$("#hora-data-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo data reposição");
+		 		return;
+		 	}
+		  	
+		 	if ($("#hora-inicio-reposicao").val().length <  5) { 		
+		 		$("#hora-inicio-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo hora início reposição");
+		 		return;
+		 	}
+
+		 	if ($("#hora-fim-reposicao").val().length <  5) { 		
+		 		$("#hora-fim-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-fim-reposicao").html("Preencha o campo hora fim reposição");
+		 		return;
+		 	}
+
+
+		 	if (parseInt($("#hora-inicio-reposicao").val().replace(":", "")) > parseInt($("#hora-fim-reposicao").val().replace(":", ""))) { 		
+		 		$("#hora-fim-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-fim-reposicao").html("A hora início deve ser menor do que a hora fim");
+		 		return;
+		 	}
+		 	
+		 	
+		 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-inicio-reposicao").val())) {
+		 		$("#hora-inicio-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-inicio-reposicao").html("Preencha o campo hora início corretamente");
+		 		return;
+		 	}
+
+		 	if (!/^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$/.test($("#hora-fim-reposicao").val())) {
+		 		$("##hora-fim-reposicao").addClass("is-invalid");
+		 		$("#feedback-hora-fim-reposicao").html("Preencha o campo hora fim corretamente");
+		 		return;
+		 	}
 	 }
 

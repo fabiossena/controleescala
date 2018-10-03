@@ -1,6 +1,5 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaReposicaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
@@ -38,6 +38,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 	private IProjeto projetoService;
 	private IProjetoEscala projetoEscalaService;
 	private INotificacao notificacaoService;
+	private IAusenciaReposicao ausenciaReposicaoService;
 	
 	@Autowired
 	public AusenciaSolicitacaoService(
@@ -47,6 +48,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
 			INotificacao notificacaoService,
+			IAusenciaReposicao ausenciaReposicaoService, 
 			HttpSession session) {
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
@@ -55,6 +57,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		this.projetoEscalaService = projetoEscalaService;
 		this.projetoService = projetoService;
 		this.notificacaoService = notificacaoService;
+		this.ausenciaReposicaoService = ausenciaReposicaoService;
 	}
 	
 	@Override
@@ -143,8 +146,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 	
 	@Override
 	@Transactional
-	public String save(AusenciaSolicitacao solicitacao) {
-
+	public String save(AusenciaSolicitacao solicitacao) {		
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.getFuncao().getId()) {
 			solicitacao.setUsuario(usuarioLogado);
@@ -177,121 +179,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		//solicitacao.setProjetoEscalaPrestador(projetoEscalaPrestador);
     	solicitacao.setUsuarioAprovacao(projetoEscalaPrestador.getProjetoEscala().getMonitor());
     	
-    	if (solicitacao.getIndicarHorarioParaRepor()) {
-    		//if (teveAlteracaoReposicoes) {
-    		
-	    		if (solicitacao.getAusenciaReposicoes() == null) {
-	    			return "Preencha ao menos um horário de reposição";
-	    		}
-
-	    		if (solicitacao.getAusenciaReposicoes().stream().anyMatch(x->x.getProjetoEscalaTroca() != null && x.getProjetoEscalaTroca().getId() == solicitacao.getProjetoEscala().getId())) {
-	    			return "O projeto/escala da reposição não pode ser o mesmo da solicitação";
-	    		}
-
-	    		if (solicitacao.getAusenciaReposicoes().stream().anyMatch(x->x.getUsuarioTroca() != null &&  x.getUsuarioTroca().getId() == solicitacao.getUsuario().getId())) {
-	    			return "O prestador da reposição não pode ser o mesmo da solicitação";
-	    		}
-	    		
-    			//solicitacao.setAusenciaReposicoes(solicitacaoEditada.getAusenciaReposicoes());
-				
-    			for (int i = 0; i < solicitacao.getAusenciaReposicoes().size();i++) {
-
-					if (solicitacao.getId() > 0) {
-						solicitacao.getAusenciaReposicoes().get(i).setAusenciaSolicitacao(solicitacao);
-					}
-
-    				AusenciaReposicao reposicao = solicitacao.getAusenciaReposicoes().get(i);
-
-    				if (reposicao.getProjetoEscalaTroca().getId() == solicitacao.getProjetoEscala().getId()) {
-    			    	return "Escala selecionada na troca não pode ser a mesma da solicitação";				
-    				}
-    				
-    				if (projetoEscalaPrestadorService.findByProjetoEscalaIdAndPrestadorIdAndExcluido(
-    						reposicao.getProjetoEscalaTroca().getId(),  
-    		    			usuario.getId()) == null) {
-    			    	return "Escala selecionada na troca não pertence ao prestador principal da solicitação";
-    		    	}  
-    				
-    				solicitacao.getAusenciaReposicoes().get(i).setProjetoEscalaTroca(projetoEscalaService.findById(solicitacao.getAusenciaReposicoes().get(i).getProjetoEscalaTroca().getId()));
-    				
-    				if (reposicao.isIndicadoOutroUsuario()) {    					
-    					if (reposicao.getUsuarioTroca() == null || reposicao.getUsuarioTroca().getId() == 0) {
-    						return "Usuário troca não preenchido";
-    					}
-    					
-    					if (solicitacao.getUsuario().getId() == reposicao.getUsuarioTroca().getId()) {
-    						return "Usuário solicitação não pode ser o mesmo que o usuário troca";
-    					}
-    					
-    					//reposicao.setUsuarioTroca(usuarioService.findByUsuarioId(reposicao.getUsuarioTroca().getId()));
-    				}
-    				else {
-    					reposicao.setUsuarioTroca(null);
-    				}
-    			
-    				ProjetoEscalaPrestador projetoEscalaPrestadorTroca = null;
-    				ProjetoEscala projetoEscalaTroca = null;
-					if (reposicao.isIndicadoOutroUsuario()) {
-	    				projetoEscalaPrestadorTroca = projetoEscalaPrestadorService.findByProjetoEscalaIdAndPrestadorIdAndExcluido(
-	    						reposicao.getProjetoEscalaTroca().getId(),  
-	    						reposicao.getUsuarioTroca().getId());
-
-	    		    	if (projetoEscalaPrestadorTroca == null) {
-	    			    	return "Prestador troca não pertence a escala selecionada";
-	    		    	}  
-	    		    	
-	    				projetoEscalaTroca = projetoEscalaPrestadorTroca.getProjetoEscala();
-	    				projetoEscalaTroca.setProjeto(projetoEscalaPrestadorTroca.getProjeto());
-					}
-					else {
-	    				projetoEscalaTroca = projetoEscalaService.findById(
-	    						reposicao.getProjetoEscalaTroca().getId());
-	    				
-	    				if (projetoEscalaTroca.getProjeto() == null) {
-	    					projetoEscalaTroca.setProjeto(projetoService.findById(projetoEscalaTroca.getProjetoId()));
-	    				}
-					}
-					
-			    	errorMessage = this.validaDataHoraReposicao(solicitacao, projetoEscalaPrestadorTroca, projetoEscalaTroca, reposicao); 
-					if (!errorMessage.isEmpty()) {
-						return errorMessage;
-					}		
-    				
-
-    				if (reposicao.getAusenciaSolicitacao() != null && reposicao.getAusenciaSolicitacao().getId() == 0) {
-    					reposicao.setAusenciaSolicitacao(null);
-    				}		
-    				
-    				if(solicitacao.getAusenciaReposicoes().get(i).getId() < 1) {
-    					solicitacao.getAusenciaReposicoes().get(i).setId(0);
-    					break;
-    				}
-    				
-    				//if (solicitacaoEditada.getAtivo() == 1) {
-    					if (reposicao.isIndicadoOutroUsuario()) {
-	    					solicitacao.getAusenciaReposicoes().get(i).setUsuarioTroca(projetoEscalaPrestadorTroca.getPrestador());
-	    					solicitacao.getAusenciaReposicoes().get(i).setUsuarioAprovacao(projetoEscalaPrestadorTroca.getProjetoEscala().getMonitor());
-	    					solicitacao.getAusenciaReposicoes().get(i).setGerenciaAprovacao(projetoEscalaPrestadorTroca.getProjeto().getGerente());
-    					}
-    					else {
-	    					solicitacao.getAusenciaReposicoes().get(i).setUsuarioTroca(null);
-	    					solicitacao.getAusenciaReposicoes().get(i).setUsuarioAprovacao(projetoEscalaTroca.getMonitor());
-	    					solicitacao.getAusenciaReposicoes().get(i).setGerenciaAprovacao(projetoEscalaTroca.getProjeto().getGerente());    						
-    					}
-    					
-    					solicitacao.getAusenciaReposicoes().get(i).setAceitoUsuarioAprovacao(0);
-    					solicitacao.getAusenciaReposicoes().get(i).setAceitoUsuarioTroca(0);
-    					solicitacao.getAusenciaReposicoes().get(i).setDataAceiteUsuarioAprovacao(null);
-    					solicitacao.getAusenciaReposicoes().get(i).setDataAceiteUsuarioTroca(null);
-    					solicitacao.getAusenciaReposicoes().get(i).setMotivoRecusaUsuarioTroca(null);
-    					solicitacao.getAusenciaReposicoes().get(i).setMotivoRecusaUsuarioAprovacao(null);
-    				//}
-    			}
-    		//}
-    	}
-    	else {
-    		solicitacao.setAusenciaReposicoes(new ArrayList<AusenciaReposicao>());
-    	}
+    	this.ausenciaReposicaoService.validaReposicao(solicitacao, usuario);
     			
 		if (solicitacao.getUsuario() != null && solicitacao.getUsuario().getId() == 0) {
 			solicitacao.setUsuario(null);
@@ -322,90 +210,6 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		}
 		
 		//solicitacaoEditada = solicitacao;
-		
-		return "";
-	}
-
-	private String validaDataHoraReposicao(AusenciaSolicitacao solicitacao,
-			ProjetoEscalaPrestador projetoEscalaPrestadorTroca,
-			ProjetoEscala projetoEscalaTroca,
-			AusenciaReposicao reposicao) {
-		
-//		if (reposicao.getData() != null && 
-//				reposicao.getData().isBefore(solicitacao.getDataInicio())) {
-//			return "Data início da troca não pode ser menor do que a data inicio da solicitação";
-//		}
-//
-//		if (reposicao.getData() != null && solicitacao.getDataFim() != null &&
-//				reposicao.getData().isAfter(solicitacao.getDataFim())) {
-//			return "Data fim da troca não pode ser maior do que a data fim da solicitação";
-//		}
-//	
-		
-
-		if (reposicao.isIndicadoOutroUsuario()) {
-			
-	    	if (projetoEscalaPrestadorTroca == null) {
-		    	return "Prestador da troca nao não pertence a escala escolhida";
-	    	}  
-		}		
-		
-		if (reposicao.getData() != null && 
-				reposicao.getData().isBefore(projetoEscalaTroca.getProjeto().getDataInicio() )) {
-						//projetoEscalaPrestadorTroca == null ? projetoEscalaTroca.getProjeto().getDataInicio() : projetoEscalaPrestadorTroca.getDataInicio() )) {
-			return "Data início da reposição não pode ser menor do que a data inicio do projeto";
-		}
-
-		LocalDate dataFim = projetoEscalaTroca.getProjeto().getDataFim(); // projetoEscalaPrestadorTroca.getDataInicio()  // projetoEscalaPrestadorTroca == null ? projetoEscalaTroca.getProjeto().getDataFim() : projetoEscalaPrestadorTroca.getDataFim();
-		if (reposicao.getData() != null && dataFim != null &&
-				reposicao.getData().isAfter(dataFim)) {
-			return "Data fim da reposição não pode ser maior do que a data fim do projeto";
-		}
-		
-
-		if (!Utilities.dataEstaEntreDiasDaSemana(
-				reposicao.getData(),
-				projetoEscalaTroca.getDiaSemanaDe().getId(), 
-				projetoEscalaTroca.getDiaSemanaAte().getId())) {
-			return "Dia da semana da reposição deve estar entra os dias da semana da escala do projeto";
-		}
-		
-
-		if (reposicao.getHoraInicio() == "") {
-			return "Nas reposições o campo 'Hora início' deve ser preenchido";
-		}
-		
-		if (reposicao.getHoraFim() == "") {
-			return "Nas reposições o campo 'Hora fim' deve ser preenchido";
-		}
-
-		if (!Utilities.validarHora(reposicao.getHoraInicio())) {
-			return "Nas reposições o campo 'Hora início' esta inválido";
-		}
-		if (!Utilities.validarHora(reposicao.getHoraFim())) {
-			return "Nas reposições o campo 'Hora fim' esta inválido";
-		}
-		    				
-		if (Utilities.horaToInt(reposicao.getHoraInicio()) > Utilities.horaToInt(reposicao.getHoraFim())) {
-			return "Nas reposições o campo 'Hora início' deve ser menor que a 'Hora fim'";
-		}
-		    				
-		if (Utilities.horaToInt(reposicao.getHoraInicio()) < Utilities.horaToInt(projetoEscalaTroca.getHoraInicio())) {
-			return "Nas reposições o campo 'Hora início' deve ser maior que a 'Hora início' da escala selecionada na troca";
-		}
-		
-		if (Integer.parseInt(reposicao.getHoraFim().replace(":", "")) > Integer.parseInt(projetoEscalaTroca.getHoraFim().replace(":", ""))) {
-			return "Nas reposições o campo 'Hora fim' deve ser menor que a 'Hora fim' da escala selecionada na troca";
-		}
-
-		
-		if (Integer.parseInt(reposicao.getHoraInicio().replace(":", "")) < Integer.parseInt(projetoEscalaTroca.getHoraInicio().replace(":", ""))) {
-			return "Nas reposições o campo 'Hora início' deve ser maior que a 'Hora início' da escala selecionada na troca";
-		}
-		
-		if (Integer.parseInt(reposicao.getHoraFim().replace(":", "")) > Integer.parseInt(projetoEscalaTroca.getHoraFim().replace(":", ""))) {
-			return "Nas reposições o campo 'Hora fim' deve ser menor que a 'Hora fim' da escala selecionada na troca";
-		}
 		
 		return "";
 	}
