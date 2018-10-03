@@ -30,6 +30,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPr
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuarioTurnosDisponiveis;
+import com.packageIxia.sistemaControleEscala.models.projeto.HoraExtrato;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
@@ -101,19 +102,34 @@ public class UsuarioController {
 			@RequestParam(value = "ano", defaultValue = "0") int ano,
 			@RequestParam(value = "ano", defaultValue = "0") int mes,
     		HttpServletRequest request) {		
-		return this.getExtrato(ano, mes, request);
+		return this.getExtrato(0, ano, mes, request);
+	}
+	
+	@GetMapping("/extratoHoras/{id}")
+	public ModelAndView extratoUsuario(
+			@PathVariable(value = "id") long id,
+    		HttpServletRequest request) {		
+		return this.getExtrato(id, 0, 0, request);
 	}
 
-	private ModelAndView getExtrato(int ano, int mes, HttpServletRequest request) {
+	private ModelAndView getExtrato(long id, int ano, int mes, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("usuario/usuarioHoraExtratoView");
 		this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
-		
+
+    	if (id > 0 &&
+			this.usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId() 
+			&& this.usuarioLogado.getId() != id) {
+    		ModelAndView erroModelView = new ModelAndView("redirect:/error");
+    		erroModelView.addObject("errorMessage", "Não permitido acesso a tela de usuários");
+            return erroModelView;
+    	}
+    	
 		ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
 		ano = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
 
 		mv.addObject("anos", new int[] {2018, 2019});
 		mv.addObject("meses", new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-		mv.addObject("extratoHoras", this.horaExtratoService.findAllByUsuarioIdAndData(this.usuarioLogado.getId(), ano, mes));
+		mv.addObject("extratoHoras", this.horaExtratoService.findAllByUsuarioIdAndData(id == 0 ? this.usuarioLogado.getId() : id, ano, mes));
 		
 		return mv;
 	}
@@ -197,6 +213,12 @@ public class UsuarioController {
     	this.folgasSemanaisPlanejadas = this.usuarioTurnosDisponiveisService.getFolgasSemanaisPlanejadasUsuario(this.usuarioEditado.getId());
     	modelViewCadastro.addObject("folgasSemanaisPlanejadas", folgasSemanaisPlanejadas);
     	modelViewCadastro.addObject("usuario", usuarioEditado); 
+    	
+    	HoraExtrato horaExtrato = horaExtratoService.findLastByUsuarioId(this.usuarioEditado.getId());
+    	if (horaExtrato != null) {
+    		modelViewCadastro.addObject("horasDisponiveisAno", Utilities.Round((double)horaExtrato.getMinutosTotalDisponiveis()/60));
+    		modelViewCadastro.addObject("diasDisponiveisAno", Utilities.Round((double)horaExtrato.getMinutosTotalDisponiveis()/60/6));
+    	}
     	
     	System.out.println("PeriodoDisponivel");
 		System.out.println(usuarioEditado.getPeriodoDisponivelId());

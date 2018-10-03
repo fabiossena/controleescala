@@ -7,10 +7,24 @@
 <head>
     <title>Ixia - Sistema de Escala - Cadastro inicial</title>
     <jsp:include page="shared/headerPartialView.jsp"/>
+    <script type="text/javascript">	
+        $(document).ready(function() {
+        	$('#no-js').hide();
+        	$('.yes-js').show();
+        });
+    </script>
 </head>
-<body onload="$('#email').focus()">
-    <jsp:include page="shared/navbarPartialView.jsp"/>
-    <div class="container">
+<body onload="$('#no-js').hide();$('.yes-js').show();$('#email').focus()">
+
+    <div id="no-js" style="position: absolute; top: 0;">
+        Javascript não habilitado, por favor atualize sua tela ou verifique suas configurações.	
+    </div>
+    
+    <span class="yes-js" style="display: none;">
+        <jsp:include page="shared/navbarPartialView.jsp"/>
+    </span>
+    
+    <div class="container yes-js" style="display: none;	">
         <div style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
             <div class="panel panel-info">
                 <div class="panel-heading">

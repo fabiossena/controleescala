@@ -19,20 +19,23 @@
      		<form:input path="matricula" class="form-control" name="matricula" placeholder="matricula" readOnly="${isDisableCamposChaves || isDisableTodosCampos}" maxlength="50" />
         </div>
     </div>                     
-                     
+                    
+    <c:if test="${horasDisponiveisAno!=null && horasDisponiveisAno!=0}"> 
     <div class="form-group">
-        <label for="folgasDisponiveisAno" class="col-md-12 control-label">Folgas disponívels no ano</label>
+        <label for="folgasDisponiveisAno" class="col-md-12 control-label">Horas disponívels no ano</label>
         <div class="col-md-9">
-            <input readOnly value="${usuario.folgasDisponiveisAno}" class="form-control" />
+            <input readOnly value="${horasDisponiveisAno} horas / ${diasDisponiveisAno} dias(de 6 horas de trabalho)" class="form-control" />
+            <a style="font-size: 10pt" href="<c:url value='/extratoHoras/' />${usuario.id}">clique aqui para ver o extrato de horas</a>
         </div>
-    </div>                            
+    </div>
+    </c:if>                            
                      
-    <div class="form-group">
+   <%--  <div class="form-group">
         <label for="bancoHoras" class="col-md-12 control-label">Banco de horas</label>
         <div class="col-md-9">
             <input readOnly value="${usuario.bancoHoras}" class="form-control" />
         </div>
-    </div>		                           
+    </div>	 --%>	                           
                      
     <div class="form-group">
         <label for="valorMinuto" class="col-md-12 control-label">Valor minuto</label>

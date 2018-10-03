@@ -75,6 +75,14 @@
     	return url
     }
     
+    function toggleCard(e){
+    	if (e.nextElementSibling.id != $('.card:visible').attr("id")) {
+    		$('.card').hide();
+   		} 
+    	
+    	$(e.nextElementSibling).toggle(); 
+    } 
+    </script>
     </script>
 </head>
 <body>

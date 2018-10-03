@@ -319,17 +319,19 @@
 								<form:textarea path="observacao" class='form-control'
 									placeholder2="observações" disabled="${isDisableCampos}" />
 							</div>
-
-
+							
+							<c:if test="${solicitacao.id != 0}">
+							<h6 class="col-sm-12">Detalhes horas</h6>
 							<c:if
 								test="${isAdministracao || solicitacao.usuario.id == usuarioLogado.id || isMonitoramento || isGerencia}">
 								<div
 									class="text-primary col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"
-									style="font-size: 10pt">
-									Saldo de horas/dias atual: 0 dias (para verificação antes de
-									aprovar esta solicitação)<br>
+									style="font-size: 10pt">									
+									Saldo de horas: ${horasDisponiveisAno}hrs<c:if test="${horasDisponiveisAno> 0}"> / ${diasDisponiveisAno} dias(de 6 horas de trabalho)</c:if> - <i>Para verificação antes de aprovar esta solicitação</i><br>
 								</div>
 							</c:if>
+							</c:if>
+							
 							<c:if test="${solicitacao.id != 0}">
 
 								<c:set var="totalHorasReposicao">0</c:set>
@@ -356,6 +358,8 @@
 								</div>
 							</c:if>
 
+							<c:if test="${solicitacao.id != 0}">
+							<h6 class="col-sm-12">Detalhes aprovações</h6> 
 							<c:forEach items="${solicitacao.dadosAcesso.dadosAprovacao}"
 								var="aprovacao">
 								<c:if
@@ -375,6 +379,7 @@
 										style="font-size: 10pt">${aprovacao.nome}</div>
 								</c:if>
 							</c:forEach>
+							</c:if> 
 							<br> <br>
 
 

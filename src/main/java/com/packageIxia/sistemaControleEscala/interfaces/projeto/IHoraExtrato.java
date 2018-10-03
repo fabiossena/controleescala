@@ -10,5 +10,6 @@ import com.packageIxia.sistemaControleEscala.models.projeto.HoraExtrato;
 public interface IHoraExtrato {
 	List<HoraExtrato> findAllByUsuarioId(Long usuarioId);
 	List<HoraExtrato> findAllByUsuarioIdAndData(Long usuarioId, int ano, int mes);
+	HoraExtrato findLastByUsuarioId(Long usuarioId);
 	String save(HoraExtrato horaExtrato);
 }

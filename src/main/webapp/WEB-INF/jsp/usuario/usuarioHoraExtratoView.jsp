@@ -72,6 +72,7 @@
 				        </tbody>
 				    </table>
 				    <div  style="text-align: right;"><h4>Total ${total/60} horas</h4></div>
+				    <div  style="text-align: right;"><h5>Total ${String.format("%1.2f", total/60/6)} dias <br>(de 6 horas de trabalho)</h5></div>
 				</div>
 			
 			</div>

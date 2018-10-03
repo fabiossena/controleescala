@@ -12,16 +12,21 @@
 		test="${(solicitacao.dataFim == null ? solicitacao.dataInicio == dia.data : dia.data <= solicitacao.dataFim && dia.data >= solicitacao.dataInicio) }">
 		
 		<br>
-		<b>Solicitação folga</b>
+		<h5>Solicitação folga</h5>
 		<button style="font-size: 10pt; font-weight: bold"
 			class="btn btn-sm btn-warning"
-			onclick="$(this.nextElementSibling).toggle();"
+			onclick="toggleCard(this)"
 			style="margin: 1px">detalhes</button>
 
 		<div id="card-solicitacao${solicitacao.id}${indexString}"
 			class="card bg-light" style="position: absolute; display: none">
-			<div class="card-body">
 
+		   <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+		   	<span aria-hidden="true">&times;</span>
+		   	</button>
+		   	
+			<div class="card-body">
+			   	
 				<!-- Data inicio e fim -->
 				<fmt:parseDate pattern="yyyy-MM-dd"
 					value="${solicitacao.dataInicio}"
@@ -43,7 +48,7 @@
 				</c:if>
 				
 				<c:set var="dataAusencia">
-					<c:if test="${solicitacao.dataFim == null}">Data: </b>${dataInicio}</c:if>
+					<c:if test="${solicitacao.dataFim == null}">${dataInicio}</c:if>
 					<c:if test="${solicitacao.dataFim != null}">De ${dataInicio} até ${dataFim}</c:if>
 				</c:set>
 				

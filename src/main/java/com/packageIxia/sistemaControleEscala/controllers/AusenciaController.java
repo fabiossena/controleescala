@@ -27,12 +27,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraExtrato;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoSolicitacaoAusencia;
+import com.packageIxia.sistemaControleEscala.models.projeto.HoraExtrato;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
@@ -49,7 +51,8 @@ public class AusenciaController {
 	private HttpSession session;
 	private IProjetoEscala projetoEscalaService;
 	private IAusenciaReposicao ausenciaReposicaoService;
-	private Usuario usuarioLogado;	
+	private Usuario usuarioLogado;
+	private IHoraExtrato horaExtratoService;	
 	
 	@Autowired
 	public AusenciaController(
@@ -58,12 +61,14 @@ public class AusenciaController {
 		IProjetoEscalaPrestador projetoEscalaPrestadorService,
 		IProjetoEscala projetoEscalaService,
 		IReferencias referenciasService,
+		IHoraExtrato horaExtratoService,
 		HttpSession session) {
 		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.projetoEscalaService = projetoEscalaService;
 		this.referenciasService = referenciasService;
 		this.ausenciaReposicaoService = ausenciaReposicaoService;
+		this.horaExtratoService = horaExtratoService;
 		this.session = session;
 	}
 
@@ -240,7 +245,17 @@ public class AusenciaController {
 		this.setProjetoEscalaTroca(solicitacaoEditada, modelViewSolicitacao);
 			
 		modelViewSolicitacao.addObject("solicitacao", this.solicitacaoEditada);
-		
+
+    	HoraExtrato horaExtrato = horaExtratoService.findLastByUsuarioId(this.solicitacaoEditada.getUsuario().getId());
+    	if (horaExtrato != null) {
+    		modelViewSolicitacao.addObject("horasDisponiveisAno", Utilities.Round((double)horaExtrato.getMinutosTotalDisponiveis()/60));
+    		modelViewSolicitacao.addObject("diasDisponiveisAno", Utilities.Round((double)horaExtrato.getMinutosTotalDisponiveis()/60/6));
+    	}
+    	else {
+    		modelViewSolicitacao.addObject("horasDisponiveisAno", 0);
+    		modelViewSolicitacao.addObject("diasDisponiveisAno", 0);
+    	}
+    	
 		return modelViewSolicitacao;
 	}
 

@@ -11,18 +11,23 @@
 	<c:if test="${reposicao.data == dia.data}"> 
 	
 		<br>
-		<b>Reposição solicitada</b>
+		<b>Reposição solicitada</b> 
 
 		<button style="font-size: 10pt; font-weight: bold"
 			class="btn btn-sm btn-warning"
-			onclick="$(this.nextElementSibling).toggle();"
+			onclick="toggleCard(this)"
 			style="margin: 1px">detalhes</button>
 
 		<div
 			id="card-reposicao${reposicao.ausenciaSolicitacao.id}"
 			class="card bg-light" style="position: absolute; display: none">
-			<div class="card-body">
 
+		   <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
+		   	<span aria-hidden="true">&times;</span>
+		   	</button>
+		   	
+			<div class="card-body">
+			   	
 				<b>Solicitação recebida</b> <a target="_blank"
 					style="font-size: 10pt; font-weight: bold; margin: 1px"
 					class="btn btn-sm btn-warning"
@@ -51,7 +56,7 @@
 					
 					<c:if test='${reposicao.indicadoOutroUsuario}'>
 						<div style="font-size: 10pt">
-							<b>Solicitação para:</b>
+							<b>Trocará com o prestador:</b>
 							${reposicao.usuarioTroca.nomeCompletoMatricula}
 						</div> 
 						
@@ -100,7 +105,7 @@
 				</c:if>
 				
 				<c:set var="dataAusencia">
-					<c:if test="${reposicao.ausenciaSolicitacao.dataFim == null}">Data: </b>${dataInicio}</c:if>
+					<c:if test="${reposicao.ausenciaSolicitacao.dataFim == null}">${dataInicio}</c:if>
 					<c:if test="${reposicao.ausenciaSolicitacao.dataFim != null}">De ${dataInicio} até ${dataFim}</c:if>
 				</c:set>
 				
@@ -187,8 +192,6 @@
 				<c:if test="${selecionarReposicao == 1}">id="selecionarReposicao"</c:if>
 				value="${reposicao.ausenciaSolicitacao.id}" />
 
-
-			<%-- <div <c:if test="${selecionarSolicitacao == 1}">id="selecionar"</c:if> class="alert alert-xl alert-danger selecionar" style="margin: 5px 0 5px 0">Reposição selecionada</div> --%>
 			<c:set var="selecionarReposicao">0</c:set>
 		</c:if>
 		

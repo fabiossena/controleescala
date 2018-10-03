@@ -26,6 +26,11 @@ public class HoraExtratoService implements IHoraExtrato {
 	public List<HoraExtrato> findAllByUsuarioIdAndData(Long usuarioId, int ano, int mes) {
 		return horaExtratoDao.findAllByUsuarioId(usuarioId);
 	}
+	
+	@Override
+	public HoraExtrato findLastByUsuarioId(Long usuarioId) {
+		return horaExtratoDao.findLastByUsuarioId(usuarioId);
+	}
 
 	@Override
 	public String save(HoraExtrato horaExtrato) {
