@@ -29,16 +29,16 @@ public class CadastroInicialController {
 	
     @GetMapping("/cadastroinicial")
 	public ModelAndView cadastro(
-			@RequestParam(value="matricula", defaultValue="") String matricula,
-			@RequestParam(value="email", defaultValue="") String email) {
+			@RequestParam(value="matriculacadastro", defaultValue="") String matricula,
+			@RequestParam(value="emailcadastro", defaultValue="") String email) {
 
     	mv.addObject("result", null);
     	mv.addObject("errorMessage", null);
-    	
+		
     	CadastroInicialPage cadastro = new CadastroInicialPage();
     	cadastro.setMatricula(matricula);
     	cadastro.setEmail(email);
-		mv.addObject("cadastro", cadastro); 
+    	mv.addObject("cadastro", cadastro); 
 		return mv;
 	}
     

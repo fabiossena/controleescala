@@ -47,7 +47,7 @@ $(document).ready(function() {
         			   nivel = "warning";
         		   }
         		   
-        		   html += '<p class="border alert alert-' + nivel + '">' + value.titulo + '<br>' + value.mensagem + '<button onclick="ler(this, ' + value.id + ')"  type="button" class="bt-close close" aria-label="Close"><span aria-hidden="true">&times;</span></button>></p>'; 
+        		   html += '<p class="border alert alert-' + nivel + '">' + value.titulo + '<br>' + value.mensagem + '<button onclick="ler(this, ' + value.id + ')"  type="button" class="bt-close close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>'; 
         		});
 				
 				$("#notificacao").html(html); 

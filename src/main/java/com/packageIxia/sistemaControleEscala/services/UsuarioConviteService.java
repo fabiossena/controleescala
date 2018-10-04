@@ -89,9 +89,9 @@ public class UsuarioConviteService implements IUsuarioConvite {
 		this.usuarioEmailPrimeiroAcessoDao.save(usuarioConvite);
 
 		String url = request.getRequestURL().toString().replace("convite", "");
-		String mensagem = "Olá, acabamos de te enviar um convite de acesso ao sistema de escala Ixia."
+		String mensagem = "Olá, acabamos de te enviar um convite de acesso ao sistema de intranet da Ixia."
 				+ "<br>"
-        		+ " Faça seu cadastro clicando aqui <a href='" + url + "cadastroinicial?matricula=" + usuarioConvite.getMatricula() + "&email=" + usuarioConvite.getEmail() + "'>" + url + "cadastroinicial</a> usando a matricula " + usuarioConvite.getMatricula() + " e o seu e-mail (" + usuarioConvite.getEmail() + ")."
+        		+ " Faça seu cadastro clicando aqui <a href='" + url + "cadastroinicial?matriculacadastrado=" + usuarioConvite.getMatricula() + "&emailcadastrado=" + usuarioConvite.getEmail() + "'>" + url + "cadastroinicial</a> usando a matricula " + usuarioConvite.getMatricula() + " e o seu e-mail (" + usuarioConvite.getEmail() + ")."
         		+ "<br>"
         		+ "Após o login poderá ser feito neste endereço <a href='" + url + "login'>" + url + "login</a>"
         		+ "<br><br>"
