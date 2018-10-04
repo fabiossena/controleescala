@@ -101,6 +101,7 @@ public class ProjetoEscala {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataExcluido;
 
+	// todo: add transient again
 	private int quantidadePrestadoresReal;
 
 	transient private List<AusenciaReposicao> ausenciaReposicoes;

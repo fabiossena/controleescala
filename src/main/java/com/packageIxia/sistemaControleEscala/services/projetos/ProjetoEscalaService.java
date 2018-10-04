@@ -109,8 +109,6 @@ public class ProjetoEscalaService implements IProjetoEscala {
 			}
 		}
 		
-		// todo: remove
-		escala.setQuantidadePrestadoresReal(0);
 		this.projetoEscalaDao.save(escala);
 		return "";
 	}
