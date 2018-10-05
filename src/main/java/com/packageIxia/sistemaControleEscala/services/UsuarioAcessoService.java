@@ -179,7 +179,7 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		String url = request.getRequestURL().toString().replace("esqueceuSenha", "");
 		String mensagem = "Olá, segue sua senha de acesso ao sistema de escala Ixia."
 				+ "<br>"
-        		+ " Faça o login no endereço <a href='" + url + "login?matricula=" + esqueceuSenha.getMatricula().trim() + "'>" + url + "login</a> usando a matrícula " + esqueceuSenha.getMatricula().trim() + " e senha " + usuario.getSenha()
+        		+ " Faça o login no endereço <a href='" + url + "login?matriculacadastro=" + esqueceuSenha.getMatricula().trim() + "'>" + url + "login</a> usando a matrícula " + esqueceuSenha.getMatricula().trim() + " e senha " + usuario.getSenha()
         		+ "<br><br>"
         		+ "Atenciosamente administração";
 		

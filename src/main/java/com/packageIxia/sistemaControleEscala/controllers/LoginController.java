@@ -29,7 +29,7 @@ public class LoginController {
 	
     @GetMapping(value = "/login")
 	public ModelAndView login(
-			@RequestParam(value="matricula", defaultValue="") String matricula)  {
+			@RequestParam(value="matriculacadastro", defaultValue="") String matricula)  {
 		System.out.println("login inicializado");
 		LoginPage login = new LoginPage();
 		login.setMatricula(matricula);
