@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.packageIxia.sistemaControleEscala.models.referencias.CentroCusto;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 
 @Entity
@@ -132,13 +135,16 @@ public class Usuario {
 	@Size(max = 250)
     private String nomeCompletoCadastradoBanco;
     
-    private int funcaoId;
-    
     private int periodoDisponivelId;
 
-    @Transient
+	@ManyToOne
+	@JoinColumn(name="funcaoId") 
 	private Funcao funcao;
 
+	@ManyToOne
+	@JoinColumn(name="centroCustoId") 
+	private CentroCusto centroCusto;
+	
 	private boolean excluido;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -152,7 +158,7 @@ public class Usuario {
 	
 	private int folgasDisponiveisAno;
 
-	private int valorMinuto;
+	private double valorMinuto;
 	
 	public long getId() {
 		return id;
@@ -396,12 +402,12 @@ public class Usuario {
 		this.nomeCompletoCadastradoBanco = nomeCompletoCadastradoBanco;
 	}
 
-	public int getFuncaoId() {
-		return funcaoId;
+	public Funcao getFuncao() {
+		return funcao;
 	}
 	
-	public void setFuncaoId(int funcaoId) {
-		this.funcaoId = funcaoId;
+	public void setFuncao(Funcao funcao) {
+		this.funcao = funcao;
 	}
 
 	public boolean isAtivo() {
@@ -418,14 +424,6 @@ public class Usuario {
 
 	public void setPeriodoDisponivelId(int periodoDisponivelId) {
 		this.periodoDisponivelId = periodoDisponivelId;
-	}
-
-	public void setFuncao(Funcao funcao) {
-		this.funcao = funcao;
-	}
-	
-	public Funcao getFuncao() {  	
-		return this.funcao;
 	}
 
 	@Transient
@@ -519,11 +517,24 @@ public class Usuario {
 		this.folgasDisponiveisAno = folgasDisponiveisAno;
 	}
 
-	public int getValorMinuto() {
-		return valorMinuto;
+	public double getValorMinuto() {
+		double valorMinuto = this.valorMinuto;
+		if (valorMinuto == 0) {
+			return this.getFuncao().getValorMinuto();
+		}
+		
+		return this.valorMinuto;
 	}
 
-	public void setValorMinuto(int valorMinuto) {
+	public void setValorMinuto(double valorMinuto) {
 		this.valorMinuto = valorMinuto;
+	}
+
+	public CentroCusto getCentroCusto() {
+		return centroCusto;
+	}
+
+	public void setCentroCusto(CentroCusto centroCusto) {
+		this.centroCusto = centroCusto;
 	}
 }

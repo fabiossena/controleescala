@@ -7,18 +7,18 @@ import com.packageIxia.sistemaControleEscala.models.referencias.Cidade;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemana;
 import com.packageIxia.sistemaControleEscala.models.referencias.Estado;
-import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.referencias.Pais;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.TipoApontamentoHoras;
 
 public interface IReferencias {
 
 	List<Banco> getBancos();
 
-	List<Funcao> getFuncoes();
+	List<PerfilAcesso> getPerfilAcessos();
 
-	List<Funcao> getFuncoes(int tipo);
+	List<PerfilAcesso> getPerfilAcessos(int tipo);
 
 	List<Pais> getPaises();
 

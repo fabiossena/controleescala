@@ -5,15 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraAprovacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraTrabalhadaDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
@@ -22,7 +19,7 @@ import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacao
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -33,7 +30,6 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 	private HttpSession session;
 	private IProjeto projetoService;
 	private HoraTrabalhadaDao horaTrabalhadaDao;
-	private IFuncaoConfiguracao funcaoConfiguracaoService;
 	private INotificacao notificacaoService;
 
 	@Autowired
@@ -42,13 +38,11 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 			HoraTrabalhadaDao horaTrabalhadaDao,
 			IProjeto projetoService,
 			IProjetoEscalaPrestador projetoEscalaPrestadorService,
-			IFuncaoConfiguracao funcaoConfiguracaoService,
 			INotificacao notificacaoService,
 			HttpSession session) {
 		this.horaAprovacaoDao = horaAprovacaoDao;
 		this.horaTrabalhadaDao = horaTrabalhadaDao;
 		this.projetoService = projetoService;
-		this.funcaoConfiguracaoService = funcaoConfiguracaoService;
 		this.session = session;
 		this.notificacaoService = notificacaoService;
 	}
@@ -67,7 +61,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 		}
 		
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.getFuncao().getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
 			return this.horaAprovacaoDao.findByPrestadorId(usuarioLogado.getId());
 		}
 
@@ -204,10 +198,10 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		if (aprovacaoHora.getDadosAcessoAprovacaoHoras() == null) {
-			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado, this.funcaoConfiguracaoService.findAll()));
+			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado));
 		}
 		
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.getFuncao().getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
 			this.horaAprovacaoDao.updateAprovacaoResponsavel(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
 			if (!aprovar) {
 				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
@@ -237,7 +231,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 			}	
 		}
 
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.getFuncao().getId() && aprovacaoHora.getHorasTrabalhadas().stream().anyMatch(x->x.getProjetoEscala().getMonitor().getId() ==  usuarioLogado.getId())) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() && aprovacaoHora.getHorasTrabalhadas().stream().anyMatch(x->x.getProjetoEscala().getMonitor().getId() ==  usuarioLogado.getId())) {
 
 			if (aprovacaoHora.getAceiteAprovador() == 2) {
 				this.horaAprovacaoDao.updateAprovacaoResponsavel(0, id, aprovacaoHora.getAprovador().getId(), "");

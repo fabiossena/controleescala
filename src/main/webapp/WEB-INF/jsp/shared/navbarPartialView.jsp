@@ -132,19 +132,20 @@ $(document).ready(function() {
 			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/projetos' />">Cadastro projetos</a>
 		      		</li>	
 				</c:if>			      
-	     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/dashboard')}">active</c:if>">
-		  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/dashboard' />">Dashboard</a>
-	      		</li>	
+				<c:if test="${!isFinanceiro}">
+		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/dashboard')}">active</c:if>">
+			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/dashboard' />">Dashboard</a>
+		      		</li>	
+				</c:if>			      
 				<c:if test="${isAtendimento || isAdministracao || isMonitoramento || isGerencia}">			      
 		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/ausencia')}">active</c:if>">
 			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/ausencias' />">Ausências</a>
 		      		</li>	
-				</c:if>	
-							      
+				</c:if>	      
 	     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/aprova')}">active</c:if>">
 		  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/aprovacaoHoras' />">Aprovação horas</a>
 	      		</li>	
-				<c:if test="${isAtendimento || isMonitoramento}">			      
+				<c:if test="${isAtendimento || isMonitoramento || isAdministracao}">			      
 		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/extratoHoras')}">active</c:if>">
 			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/extratoHoras' />">Extrato banco de horas</a>
 		      		</li>	

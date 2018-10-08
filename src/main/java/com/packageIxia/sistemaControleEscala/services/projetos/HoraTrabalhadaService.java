@@ -19,7 +19,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
@@ -85,7 +85,7 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 	public String save(long escalaId, int tipoAcao, boolean novoSomenteDataInicial, String motivoAcao) throws Exception {
 		// tipoAcao | 1 = start, 2 = pause
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
-		if (usuarioLogado.getFuncaoId() != FuncaoEnum.atendimento.getFuncao().getId() && usuarioLogado.getFuncaoId() != FuncaoEnum.monitoramento.getFuncao().getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.atendimento.getId() && usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.monitoramento.getId()) {
 			return "Não permitido efetuar esta ação com o usuário atual";
 		}
 		

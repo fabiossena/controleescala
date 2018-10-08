@@ -13,13 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
-import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosAcesso;
-import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioDadosPrincipais;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 import com.packageIxia.sistemaControleEscala.services.UsuarioAcessoService;
 
@@ -28,8 +26,6 @@ public class UsuarioService implements IUsuario {
 
     private UsuarioDao usuarioDao;
 	private UsuarioAcessoService usuarioAcessoService;
-    private IUsuarioDadosAcesso usuarioDadosAcessoService;
-    private IUsuarioDadosPrincipais usuarioDadosPrincipaisService;
 	private IProjeto projetoService;
 	private IProjetoEscala projetoEscalaService;
 	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
@@ -38,16 +34,12 @@ public class UsuarioService implements IUsuario {
     public UsuarioService(
     		UsuarioDao usuarioDao,
     		UsuarioAcessoService usuarioAcessoService,
-    		IUsuarioDadosAcesso usuarioDadosAcessoService,
-    		IUsuarioDadosPrincipais usuarioDadosPrincipaisService,
     		IProjeto projetoService,
     		IProjetoEscala projetoEscalaService,
     		IProjetoEscalaPrestador projetoEscalaPrestadorService) 
     {
     	this.usuarioDao = usuarioDao;
     	this.usuarioAcessoService = usuarioAcessoService;
-    	this.usuarioDadosAcessoService = usuarioDadosAcessoService;
-    	this.usuarioDadosPrincipaisService = usuarioDadosPrincipaisService;
     	this.projetoService = projetoService;
     	this.projetoEscalaService = projetoEscalaService;
     	this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
@@ -61,13 +53,13 @@ public class UsuarioService implements IUsuario {
 		String error = "";
 
 		this.higienizaUsuario(usuario);
-		
-		error = this.usuarioDadosPrincipaisService.validateUsuario(usuario);
+
+		error = this.usuarioAcessoService.validateCadastroInicialUsuario(usuario);
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
 
-		error = this.usuarioDadosAcessoService.validateUsuario(usuario);
+		error = this.usuarioAcessoService.validateLoginUsuario(usuario);
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
@@ -77,13 +69,11 @@ public class UsuarioService implements IUsuario {
 			return error;
 		}
 
-		System.out.println("Id");
-		System.out.println(usuario.getId());
 		this.usuarioDao.save(usuario);
 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		if (usuarioLogado.getId() == usuario.getId()) {
-			this.usuarioAcessoService.LoginUsuario(session, usuario);
+			this.usuarioAcessoService.LoginUsuario(usuario);
 			session.setAttribute("usuarioLogado", usuario);
 		}
 		
@@ -120,8 +110,12 @@ public class UsuarioService implements IUsuario {
     			return "Não permitida a alteração do campo matrícula pelo usuário atual";
     		}
     		
-    		if (usuario.getFuncaoId() != usuarioLogado.getFuncaoId()) {
+    		if (usuario.getFuncao().getId() != usuarioLogado.getFuncao().getId()) {
     			return "Não permitida a alteração do campo função pelo usuário atual";
+    		}
+    		
+    		if (usuario.getCentroCusto().getId() != usuarioLogado.getCentroCusto().getId()) {
+    			return "Não permitida a alteração do campo centro de custo pelo usuário atual";
     		}
 
     		if (usuario.isAtivo() != usuarioLogado.isAtivo()) {
@@ -135,14 +129,11 @@ public class UsuarioService implements IUsuario {
 
 	@Override
 	public List<Usuario> findAllByUsuarioLogado(Usuario usuarioLogado) {
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
 			return new ArrayList<Usuario>();
     	}
     	
     	List<Usuario> usuarios = Utilities.toList(this.usuarioDao.findAllByExcluido(false));
-    	// refresh
-    	usuarios.stream().forEach(x -> x.setFuncao(FuncaoEnum.GetFuncaoFromId(x.getFuncaoId())));
-    	System.out.println(usuarios.get(0).getFuncao().getNome());
 		return usuarios;
 	}
 
@@ -152,8 +143,14 @@ public class UsuarioService implements IUsuario {
 	}
 
 	@Override
-	public List<Usuario> findByFuncaoId(int id) {
-		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByFuncaoIdAndExcluido(id, false));
+	public List<Usuario> findByPerfilAcessoId(int id) {
+		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(id, false));
+		return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Usuario> findByPerfilAcessoId(int[] ids) {
+		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(ids, false));
 		return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
 	}
 

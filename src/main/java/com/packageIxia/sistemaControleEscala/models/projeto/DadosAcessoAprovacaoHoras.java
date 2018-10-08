@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 public class DadosAcessoAprovacaoHoras {
@@ -26,13 +26,13 @@ public class DadosAcessoAprovacaoHoras {
 		
 	}
 	
-	public DadosAcessoAprovacaoHoras(HoraAprovacao horaAprovacao, Usuario usuarioLogado, List<FuncaoConfiguracao> funcaoConfiguracoes) {
+	public DadosAcessoAprovacaoHoras(HoraAprovacao horaAprovacao, Usuario usuarioLogado) {
 		this.usuarioLogado = usuarioLogado;	
 		
 		setDadosAcesso(horaAprovacao);
 		
 		if (horaAprovacao.getHorasTrabalhadas() != null && horaAprovacao.getHorasTrabalhadas().size() > 0) {
-			setDadosAprovacao(horaAprovacao.getHorasTrabalhadas(), funcaoConfiguracoes);
+			this.setDadosAprovacao(horaAprovacao.getHorasTrabalhadas());
 		}
 	}
 
@@ -56,11 +56,11 @@ public class DadosAcessoAprovacaoHoras {
 
 		this.dadosAcesso = false;
 		this.aprovador = new Usuario();
-    	if (!(usuarioLogado.getFuncaoId() != FuncaoEnum.monitoramento.funcao.getId() &&
-			usuarioLogado.getFuncaoId() != FuncaoEnum.atendimento.funcao.getId())) {
+    	if (!(usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.monitoramento.getId() &&
+			usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.atendimento.getId())) {
 
     		this.dadosAcesso = true;
-	    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+	    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getPerfilAcesso().getId()) {
 	    		
 	    		List<HoraTrabalhada> hr = 
 	    				horaAprovacao.getHorasTrabalhadas().stream().filter(x->
@@ -73,7 +73,7 @@ public class DadosAcessoAprovacaoHoras {
 	    	}
     	}
 
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
     		List<HoraTrabalhada> hr = horaAprovacao.getHorasTrabalhadas();
     		
     		this.aprovador = usuarioLogado;
@@ -83,19 +83,18 @@ public class DadosAcessoAprovacaoHoras {
     	}
 	}
 	
-	public void setDadosAprovacao(List<HoraTrabalhada> horasTrabalhadas, List<FuncaoConfiguracao> funcaoConfiguracoes) {
+	public void setDadosAprovacao(List<HoraTrabalhada> horasTrabalhadas) {
 		
 		 this.dadosAprovacao = new ArrayList<DadoGenerico>();
 	
 		for (HoraTrabalhada horaTrabalhada : horasTrabalhadas) {
 			boolean encontrou = false;
 
-			String funcao = FuncaoEnum.GetFuncaoFromId(horaTrabalhada.getHoraAprovacao().getPrestador().getFuncaoId()).getNome();
-			FuncaoConfiguracao config = funcaoConfiguracoes.stream().filter(x->x.getChave().toLowerCase().equals(funcao.toLowerCase())).findFirst().orElse(new FuncaoConfiguracao("", 0));
+			Usuario prestador = horaTrabalhada.getHoraAprovacao().getPrestador();
 			
 			double horas = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras();
 			double segundos = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
-			double valor = ((segundos/60)  * config.getValorMinuto());
+			double valor = ((segundos/60)  * prestador.getValorMinuto());
 			//double totalHorasDiaEscala = Utilities.horaValueDiff(horaTrabalhada.getProjetoEscala().getHoraFim(), horaTrabalhada.getProjetoEscala().getHoraInicio());
 			
 			for (DadoGenerico dadoGenerico : this.dadosAprovacao) {
@@ -132,12 +131,12 @@ public class DadosAcessoAprovacaoHoras {
 								Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3)));
 				
 				if (horaTrabalhada.getTipoAcao() == 1) {
-					this.totalValor += ((segundos/60) * config.getValorMinuto());
+					this.totalValor += ((segundos/60) * prestador.getValorMinuto());
 					this.totalHoras += (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
 					this.totalSegundos += horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
 				}
 				else {
-					this.totalValor -= ((segundos/60) * config.getValorMinuto());
+					this.totalValor -= ((segundos/60) * prestador.getValorMinuto());
 					this.totalHoras -= (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
 					this.totalSegundos -= horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
 				}

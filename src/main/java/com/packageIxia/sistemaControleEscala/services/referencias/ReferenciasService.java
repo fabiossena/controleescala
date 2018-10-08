@@ -1,8 +1,6 @@
 package com.packageIxia.sistemaControleEscala.services.referencias;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.packageIxia.sistemaControleEscala.daos.referencias.BancoDao;
 import com.packageIxia.sistemaControleEscala.daos.referencias.CidadeDao;
 import com.packageIxia.sistemaControleEscala.daos.referencias.EstadoDao;
@@ -16,10 +14,10 @@ import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemana;
 import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemanaEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.Estado;
-import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.referencias.Pais;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.TipoApontamentoHoras;
 import com.packageIxia.sistemaControleEscala.models.referencias.TipoApontamentoHorasEnum;
 
@@ -40,7 +38,6 @@ public class ReferenciasService implements IReferencias {
 	private MotivoAusenciaDao motivoAusenciaDao; 
 	private HttpSession session;
 
-	@Autowired
     public ReferenciasService (
     		BancoDao bancoDao,
     		CidadeDao cidadeDao,
@@ -77,13 +74,13 @@ public class ReferenciasService implements IReferencias {
     }
 	
     @Override
-	public List<Funcao> getFuncoes() {
-    	return Arrays.stream(FuncaoEnum.values()).map(FuncaoEnum::getFuncao).collect(Collectors.toList());
+	public List<PerfilAcesso> getPerfilAcessos() {
+    	return Arrays.stream(PerfilAcessoEnum.values()).map(PerfilAcessoEnum::getPerfilAcesso).collect(Collectors.toList());
     }
     
     @Override
-	public List<Funcao> getFuncoes(int tipo) {
-    	return Arrays.stream(FuncaoEnum.values()).map(FuncaoEnum::getFuncao).filter(x->x.getTipo() == tipo).collect(Collectors.toList());
+	public List<PerfilAcesso> getPerfilAcessos(int tipo) {
+    	return Arrays.stream(PerfilAcessoEnum.values()).map(PerfilAcessoEnum::getPerfilAcesso).filter(x->x.getTipo() == tipo).collect(Collectors.toList());
     }
     
     @Override

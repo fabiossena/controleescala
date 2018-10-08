@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao
 import com.packageIxia.sistemaControleEscala.models.CadastroInicialPage;
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
 import com.packageIxia.sistemaControleEscala.models.UsuarioEmailPrimeiroAcesso;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -23,30 +22,35 @@ import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 public class UsuarioAcessoService implements IUsuarioAcesso {
 
 	private UsuarioDao usuarioDao;
-    private UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao;
+	private UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao;
 	private INotificacao notificacao;
 	private HttpServletRequest request;
 	private Environment environment;
+	private HttpSession session;
     
-    @Autowired
-    public UsuarioAcessoService(
+	public UsuarioAcessoService(
     		UsuarioEmailPrimeiroAcessoDao usuarioEmailPrimeiroAcessoDao,
     		UsuarioDao usuarioDao,
     		INotificacao notificacao,
 			HttpServletRequest request,
-    		Environment environment) {
+    		Environment environment,
+    		HttpSession session) {
     	this.usuarioDao = usuarioDao;
     	this.usuarioEmailPrimeiroAcessoDao = usuarioEmailPrimeiroAcessoDao;   
     	this.notificacao = notificacao;
     	this.request = request;
     	this.environment = environment;
+    	this.session = session;
     }
     
 	@Override
 	public String efetuarLoginUsuario(
-			LoginPage login, 
-    		HttpSession session) {
-
+			LoginPage login) {
+		
+		if (login == null) {
+			return "Dados inválidos!";
+		}
+		
 		login.setMatricula(login.getMatricula().trim());
 		Usuario usuario = usuarioDao.findByMatricula(login.getMatricula());
 		String error = this.validateLoginUsuario(login, usuario);
@@ -54,26 +58,24 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 			return error;
 		}
 
-        return LoginUsuario(session, usuario);
+        return LoginUsuario(usuario);
 	}
 
 	@Override
-	public String LoginUsuario(HttpSession session, Usuario usuario) {
-		session.setAttribute("isAtendimento", usuario.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId());
-		session.setAttribute("isAdministracao", usuario.getFuncaoId() == FuncaoEnum.administracao.funcao.getId());
-        session.setAttribute("isGerencia", usuario.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId());
-        session.setAttribute("isMonitoramento", usuario.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId());
-        session.setAttribute("isDiretoria", usuario.getFuncaoId() == FuncaoEnum.diretoria.funcao.getId());
-        session.setAttribute("isFinanceiro", usuario.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId());
-        usuario.setFuncao(FuncaoEnum.GetFuncaoFromId(usuario.getFuncaoId()));
+	public String LoginUsuario(Usuario usuario) {
+		session.setAttribute("isAtendimento", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId());
+		session.setAttribute("isAdministracao", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId());
+        session.setAttribute("isGerencia", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId());
+        session.setAttribute("isMonitoramento", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId());
+        session.setAttribute("isDiretoria", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId());
+        session.setAttribute("isFinanceiro", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId());
         session.setAttribute("usuarioLogado", usuario);
 		return "";
 	}
 
 	@Override
 	public String insertUsuarioCadastroInicial(
-			CadastroInicialPage cadastro, 
-			HttpSession session) {
+			CadastroInicialPage cadastro) {
 
 		try {
 			
@@ -90,25 +92,23 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 			usuario.setSobrenome(cadastro.getSobrenome());
 			usuario.setSenha(cadastro.getSenha());
 			usuario.setAtivo(true);
-			usuario.setFuncaoId(usuarioPrimeiroAcesso.getFuncaoId() == 0 ? 1 : usuarioPrimeiroAcesso.getFuncaoId());
+			usuario.setFuncao(usuarioPrimeiroAcesso.getFuncao());
+			usuario.setCentroCusto(usuarioPrimeiroAcesso.getCentroCusto());
 			usuario = usuarioDao.save(usuario);
 	        
 	        usuarioPrimeiroAcesso.setAceito(true);
 	        usuarioEmailPrimeiroAcessoDao.save(usuarioPrimeiroAcesso);
 	        notificacao.save(new Notificacao(1, "Parabéns, seu cadastro inicial foi realizado com sucesso, acesse o menu 'Meu cadastro' para complementar suas informações.", "Cadastro de usuário", usuario));
-	        return LoginUsuario(session, usuario);
+	        notificacao.save(new Notificacao(2, "Clique em X para fechar suas notificações.", "Cadastro de usuário", usuario));
+	        return LoginUsuario(usuario);
 	        
 		} catch (Exception e) {
 			return e.toString();
 		}
 	}
-    
+	    
 	@Override
 	public String validateLoginUsuario(LoginPage login, Usuario usuario) {
-		
-		if (login == null) {
-			return "Dados inválidos!";
-		}
 		
 		if (login.getMatricula().isEmpty()) {
 			return "Preencha o campo matricula!";
@@ -188,6 +188,51 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		} catch (Exception e) {
 			System.out.println("erro envio e-mail");
 			System.out.println(e.toString());
+		}
+		
+		return "";
+	}
+	
+	public String validateCadastroInicialUsuario(Usuario usuario) {
+
+		if (usuario == null) {
+			return "Dados inválidos";
+		}
+
+		if (usuario.getCpf().trim().isEmpty()) {
+			return "Preencha o campo cpf";
+		}
+
+		if (usuario.getTelefone().trim().isEmpty()) {
+			return "Preencha o campo telefone";
+		}
+		
+		Usuario usuarioBase = usuarioDao.findByEmail(usuario.getEmail());		
+		if (usuarioBase != null && usuarioBase.getId() != usuario.getId()) {
+			return "E-mail já usado por outro  usuário";
+		}	
+		
+		usuarioBase = usuarioDao.findByCpf(usuario.getCpf());
+		if (usuarioBase != null && usuarioBase.getId() != usuario.getId()) {
+			return "Cpf já usado por outro  usuário";
+		}
+		
+		usuarioBase = usuarioDao.findByMatricula(usuario.getMatricula());
+		if (usuarioBase != null && usuarioBase.getId() != usuario.getId()) {
+			return "Matricula já usada por outro  usuário";
+		}
+				
+		return "";
+	}
+
+	public String validateLoginUsuario(Usuario usuario) {
+
+		if (usuario == null) {
+			return "Dados inválidos!";
+		}
+		
+		if (!usuario.getRepetirSenha().equals(usuario.getSenha())) {
+			return "As senhas digitadas estão diferentes!";
 		}
 		
 		return "";

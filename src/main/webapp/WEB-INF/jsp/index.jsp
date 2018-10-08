@@ -21,7 +21,7 @@
 		
 		function recusarSolicitacao(id) {
 			if ($("#panel-motivo-recusa-solicitacao" + id).is(":hidden") || 
-					$("#motivo-recusa-solicitacao" + id).val() == "") {
+				$("#motivo-recusa-solicitacao" + id).val() == "") {
 				$("#panel-motivo-recusa-solicitacao" + id).show();
 				$("#motivo-recusa-solicitacao" + id).addClass("is-invalid");
 				$("#motivo-recusa-solicitacao-feedback" + id).html("Preencha o campo motivo recusa");		
@@ -99,7 +99,7 @@
 			tempoServer++;
 			date.setSeconds(tempoServer); // + (((Date.now() - tempoInicial)/60)/60)*2,5); // specify value for SECONDS here
 			var timeString = date.toISOString().substr(11, 8);
-			if (${iniciarDisabled}) {
+			if (${iniciarDisabled == null ? false : iniciarDisabled}) {
 				$("#tempo").html(timeString);				
 				if ("${pausar}" ==  "pausar") {
 					setTimeout(setTempo, 1000);

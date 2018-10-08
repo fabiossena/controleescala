@@ -283,7 +283,7 @@
 						        	  		<div class="form-group col-sm-12">	
 						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data"> 							        	  				
 												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-updload" /><br/><br/>
-												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar anexo" onclick="anexarClique()" />						        	  				
+												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" onclick="anexarClique()" />						        	  				
 												    <input type="hidden" name="forcar" value="${forcar}" />
 												</form>
 			        	  					</div>	 

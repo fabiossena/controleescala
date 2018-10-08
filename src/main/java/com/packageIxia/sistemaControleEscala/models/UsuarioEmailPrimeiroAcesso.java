@@ -1,22 +1,21 @@
 package com.packageIxia.sistemaControleEscala.models;
 
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import com.packageIxia.sistemaControleEscala.models.referencias.CentroCusto;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 
 @Entity
@@ -36,9 +35,6 @@ public class UsuarioEmailPrimeiroAcesso {
     @NotEmpty(message="Preencha o campo matrícula")
     private String matricula;
 
-    @NotNull(message="Preencha o campo função")
-	private int funcaoId;
-
 	private boolean aceito;
 
 	@CreationTimestamp
@@ -49,9 +45,16 @@ public class UsuarioEmailPrimeiroAcesso {
 	@UpdateTimestamp
 	protected LocalDateTime ultimaModificacao;
 
-    @Transient
+    @NotNull(message="Preencha o campo função")
+	@ManyToOne
+	@JoinColumn(name="funcaoId")
 	private Funcao funcao;  
 
+
+    @NotNull(message="Preencha o campo centro de custo")
+	@ManyToOne
+	@JoinColumn(name="centroCustoId") 
+	private CentroCusto centroCusto;
 
 	public long getId() {
 		return this.id;
@@ -81,14 +84,6 @@ public class UsuarioEmailPrimeiroAcesso {
         this.matricula = matricula;
     }
 
-	public int getFuncaoId() {
-		return funcaoId;
-	}
-	
-	public void setFuncaoId(int funcaoId) {
-		this.funcaoId = funcaoId;
-	}
-
 	public boolean isAceito() {
 		return aceito;
 	}
@@ -103,5 +98,13 @@ public class UsuarioEmailPrimeiroAcesso {
 	
 	public Funcao getFuncao() {  	
 		return this.funcao;
+	}
+
+	public CentroCusto getCentroCusto() {
+		return centroCusto;
+	}
+
+	public void setCentroCusto(CentroCusto centroCusto) {
+		this.centroCusto = centroCusto;
 	}
 }

@@ -16,7 +16,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
@@ -44,17 +44,17 @@ public class ProjetoService implements IProjeto {
 		List<Projeto> projetos = new ArrayList<Projeto>(); 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.funcao.getId() ||
-			usuarioLogado.getFuncaoId() == FuncaoEnum.diretoria.funcao.getId() ||
-			usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
 			projetos = Utilities.toList(projetoDao.findAllByExcluido(false));			
-		} else if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+		} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
     		List<ProjetoEscala> escalas = projetoEscalaDao.findAllByMonitorId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(escalas.stream().map(y->y.getProjetoId()))));
-    	} else if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+    	} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
     		List<ProjetoEscalaPrestador> prestadores = projetoEscalaPrestadorDao.findAllByPrestadorId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(prestadores.stream().map(y->y.getProjeto().getId()))));
-    	} else if (usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+    	} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
     		List<Projeto> projs = projetoDao.findAllByGerenteId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(projs.stream().map(y->y.getId()))));
     	}
@@ -67,27 +67,27 @@ public class ProjetoService implements IProjeto {
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		Projeto projeto = projetoDao.findById(id).orElse(null);
 
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.funcao.getId() ||
-			usuarioLogado.getFuncaoId() == FuncaoEnum.diretoria.funcao.getId() ||
-			usuarioLogado.getFuncaoId() == FuncaoEnum.financeiro.funcao.getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
 			return projeto;
 		}
 		
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
     		List<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadorDao.findAllByProjetoId(projeto.getId());
     		if (!projetoEscalaPrestador.stream().anyMatch(x->x.getPrestador().getId()==usuarioLogado.getId())) {
     			return null;
     		}
     	}
 
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
     		List<ProjetoEscala> projetoEscala = projetoEscalaDao.findAllByProjetoId(projeto.getId());
     		if (!projetoEscala.stream().anyMatch(x->x.getMonitor().getId()==usuarioLogado.getId())) {
     			return null;
     		}
     	}
 
-    	if (usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
     		if (projeto.getGerente().getId() != usuarioLogado.getId()) {
     			return null;
     		}

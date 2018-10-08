@@ -16,7 +16,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPr
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
@@ -173,13 +173,13 @@ public class ProjetoEscalaService implements IProjetoEscala {
 		
 		Usuario usuario = ((Usuario)this.session.getAttribute("usuarioLogado"));
 		List<ProjetoEscala> escalas = new ArrayList<ProjetoEscala>();
-		if (usuario.getFuncaoId() == FuncaoEnum.atendimento.funcao.getId()) {
+		if (usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
 			escalas = findAllByPrestadorId(usuario.getId());
 		} 
-		else if (usuario.getFuncaoId() == FuncaoEnum.monitoramento.funcao.getId()) {
+		else if (usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
 			escalas = findAllByMonitorId(usuario.getId());
 		}
-		else if (usuario.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+		else if (usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
 			List<Projeto> projs = this.projetoDao.findAllByGerenteId(usuario.getId());
 			List<Long> idProjs = projs.stream().map(x->x.getId()).collect(Collectors.toList());
 			escalas = Utilities.toList(this.projetoEscalaDao.findAll())

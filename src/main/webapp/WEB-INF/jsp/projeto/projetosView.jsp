@@ -17,11 +17,19 @@
     <div class="container">    
 	        <div style="margin-top:50px" class="mainbox col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         	  
-				<h3>Projetos cadastrados</h3>
-				<div class="container border-top panel-custom"> 
-        	  		<a id="btn-novo" class="btn btn-sm btn-primary" href="<c:url value='/projeto' />">Novo</a>
-        	  		<br />
-					<br />
+                <div class="container panel-heading row">
+				  <h3 class="panel-title">Projetos cadastrados</h3>
+	        	  <div style="margin-left: 20px">
+	        	   <c:if test="${isAdministracao || isMonitoria}"> 
+       	  			<a id="btn-novo" class="btn btn-sm btn-primary float-right" href="<c:url value='/projeto' />">Novo</a>
+        	  		</c:if>
+	        	  </div>
+				</div>
+				
+				<div class="container border-top panel-custom">					
+					
+				<br>
+				
 					<div class="table-container table-responsive">
 						<table id="tabelaProjetos" class="display tabela-avancada">
 

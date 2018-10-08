@@ -16,8 +16,10 @@ public interface IUsuario {
 
 	Usuario findByUsuarioId(long usuarioId);
 
-	List<Usuario> findByFuncaoId(int id);
+	List<Usuario> findByPerfilAcessoId(int id);
 
 	String delete(long id);
+
+	List<Usuario> findByPerfilAcessoId(int[] ids);
 
 }

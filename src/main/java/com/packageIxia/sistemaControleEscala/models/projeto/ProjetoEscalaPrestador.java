@@ -21,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Entity
@@ -50,7 +49,9 @@ public class ProjetoEscalaPrestador {
 	@Size(max = 50)
 	private String ramalIntegracaoRobo;
 
-	private int funcaoId;
+	@ManyToOne
+	@JoinColumn(name="funcaoId") 
+	private Funcao funcao;
 	
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name="prestadorId")
@@ -103,17 +104,13 @@ public class ProjetoEscalaPrestador {
 	public void setProjetoEscala(ProjetoEscala projetoEscala) {
 		this.projetoEscala = projetoEscala;
 	}
-
-	public int getFuncaoId() {
-		return funcaoId;
-	}
-
+	
 	public Funcao getFuncao() {
-		return FuncaoEnum.GetFuncaoFromId(funcaoId);
+		return funcao;
 	}
-
-	public void setFuncaoId(int funcaoId) {
-		this.funcaoId = funcaoId;
+	
+	public void setFuncao(Funcao funcao) {
+		this.funcao = funcao;
 	}
 
 	public Usuario getPrestador() {

@@ -24,7 +24,7 @@ import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoSolicitac
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -71,7 +71,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		List<AusenciaSolicitacao> ausencias = new ArrayList<AusenciaSolicitacao>();
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		
-		if (usuarioLogado.getFuncao().getId() == FuncaoEnum.administracao.getFuncao().getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId()) {
 			if (isSomenteComAcesso) {
 				return ausencias;
 			}
@@ -148,11 +148,11 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 	@Transactional
 	public String save(AusenciaSolicitacao solicitacao) {		
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
-		if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.getFuncao().getId()) {
+		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
 			solicitacao.setUsuario(usuarioLogado);
 		}
 		
-    	Usuario usuario = usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.getFuncao().getId() ? solicitacao.getUsuario() : usuarioLogado;
+    	Usuario usuario = usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ? solicitacao.getUsuario() : usuarioLogado;
 		if (usuario == null || usuario.getId() == 0) {
 	    	return "Preencha o campo prestador";
 	    }
@@ -292,7 +292,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		}
 		
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
-		boolean isAdmin = usuarioLogado.getFuncao().getId() == FuncaoEnum.administracao.getFuncao().getId();
+		boolean isAdmin = usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId();
 		AusenciaSolicitacao item = this.findById(id);
 
 		boolean permitido = true;

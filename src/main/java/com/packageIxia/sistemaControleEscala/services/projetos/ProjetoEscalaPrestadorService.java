@@ -19,7 +19,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPr
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
@@ -253,8 +253,8 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	public String aceitePrestador(Usuario usuarioLogado, long projetoEscalaPrestadorId, int statusAceite, String motivo) {
 		ProjetoEscalaPrestador projetoEscalaPrestador = this.findById(projetoEscalaPrestadorId);
 		if (projetoEscalaPrestador.getPrestador().getId() != usuarioLogado.getId() && 
-			usuarioLogado.getFuncaoId() == FuncaoEnum.administracao.funcao.getId() && 
-			usuarioLogado.getFuncaoId() == FuncaoEnum.gerencia.funcao.getId()) {
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() && 
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
 			return "Operação não permitida para este usuário";
 		}
 		

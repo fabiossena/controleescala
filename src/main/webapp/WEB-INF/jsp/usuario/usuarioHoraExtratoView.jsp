@@ -11,10 +11,15 @@
 	<script>
 	$(function() {
 	    
-	    $('#select-ano-horas, #select-mes-horas').on('change',function() {
-	   		console.log(this.value);
-			window.location.href = urlBase + "usuario/extratoHoras?ano=" + $("#select-ano-horas").val() + "mes=" + $("#select-mes-horas").val();
-		 });
+	    //$('#select-ano-horas, #select-mes-horas').on('change',function() {
+	   	//	console.log(this.value);
+		//	window.location.href = urlBase + "usuario/extratoHoras?ano=" + $("#select-ano-horas").val() + "mes=" + $("#select-mes-horas").val();
+		//});
+         
+         $('#prestador').on('change',function() {
+     		window.location.href = urlBase + "extratoHoras/" + this.value;
+    	 });
+
 	});
 	</script>
 </head>
@@ -28,7 +33,21 @@
 		<h3>Extrato banco de horas</h3>      
 		<div class="container border-top panel-custom">
 		     <div class="container row">
-		       
+				
+				<c:if test="${isAdministracao || isMonitoramento || isGerencia}">				
+				<div class="form-group col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
+			      <label for="projetoEscala" class="control-label">Selecione um prestador</label>
+		          <select 
+		          	id="prestador" 
+		          	class='form-control select-cache-tab'>
+		          	<option value="0"></option>
+		          	<c:forEach var="prestador" items="${prestadores}">
+		          		<option <c:if test="${prestadorId==prestador.id}">selected</c:if> value="${prestador.id}">${prestador.nomeCompletoMatricula}</option>
+		          	</c:forEach>
+		          	</select>
+	       	    </div>    
+		        </c:if>
+		         
 			    <%-- <div class="form-group" style="display: none">
 			        <label for="data" class="col-md-8 control-label">Ano</label>
 			        <div class="col-md-6">

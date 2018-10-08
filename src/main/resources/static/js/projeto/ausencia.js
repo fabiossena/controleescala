@@ -54,7 +54,7 @@
 
 		$("#motivo-ausencia").change(function() {
 			motivoAusenciaEscondePaineis();
-		});		
+		});
 
 		function motivoAusenciaEscondePaineis() {
 			if ($("#motivo-ausencia").val() == 2) {

@@ -179,23 +179,6 @@ function selectPrestador(item) {
 	 });
 	 $("#ramalIntegracaoRobo").val($("#ramalIntegracaoRobo"+item).val())
 	 selectTabelaFolga(item);
-	 //$("#form-prestador input[name='indicadaFolgaSemana']").prop("checked", JSON.parse($("#indicadaFolgaSemana"+item).val()));
-
-//   	 if ($("#form-prestador input[name='indicadaFolgaSemana']").prop("checked")) {
-//   		 selectTabelaFolga(item);
-//   	 	$("#panel-folga-semanal").show();
-//   	 }
-//   	 else {
-//   		 $("#panel-folga-semanal").hide();
-//   	 }
-
-	 //$("#form-prestador input[id='prestador.id']").val($("#form-prestador #prestador"+item).html());
-//	 $("select[name='prestador.id'] option").each(function () { 
-//		 console.log($("#prestadorId"+item).val());
-// 		if ($(this).val() == $("#prestadorId"+item).val()) {
-//            $(this).attr("selected", "selected");
-//        }
-//	 });
 
 	 $("select[name='prestador.id'] option").each(function () { 
 		 console.log($("#form-prestador #prestador.id"+item).val());
@@ -210,7 +193,6 @@ function selectPrestador(item) {
 	 $("#form-prestador #escala-aceite").html($("#form-prestador #escala-aceite"+item).html().trim());
 	 
      $("#folgaId").val(null);
-	 //$("#indicar-folga-semanal").prop("checked", false);
    	 ativaFolgaClicks();
      disabilitarFolga(false);
 	 $("#btn-editar-prestador").val("Editar");
@@ -280,10 +262,6 @@ function escalaFolgaSugeridaPrestador(id) {
 	 
      $("#form-prestador .form-control").removeClass("is-invalid");
 
-     
-	 //$("#funcaoId").val("").change();
-	 //$("select[name='prestador.id']").val("").change();	
-	 
      limparFolga();
      disabilitarFolga(true);
      if (limparCache) {
@@ -599,14 +577,6 @@ function escalaFolgaSugeridaPrestador(id) {
 		return;
 	}
 	
-//	$("#btn-salvar-folga").prop("disabled", enable);
-//	$("#btn-cancelar-folga").prop("disabled", enable);    
-//	
-//	$("#folgaDiaSemana").prop("disabled", enable);
-//	$("#folgaMotivo").prop("disabled", enable);		
-//	$("#folgaHoraInicio").prop("disabled", enable);
-//	$("#folgaHoraFim").prop("disabled", enable);
-	
 	$("#folgaDiaSemana").removeClass("is-invalid");
 	$("#folgaMotivo").removeClass("is-invalid");
 	
@@ -614,6 +584,5 @@ function escalaFolgaSugeridaPrestador(id) {
 	$("#feedback-folgaHoraFim").val("");
 	$("#folgaHoraInicio").removeClass("is-invalid");
 	$("#folgaHoraFim").removeClass("is-invalid");
-    //$("#indicar-folga-semanal").prop("disabled", enable);
     $(".btn-apagar-folga").prop("disabled", enable);
  }

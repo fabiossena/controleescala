@@ -4,9 +4,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 public class DadosAcessoSolicitacaoAusencia {
@@ -21,10 +20,6 @@ public class DadosAcessoSolicitacaoAusencia {
 	private boolean isResponsavelTrocaReposicao  = false;
 	private boolean isGerenteReposicao = false;
 	private boolean isAtendenteTrocaReposicao = false;
-
-//	private boolean isVisivelAprovacaoPrincipal;
-//	private boolean isVisivelAprovacaoTroca;
-//	private boolean isVisivelAprovacaoTrocaResponsavel;
 
 	private Usuario usuarioLogado;
 
@@ -70,30 +65,16 @@ public class DadosAcessoSolicitacaoAusencia {
 		return isAtendenteTrocaReposicao;
 	}
 
-
-
 	public List<DadoGenerico> getDadosAprovacao() {
 		return dadosAprovacao;
 	}
-
-//	public boolean isVisivelAprovacaoPrincipal() {
-//		return isVisivelAprovacaoPrincipal;
-//	}
-//
-//	public boolean isVisivelAprovacaoTroca() {
-//		return isVisivelAprovacaoTroca;
-//	}
-//
-//	public boolean isVisivelAprovacaoTrocaResponsavel() {
-//		return isVisivelAprovacaoTrocaResponsavel;
-//	}
 
 	public DadosAcessoSolicitacaoAusencia(Usuario usuarioLogado, AusenciaSolicitacao solicitacaoEditada) {
 	
 		this.usuarioLogado = usuarioLogado;
 		this.solicitacaoEditada = solicitacaoEditada;
 		
-		this.isAdminstracao = this.usuarioLogado.getFuncao().getId() == FuncaoEnum.administracao.funcao.getId();
+		this.isAdminstracao = this.usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId();
 		this.dadosAcesso.add(new DadoGenerico(0, isAdminstracao ? "Administador" : ""));
 		
 		isAtendente = this.usuarioLogado.getId() == this.solicitacaoEditada.getUsuario().getId();

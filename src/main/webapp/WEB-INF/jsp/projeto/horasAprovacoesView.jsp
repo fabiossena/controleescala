@@ -268,7 +268,7 @@
 									</td> 
 				                							
 								  	<td style="font-size: 10pt">
-		                				<div style="width: 200px">
+		                				<div style="width: 150px">
 										   
 										  <c:if test="${item.aceitePrestador == 0}">
 										      <span class="text-primary">(Pendente) Prestador</span>
@@ -284,7 +284,7 @@
 										   </div>
 									  </td>
 				                	  <td style="font-size: 10pt">
-		                				  <div style="width: 300px">
+		                				  <div style="width: 350px">
 										  	
 									         <c:forEach items="${item.dadosAcessoAprovacaoHoras.dadosAprovacao}" var="item2">
 		               			

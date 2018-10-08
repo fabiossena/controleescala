@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +15,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioAcesso;
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
-import com.packageIxia.sistemaControleEscala.services.UsuarioAcessoService;
 
 @Controller
 public class LoginController {
 
-	@Autowired
-	private UsuarioAcessoService usuarioAcessoService;
+	private IUsuarioAcesso usuarioAcessoService;
 	
 	ModelAndView mv = new ModelAndView("loginView");
+	public LoginController(IUsuarioAcesso usuarioAcessoService) {
+		this.usuarioAcessoService = usuarioAcessoService;
+	}
 	
     @GetMapping(value = "/login")
 	public ModelAndView login(
@@ -58,7 +59,7 @@ public class LoginController {
             return mv;
         }    	
 
-        String message = usuarioAcessoService.efetuarLoginUsuario(login, session);        
+        String message = usuarioAcessoService.efetuarLoginUsuario(login);        
         if (message.isEmpty()) {
     		response.sendRedirect("index");
         }

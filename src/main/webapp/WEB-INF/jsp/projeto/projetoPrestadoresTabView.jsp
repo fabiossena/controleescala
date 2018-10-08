@@ -92,8 +92,8 @@
           </div>
           
 		  <div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-	        <label for="funcaoId" class="control-label">Função *</label>
-            <form:select path="funcaoId" class="form-control" items="${funcoes}"  itemLabel="nome" itemValue="id" disabled="${isDisableCamposPrestador}"/>
+	        <label for="funcao.id" class="control-label">Função *</label>
+            <form:select path="funcao.id" id="funcaoId" class="form-control" items="${funcoes}"  itemLabel="nome" itemValue="id" disabled="${isDisableCamposPrestador}"/>
 	      </div>	
 	    
 	      <div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">

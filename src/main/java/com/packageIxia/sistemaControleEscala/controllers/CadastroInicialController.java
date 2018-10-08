@@ -61,7 +61,7 @@ public class CadastroInicialController {
             return mv;
         }   
     	
-        String message = this.usuarioAcessoService.insertUsuarioCadastroInicial(cadastro, session);
+        String message = this.usuarioAcessoService.insertUsuarioCadastroInicial(cadastro);
     	mv.addObject("errorMessage", null);
         if (message.isEmpty()) {
     		response.sendRedirect("index");

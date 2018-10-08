@@ -2,17 +2,14 @@ package com.packageIxia.sistemaControleEscala.controllers;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncaoConfiguracao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
@@ -20,7 +17,7 @@ import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacao
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
-import com.packageIxia.sistemaControleEscala.models.referencias.FuncaoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Controller
@@ -29,20 +26,18 @@ public class IndexController {
 	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
 	private IAusenciaSolicitacao ausenciaSolicitacaoService;
 	private IProjetoEscala projetoEscalaService;
-	private IHoraTrabalhada horaTrabalhadaService;	
-	private IFuncaoConfiguracao funcaoConfiguracaoService;
+	private IHoraTrabalhada horaTrabalhadaService;
 
 	public IndexController(
 			IProjetoEscalaPrestador projetoEscalaPrestadorService,
 			IAusenciaSolicitacao ausenciaSolicitacaoService,
 			IHoraTrabalhada horaTrabalhadaService,
 			IProjetoEscala projetoEscalaService,
-			IFuncaoConfiguracao funcaoConfiguracaoService) {
+			IFuncao funcaoConfiguracaoService) {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.projetoEscalaService = projetoEscalaService;
 		this.horaTrabalhadaService = horaTrabalhadaService;
-		this.funcaoConfiguracaoService = funcaoConfiguracaoService;
 	}
 	
     @GetMapping(value = "/")
@@ -60,8 +55,8 @@ public class IndexController {
 			index.addObject("escalaId", 0);	
         	
 
-    		if (usuarioLogado.getFuncaoId() == FuncaoEnum.atendimento.getFuncao().getId() ||
-				usuarioLogado.getFuncaoId() == FuncaoEnum.monitoramento.getFuncao().getId()) {
+    		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId() ||
+				usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
 	    		List<ProjetoEscala> projetoEscalas = this.projetoEscalaService.findAllByPermissao(true);
 	    		index.addObject("escalas", projetoEscalas);
 
@@ -84,7 +79,7 @@ public class IndexController {
 
 	    				HoraTrabalhada horaTrabalhadaPrimeira = this.horaTrabalhadaService.findLastStartedByPrestadorId(usuarioLogado.getId());
 	    				if (horaTrabalhadaPrimeira != null && horaTrabalhadaPrimeira.getDataHoraFim() == null) {
-		    				dadosAcessoAprovacaoHoras.setDadosAprovacao(horaTrabalhada.getHoraAprovacao().getHorasTrabalhadas().stream().filter(x->x.getDataHoraInicio().isAfter(horaTrabalhadaPrimeira.getDataHoraInicio().minusSeconds(1))).collect(Collectors.toList()), funcaoConfiguracaoService.findAll());
+		    				dadosAcessoAprovacaoHoras.setDadosAprovacao(horaTrabalhada.getHoraAprovacao().getHorasTrabalhadas().stream().filter(x->x.getDataHoraInicio().isAfter(horaTrabalhadaPrimeira.getDataHoraInicio().minusSeconds(1))).collect(Collectors.toList()));
 		    				index.addObject("totalSegundos", dadosAcessoAprovacaoHoras.getTotalSegundos());
 	    				}
 
@@ -111,11 +106,6 @@ public class IndexController {
         		
         return new ModelAndView("loginView");
 	}
-
-    @GetMapping(value = "/error")
-	public ModelAndView error(HttpServletRequest request) {
-        return new ModelAndView("errorView");
-    }
 	
 	@GetMapping("horas/iniciarEscala/{id}")
 	public ModelAndView horaIniciar(
@@ -123,7 +113,6 @@ public class IndexController {
 			@RequestParam(value = "tipo", defaultValue = "1") int tipo,
 			@RequestParam(value = "iniciar", defaultValue = "true") boolean iniciar,
 			@RequestParam(value = "motivo", defaultValue = "") String motivo) throws Exception {
-		
 		
 		this.horaTrabalhadaService.save(id, tipo, iniciar, motivo);
 
