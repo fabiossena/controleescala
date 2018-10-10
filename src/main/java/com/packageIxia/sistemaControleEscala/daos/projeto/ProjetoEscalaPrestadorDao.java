@@ -32,7 +32,9 @@ public interface ProjetoEscalaPrestadorDao extends CrudRepository<ProjetoEscalaP
 
 	List<ProjetoEscalaPrestador> findAllByPrestadorIdAndExcluidoAndAtivo(long prestadorId, boolean excluido, boolean ativo);
 
-	ProjetoEscalaPrestador findByProjetoEscalaIdAndPrestadorIdAndExcluido(long projetoEscalaId, long prestadorId, boolean b);
+	ProjetoEscalaPrestador findByProjetoEscalaIdAndPrestadorIdAndExcluido(long projetoEscalaId, long prestadorId, boolean excluido);
 
 	List<ProjetoEscalaPrestador> findAllByRamalIntegracaoRobo(String ramalRobo);
+
+	List<ProjetoEscalaPrestador> findAllByIdAndPrestadorIdAndExcluido(long id, long prestadorId, boolean excluido);
 }

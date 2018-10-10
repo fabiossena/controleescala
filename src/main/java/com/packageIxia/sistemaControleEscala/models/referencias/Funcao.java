@@ -48,7 +48,6 @@ public class Funcao {
 		this.id = id;
 	}
 	
-	
 	public String getNome() {
 		return nome;
 	}

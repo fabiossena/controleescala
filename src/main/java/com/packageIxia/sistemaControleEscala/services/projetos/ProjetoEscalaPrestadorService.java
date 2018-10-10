@@ -109,9 +109,9 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			return "Data fim do prestador não pode ser maior do que a data fim do projeto";
 		}
 		
-		List<ProjetoEscalaPrestador> prestadores = this.findAllByPrestadorIdAndProjetoId(prestador.getPrestador().getId(), projeto.getId());
+		List<ProjetoEscalaPrestador> prestadores = this.findAllByPrestadorIdAndId(prestador.getId(), prestador.getPrestador().getId());
 		if (prestadores != null && !prestadores.isEmpty() && prestador.getId() == -1) {
-			return "Prestador já cadastrado para este projeto";
+			return "Prestador já cadastrado para esta escala";
 		}
 		
 		if (!prestador.getRamalIntegracaoRobo().trim().isEmpty()) {
@@ -128,6 +128,10 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 
 	private List<ProjetoEscalaPrestador> findAllByPrestadorIdAndProjetoId(long prestadorId, long projetoId) {
 		return this.projetoEscalaPrestadorDao.findAllByPrestadorIdAndProjetoIdAndExcluido(prestadorId, projetoId, false);
+	}
+
+	private List<ProjetoEscalaPrestador> findAllByPrestadorIdAndId(long id, long prestadorId) {
+		return this.projetoEscalaPrestadorDao.findAllByIdAndPrestadorIdAndExcluido(id, prestadorId, false);
 	}
 
 	@Override

@@ -1,11 +1,10 @@
 package com.packageIxia.sistemaControleEscala.unitTests.usuario;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
@@ -130,9 +129,9 @@ public class UsuarioMockup implements UsuarioDao {
 		return this.entities.stream().filter(x->x.getFuncao().getPerfilAcessoId()==perfilAcessoId && x.isExcluido() == excluido).collect(Collectors.toList());
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(int[] ids, boolean excluido) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entities.stream().filter(x-> Arrays.asList(ids).contains(x.getFuncao().getPerfilAcessoId()) && x.isExcluido() == excluido).collect(Collectors.toList());
 	}
 }

@@ -14,6 +14,10 @@ public enum PerfilAcessoEnum {
     	this.acesso = new PerfilAcesso(id, nome, compartilhado, tipo);
     }
     
+    PerfilAcessoEnum(int id, String nome, boolean compartilhado, int tipo, String descricao) {
+    	this.acesso = new PerfilAcesso(id, nome, compartilhado, tipo);
+    }
+    
     public PerfilAcesso getPerfilAcesso() {
     	return this.acesso;
     }
