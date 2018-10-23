@@ -23,6 +23,7 @@ public class HoraExtratoController {
 	private IHoraExtrato horaExtratoService;
 	private IUsuario usuarioService;	
 	private HttpServletRequest request;
+	private List<Usuario> usuarios;
 	
 	public HoraExtratoController(
 			HttpServletRequest request,
@@ -59,7 +60,9 @@ public class HoraExtratoController {
     		erroModelView.addObject("errorMessage", "Não permitido acesso a tela de usuários");
             return erroModelView;
     	}
-    	
+
+		this.loadUsuarios();
+		
 		ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
 		ano = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
 
@@ -76,6 +79,13 @@ public class HoraExtratoController {
 		
 		return mv;
 	}
+	
+	private void loadUsuarios() {
+		if (this.usuarios == null) {
+			this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+			this.usuarios = this.usuarioService.findAllByUsuarioLogado(this.usuarioLogado);
+		}
+	}
 
     @ModelAttribute("prestadores")
     public List<Usuario> prestadores() {
@@ -85,8 +95,11 @@ public class HoraExtratoController {
     	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
-    		prestadores =  this.usuarioService.findByPerfilAcessoId(
-        			new int[] { PerfilAcessoEnum.atendimento.getId(), PerfilAcessoEnum.monitoramento.getId() });
+    		List<Integer> ids = new ArrayList<Integer>();
+    		ids.add(PerfilAcessoEnum.atendimento.getId());
+    		ids.add(PerfilAcessoEnum.monitoramento.getId());
+    		this.loadUsuarios();
+    		prestadores =  this.usuarioService.findByPerfilAcessoId(this.usuarios, ids);
     	}
     	
     	return prestadores;

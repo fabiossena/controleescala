@@ -20,7 +20,7 @@
                 <div class="container panel-heading row">
 				  <h3 class="panel-title">Projetos cadastrados</h3>
 	        	  <div style="margin-left: 20px">
-	        	   <c:if test="${isAdministracao || isMonitoria}"> 
+	        	   <c:if test="${isAdministracao || isMonitoramento}">
        	  			<a id="btn-novo" class="btn btn-sm btn-primary float-right" href="<c:url value='/projeto' />">Novo</a>
         	  		</c:if>
 	        	  </div>

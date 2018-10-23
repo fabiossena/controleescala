@@ -39,6 +39,7 @@ import com.packageIxia.sistemaControleEscala.models.referencias.MotivoAusencia;
 import com.packageIxia.sistemaControleEscala.models.referencias.Pais;
 import com.packageIxia.sistemaControleEscala.models.usuario.FolgaSemanalPlanejadaUsuario;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
+import com.packageIxia.sistemaControleEscala.models.usuario.UsuarioFuncaoAdicional;
 
 @Controller
 public class UsuarioController {
@@ -111,8 +112,9 @@ public class UsuarioController {
 		modelViewCadastro.addObject("isCadastroUsuarioPage", false);	
 		modelViewCadastro.addObject("isDisableCamposChaves", this.isDisableCamposChaves);		
 		modelViewCadastro.addObject("isDisableTodosCampos", false);
-		
-		this.usuarioEditado = (Usuario)request.getSession().getAttribute("usuarioLogado");	
+
+		this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+		this.usuarioEditado = this.usuarioService.findByUsuarioId(this.usuarioLogado.getId());	
 		return usuarioGet();
 	}
 	
@@ -164,9 +166,10 @@ public class UsuarioController {
 	}
 
 	private ModelAndView usuarioGet() {
+
+		modelViewCadastro.addObject("result", null);
+    	modelViewCadastro.addObject("errorMessage", null);
     	
-		modelViewCadastro.addObject("errorMessage", null);
-		
 		System.out.println("cadastroUsuario");
 		if (this.usuarioEditado != null && Strings.isBlank(this.usuarioEditado.getRepetirSenha())) {
 			this.usuarioEditado.setRepetirSenha(this.usuarioEditado.getSenha());
@@ -209,7 +212,7 @@ public class UsuarioController {
     }
 
 	private ModelAndView usuarioPost(Usuario usuario, BindingResult result, boolean isCadastroUsuarioPage) {
-
+		
 		modelViewCadastro.addObject("result", null);
     	modelViewCadastro.addObject("errorMessage", null);
     	
@@ -217,6 +220,7 @@ public class UsuarioController {
 //			usuario.setFuncaoId(usuarioEditado.getFuncaoId());
 //		}
 		
+    	usuario.setUsuarioFuncaoAdicionais(usuarioEditado.getUsuarioFuncaoAdicionais());
 		modelViewCadastro.addObject("usuario", usuario);
 		modelViewCadastro.addObject("isCadastroUsuarioPage", isCadastroUsuarioPage);	
     	modelViewCadastro.addObject("projetosCadastrado", projetosCadastrados);	    	
@@ -229,9 +233,6 @@ public class UsuarioController {
             return modelViewCadastro;
         }   
 		
-    	System.out.println("Cpf");
-    	System.out.println(usuario.getCpf());
-    	
         String message = usuarioService.saveUsuario(usuario, session, isCadastroUsuarioPage);
     	System.out.println(message);
     	modelViewCadastro.addObject("errorMessage", null);
@@ -241,18 +242,64 @@ public class UsuarioController {
         }
 
     	modelViewCadastro.addObject("usuario", usuario);
-    	System.out.println("size");
-    	
-    	 this.usuarioTurnosDisponiveisService.saveFolgasSemanaisPlanejadasUsuario(folgasSemanaisPlanejadas, usuario.getId());
-    	
+    	this.usuarioTurnosDisponiveisService.saveFolgasSemanaisPlanejadasUsuario(folgasSemanaisPlanejadas, usuario.getId());
     	modelViewCadastro.addObject("folgasSemanaisPlanejadas", folgasSemanaisPlanejadas);
-    	
+		
     	if (isCadastroUsuarioPage) {
     		return new ModelAndView( "redirect:/usuario/" + usuario.getId() + "/editar");
     	}
     	else {
     		return new ModelAndView( "redirect:/usuario/meucadastro");
     	}
+	}
+	
+    @ResponseBody
+    @PostMapping(value = "/usuario/funcaoAdicional", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String funcaoAdicionalSave(@RequestBody int id) {
+    	
+    	if (this.usuarioEditado.getFuncao().getId() == id) {
+			return "Função já cadastrada para este usuário";
+    	}
+    	
+    	List<UsuarioFuncaoAdicional > funcoes = this.usuarioEditado.getUsuarioFuncaoAdicionais();
+    	if (funcoes != null && 
+			funcoes.size() > 0 &&
+			funcoes.stream().anyMatch(x->x.getFuncao().getId() == id)) {
+    			return "Função já cadastrada para este usuário";
+		}
+		else {
+			UsuarioFuncaoAdicional funcao = new UsuarioFuncaoAdicional();
+			funcao.setId(0);
+			Funcao f = new Funcao();
+			f.setId(id);
+			funcao.setFuncao(f);
+			funcao.setUsuario(usuarioEditado);
+			funcoes.add(funcao);
+    	}
+    	
+    	return "";   	 
+	}
+	
+    @ResponseBody
+    @DeleteMapping(value = "/usuario/funcaoAdicional", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String funcaoAdicionalDelete(@RequestBody int id) {
+    	String message = "";
+    	List<UsuarioFuncaoAdicional> funcoes = this.usuarioEditado.getUsuarioFuncaoAdicionais();
+    	if (funcoes != null && 
+			funcoes.size() > 0) {
+    		UsuarioFuncaoAdicional funcao = funcoes.stream().filter(x->x.getFuncao().getId() == id).findFirst().get();
+    		if (funcao != null) {
+    			funcoes.remove(funcao);
+    		}
+    		else {
+    			message = "Função não cadastrada para este usuário";
+    		}
+    	}
+		else {
+			message = "Função não cadastrada para este usuário";
+		}
+    	
+    	return message;   	 
 	}
 	
     @ResponseBody

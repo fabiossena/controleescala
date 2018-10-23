@@ -40,11 +40,11 @@
 		        	  			<a id="btn-voltar" class="btn btn-sm btn-default" href="<c:url value='../projetos' />" style="margin: 1px">Voltar</a>
 							</c:if>
 			        	  	
-			        	  	<c:if test="${isDisableCamposProjeto && (isAdministracao || (isMonitoria && usuarioLogado.id == projeto.monitor.id))}">
+			        	  	<c:if test="${isDisableCamposProjeto && (isAdministracao || isMonitoramento)}">
 								<a id="btn-editar" class="btn btn-sm btn-primary" href="<c:url value='/projeto' />/${projeto.id}/editar" style="margin: 1px">Editar</a> 
 							</c:if>
 			        	  	<c:if test="${projeto.id != 0}">  
-               					<a class="btn btn-sm btn-primary" style="margin: 1px" href="<c:url value='/dashboard' />/${projeto.id}">dashboard</a>
+               					<a class="btn btn-sm btn-primary" style="margin: 1px" href="<c:url value='/dashboard' />/${projeto.id}">Dashboard</a>
 							</c:if>
 		        	  	</div>
 		              </div>  

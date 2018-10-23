@@ -15,6 +15,7 @@ import com.packageIxia.sistemaControleEscala.models.CadastroInicialPage;
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
 import com.packageIxia.sistemaControleEscala.models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
+import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -57,18 +58,24 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
-
-        return LoginUsuario(usuario);
+		
+		if (login.getFuncao().getId() == 0 
+			|| usuario.getUsuarioFuncaoAdicionais().size() == 0) {
+			return LoginUsuario(usuario, usuario.getFuncao());	
+		}
+		
+        return LoginUsuario(usuario, usuario.getUsuarioFuncaoAdicionais().stream().filter(x->x.getFuncao().getId() == login.getFuncao().getId()).findFirst().get().getFuncao());
 	}
 
 	@Override
-	public String LoginUsuario(Usuario usuario) {
-		session.setAttribute("isAtendimento", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId());
-		session.setAttribute("isAdministracao", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId());
-        session.setAttribute("isGerencia", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId());
-        session.setAttribute("isMonitoramento", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId());
-        session.setAttribute("isDiretoria", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId());
-        session.setAttribute("isFinanceiro", usuario.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId());
+	public String LoginUsuario(Usuario usuario, Funcao funcao) {
+		session.setAttribute("isAtendimento", funcao.getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId());
+		session.setAttribute("isAdministracao", funcao.getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId());
+        session.setAttribute("isGerencia", funcao.getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId());
+        session.setAttribute("isMonitoramento", funcao.getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId());
+        session.setAttribute("isDiretoria", funcao.getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId());
+        session.setAttribute("isFinanceiro", funcao.getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId());
+        usuario.setFuncao(funcao);
         session.setAttribute("usuarioLogado", usuario);
 		return "";
 	}
@@ -100,7 +107,7 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 	        usuarioEmailPrimeiroAcessoDao.save(usuarioPrimeiroAcesso);
 	        notificacao.save(new Notificacao(1, "Parabéns, seu cadastro inicial foi realizado com sucesso, acesse o menu 'Meu cadastro' para complementar suas informações.", "Cadastro de usuário", usuario));
 	        notificacao.save(new Notificacao(2, "Clique em X para fechar suas notificações.", "Cadastro de usuário", usuario));
-	        return LoginUsuario(usuario);
+	        return LoginUsuario(usuario, usuario.getFuncao());
 	        
 		} catch (Exception e) {
 			return e.toString();
@@ -120,6 +127,14 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		
 		if (usuario == null || !usuario.getSenha().equals(login.getSenha())) {
 			return "Matricula e senha inválida!";
+		}
+		
+		if (login.getFuncao() != null && login.getFuncao().getId() > 0) {
+			if (login.getFuncao().getId() != usuario.getFuncao().getId()) {
+				if (!usuario.getUsuarioFuncaoAdicionais().stream().anyMatch(x->x.getFuncao().getId() == login.getFuncao().getId())) {
+					return "Função escolhida não permitida!";					
+				}
+			}
 		}
         
 		return "";

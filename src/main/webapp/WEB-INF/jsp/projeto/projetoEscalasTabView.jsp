@@ -42,7 +42,7 @@
 			               
 			                <input type="hidden" id="definidaPrioridade${item.id}" value="${item.definidaPrioridade}" />
 			                <input type="hidden" id="id${item.id}" value="${item.id}" />
-			                <input type="hidden" id="monitor.id${item.id}" value="${item.monitor.id}" />
+			                <input type="hidden" id="monitor-id${item.id}" value="${item.monitor.id}" />
 			                <input type="hidden" id="observacaoEscala${item.id}" value="${item.observacaoEscala}" />
 			                <input type="hidden" id="prioridadeId${item.id}" value="${item.prioridadeId}" />
 			                <input type="hidden" id="horaInicioPrioridade${item.id}" value="${item.horaInicioPrioridade}" />

@@ -3,11 +3,9 @@ package com.packageIxia.sistemaControleEscala.controllers.projeto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
@@ -67,6 +64,8 @@ public class ProjetoController {
 	private IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService;
 	private HttpSession session;
 	private IFuncao funcaoService;
+	private List<Usuario> usuarios;
+	private HttpServletRequest request;
 	
 	@Autowired
 	public ProjetoController(
@@ -78,6 +77,7 @@ public class ProjetoController {
 			IProjetoFolgaSemanal projetoFolgaSemanalService,
 			IFuncao funcaoService,
 			IUsuarioTurnosDisponiveis usuarioTurnosDisponiveisService,
+			HttpServletRequest request,
 			HttpSession session) {
 		this.projetoService = projetoService;
 		this.escalaService = projetoEscalaService;
@@ -87,11 +87,12 @@ public class ProjetoController {
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.usuarioTurnosDisponiveisService = usuarioTurnosDisponiveisService;
 		this.session = session;
+		this.request = request;
 		this.funcaoService = funcaoService;
 	}
 
 	@GetMapping("/projetos")
-	public ModelAndView projetos(HttpServletRequest request) {		
+	public ModelAndView projetos() {		
 
     	modelViewCadastro.addObject("result", null);
     	modelViewCadastro.addObject("errorMessage", null);
@@ -112,12 +113,12 @@ public class ProjetoController {
 	
 	@GetMapping("/projeto/{id}")
 	public ModelAndView cadastroPorId(@PathVariable("id") long id) {		
-		return getCadastroPorId(id, true);
+		return this.getCadastroPorId(id, true);
 	}
 
 	@GetMapping("/projeto/{id}/editar")
 	public ModelAndView cadastroPorIdEdit(@PathVariable("id") long id) {		
-		return getCadastroPorId(id, false);
+		return this.getCadastroPorId(id, false);
 	}
 
 
@@ -166,7 +167,6 @@ public class ProjetoController {
 		
 		System.out.println("projeto");		
 		this.DisabilitarCampos(id, disabilitarTodosCampos);
-
     	modelViewCadastro.addObject("result", null);
     	modelViewCadastro.addObject("errorMessage", null);
 
@@ -184,6 +184,8 @@ public class ProjetoController {
     		erroModelView.addObject("errorMessage", "Projeto não existe ou nao cadastrado para este usuário");
             return erroModelView;
     	}
+
+		this.loadUsuarios();
 		
 		modelViewCadastro.addObject("projeto", projetoEditado); 
 					
@@ -475,22 +477,32 @@ public class ProjetoController {
     		message = this.deleteFolgaSemanal(prestador.getId());
     	}
     	
-		return new ModelAndView( "redirect:/projeto/"+ this.projetoEditado.getId() + "/editar");
+		return new ModelAndView("redirect:/projeto/"+ this.projetoEditado.getId() + "/editar");
+	}
+	
+	private void loadUsuarios() {
+		if (this.usuarios == null) {
+			this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+			this.usuarios = this.usuarioService.findAllByUsuarioLogado(this.usuarioLogado);
+		}
 	}
 	
     @ModelAttribute("gerentes")
     public List<Usuario> gerentes() {
-       return this.usuarioService.findByPerfilAcessoId(PerfilAcessoEnum.gerencia.getId());
+    	this.loadUsuarios();
+       return this.usuarioService.findByPerfilAcessoId(this.usuarios, PerfilAcessoEnum.gerencia.getId());
     }
     
     @ModelAttribute("monitores")
     public List<Usuario> monitores() {
-       return this.usuarioService.findByPerfilAcessoId(PerfilAcessoEnum.monitoramento.getId());
+    	this.loadUsuarios();
+       return this.usuarioService.findByPerfilAcessoId(this.usuarios, PerfilAcessoEnum.monitoramento.getId());
     }
     
     @ModelAttribute("atendentes")
     public List<Usuario> prestadores() {
-    	List<Usuario> prestadores = this.usuarioService.findByPerfilAcessoId(PerfilAcessoEnum.atendimento.getId());
+    	this.loadUsuarios();
+    	List<Usuario> prestadores = this.usuarioService.findByPerfilAcessoId(this.usuarios, PerfilAcessoEnum.atendimento.getId());
     	return prestadores;
     }
     

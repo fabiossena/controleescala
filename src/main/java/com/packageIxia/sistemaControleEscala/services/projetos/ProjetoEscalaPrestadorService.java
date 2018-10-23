@@ -93,7 +93,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	
 	@Override
 	public String save(ProjetoEscalaPrestador prestador) {
-		Projeto projeto = this.projetoService.findById(prestador.getProjeto().getId());
+		Projeto projeto = this.projetoService.findById(prestador.getProjeto().getId(), true);
 		
 		if (prestador.getDataInicio() != null && prestador.getDataFim() != null &&
 				prestador.getDataInicio().isAfter(prestador.getDataFim())) {
@@ -126,6 +126,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		return "";
 	}
 
+	@SuppressWarnings("unused")
 	private List<ProjetoEscalaPrestador> findAllByPrestadorIdAndProjetoId(long prestadorId, long projetoId) {
 		return this.projetoEscalaPrestadorDao.findAllByPrestadorIdAndProjetoIdAndExcluido(prestadorId, projetoId, false);
 	}

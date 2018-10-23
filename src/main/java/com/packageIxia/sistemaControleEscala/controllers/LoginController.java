@@ -1,6 +1,7 @@
 package com.packageIxia.sistemaControleEscala.controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,16 +17,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioAcesso;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
+import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 
 @Controller
 public class LoginController {
-
-	private IUsuarioAcesso usuarioAcessoService;
 	
 	ModelAndView mv = new ModelAndView("loginView");
-	public LoginController(IUsuarioAcesso usuarioAcessoService) {
+	
+	private IUsuarioAcesso usuarioAcessoService;
+	private IFuncao funcaoService;
+	
+	public LoginController(
+			IUsuarioAcesso usuarioAcessoService,
+			IFuncao funcaoService) {
 		this.usuarioAcessoService = usuarioAcessoService;
+		this.funcaoService = funcaoService;
 	}
 	
     @GetMapping(value = "/login")
@@ -59,7 +67,8 @@ public class LoginController {
             return mv;
         }    	
 
-        String message = usuarioAcessoService.efetuarLoginUsuario(login);        
+        String message = usuarioAcessoService.efetuarLoginUsuario(login);
+        
         if (message.isEmpty()) {
     		response.sendRedirect("index");
         }
@@ -68,5 +77,10 @@ public class LoginController {
         }
         
         return mv;
+    }
+    
+    @ModelAttribute("funcoes")
+    public List<Funcao> funcoes() {
+       return this.funcaoService.findAll();
     }
 }

@@ -11,6 +11,18 @@
         $(document).ready(function() {
         	$('#no-js').hide();
         	$('.yes-js').show();
+        	
+        	$("#opcoes").click(function () {
+        		$("#funcao-id").val(0);
+        		
+        		$('#area-funcao').toggle();
+				if ($('#area-funcao').is(":visible")) {
+					$("#opcoes").html("esconder opções");		
+        		}
+				else{
+					$("#opcoes").html("opções");					
+				}
+        	});
         });
     </script>
 </head>
@@ -47,13 +59,33 @@
                             </div>
                         </div>
                         
-                        <div style="margin-bottom: 25px" class="input-group">
+                        <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                             <form:password path="senha" class='form-control col-md-9 ${result.hasFieldErrors("senha") ? "is-invalid" : ""}' placeholder="Senha" maxlength="50" />
                             <div class="invalid-feedback">
                                 <form:errors path='senha' />
                             </div>
-                        </div>
+                       	</div>
+                       	
+               		    <div id="area-funcao" class="input-group" style="margin-top: 25px; display: none;">
+				            <form:select 
+				            	id="funcao-id" 
+				            	path="funcao.id" 
+				           		class="form-control col-md-9">
+				           		<form:option value="0">Selecione uma função</form:option>
+				           		<form:options 
+					           		items="${funcoes}"  
+					           		itemValue="id" 
+					           		itemLabel="nome"/>
+			           		</form:select>
+		                </div>		
+		                		
+                        <div class="input-group" style="margin-bottom: 25px">
+                        	<div class="col-md-9">
+	                        <a class="float-right" id="opcoes" style="font-size: 10pt; float: right" href="#">opções</a>
+	                        </div>
+                       	</div>
+						                		
                 		
                         <div class="input-group" style="display: none;">
                             <div class="checkbox">

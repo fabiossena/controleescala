@@ -46,12 +46,10 @@ public class ProjetoService implements IProjeto {
 		
 		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId() ||
-			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
 			projetos = Utilities.toList(projetoDao.findAllByExcluido(false));			
-		} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
-    		List<ProjetoEscala> escalas = projetoEscalaDao.findAllByMonitorId(usuarioLogado.getId());
-    		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(escalas.stream().map(y->y.getProjetoId()))));
-    	} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
+		} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
     		List<ProjetoEscalaPrestador> prestadores = projetoEscalaPrestadorDao.findAllByPrestadorId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(prestadores.stream().map(y->y.getProjeto().getId()))));
     	} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
@@ -61,6 +59,17 @@ public class ProjetoService implements IProjeto {
     	
 		return projetos;
 	}
+
+	
+	@Override
+	public Projeto findById(long id, boolean all) {	
+		if (!all) {
+			return findById(id);
+		}
+		
+		Projeto projeto = projetoDao.findById(id).orElse(null);
+		return projeto;
+	}
 	
 	@Override
 	public Projeto findById(long id) {		
@@ -69,7 +78,9 @@ public class ProjetoService implements IProjeto {
 
 		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId() ||
-			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
 			return projeto;
 		}
 		

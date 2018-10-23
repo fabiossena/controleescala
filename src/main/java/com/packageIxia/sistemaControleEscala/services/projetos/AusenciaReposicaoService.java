@@ -67,7 +67,7 @@ public class AusenciaReposicaoService implements IAusenciaReposicao {
 				
 				// todo: remover depois que colocar join
 				ProjetoEscala escala = projetoEscalaService.findById(ausenciaReposicao.getProjetoEscalaTroca().getId());
-				escala.setProjeto(projetoService.findById(escala.getProjetoId()));
+				escala.setProjeto(projetoService.findById(escala.getProjetoId(), true));
 				ausenciaReposicao.setProjetoEscalaTroca(escala);
 				
 				solicitacaoEditada.getAusenciaReposicoes().add(ausenciaReposicao);
@@ -205,7 +205,7 @@ public class AusenciaReposicaoService implements IAusenciaReposicao {
     						reposicao.getProjetoEscalaTroca().getId());
     				
     				if (projetoEscalaTroca.getProjeto() == null) {
-    					projetoEscalaTroca.setProjeto(projetoService.findById(projetoEscalaTroca.getProjetoId()));
+    					projetoEscalaTroca.setProjeto(projetoService.findById(projetoEscalaTroca.getProjetoId(), true));
     				}
 				}
 				

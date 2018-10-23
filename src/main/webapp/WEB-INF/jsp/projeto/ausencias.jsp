@@ -82,11 +82,11 @@
 	                					</c:if>											  
 									    <c:if test="${solicitacao.dadosAcesso.visivelAprovacao}">
 							     	  		<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 2}">
-												<input id="btn-aprovar-reposicao" type="button" onclick="aceitaRecusaSolicitacaoAusencia(${solicitacao.id}, true, '', 2)" class="btn btn-sm btn-success" value="Aceitar" style="margin: 1px" />
+												<input id="btn-aprovar-reposicao" type="button" onclick="aceitaRecusaSolicitacaoAusencia(${solicitacao.id}, true, '', 2)" class="btn btn-sm btn-success" value="aceitar" style="margin: 1px" />
 												<br>
 							      	  		</c:if>
 							    			<c:if test="${solicitacao.dadosAcesso.aceitePrincipal == 0 || solicitacao.dadosAcesso.aceitePrincipal == 1}">
-												<input id="btn-recusar-reposicao" type="button" onclick="aceitaRecusaSolicitacaoAusencia(${solicitacao.id}, false, '', 2)" class="btn btn-sm btn-danger" value="Recusar" style="margin: 1px" />
+												<input id="btn-recusar-reposicao" type="button" onclick="aceitaRecusaSolicitacaoAusencia(${solicitacao.id}, false, '', 2)" class="btn btn-sm btn-danger" value="recusar" style="margin: 1px" />
 												<br> 
 											</c:if>											  
 							     	  	  </c:if>											 

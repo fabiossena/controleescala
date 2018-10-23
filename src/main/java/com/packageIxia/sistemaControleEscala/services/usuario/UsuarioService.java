@@ -68,12 +68,16 @@ public class UsuarioService implements IUsuario {
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
+		
+		if (usuario.getUsuarioFuncaoAdicionais().stream().anyMatch(x->x.getFuncao().getId() == usuario.getFuncao().getId())) {
+			return "Função adicional cadastrada é a mesma que a função principal";
+		}
 
 		this.usuarioDao.save(usuario);
 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		if (usuarioLogado.getId() == usuario.getId()) {
-			this.usuarioAcessoService.LoginUsuario(usuario);
+			this.usuarioAcessoService.LoginUsuario(usuario, usuarioLogado.getFuncao());
 			session.setAttribute("usuarioLogado", usuario);
 		}
 		
@@ -102,21 +106,21 @@ public class UsuarioService implements IUsuario {
 		
     	if (usuarioLogado.getId() == usuario.getId() || !isCadastroUsuarioPage) {
     		
-    		if (!usuarioLogado.isAtivo()) {
-    			return "Não permitida a alteração do campo ativo pelo usuário atual";
-    		}
-    		
+//    		if (!usuarioLogado.isAtivo()) {
+//    			return "Não permitida a alteração do campo ativo pelo usuário atual";
+//    		}
+//    		
     		if (!usuario.getMatricula().equals(usuarioLogado.getMatricula())) {
     			return "Não permitida a alteração do campo matrícula pelo usuário atual";
     		}
     		
-    		if (usuario.getFuncao().getId() != usuarioLogado.getFuncao().getId()) {
-    			return "Não permitida a alteração do campo função pelo usuário atual";
-    		}
+//    		if (usuario.getFuncao().getId() != usuarioLogado.getFuncao().getId()) {
+//    			return "Não permitida a alteração do campo função pelo usuário atual";
+//    		}
     		
-    		if (usuario.getCentroCusto().getId() != usuarioLogado.getCentroCusto().getId()) {
-    			return "Não permitida a alteração do campo centro de custo pelo usuário atual";
-    		}
+//    		if (usuario.getCentroCusto().getId() != usuarioLogado.getCentroCusto().getId()) {
+//    			return "Não permitida a alteração do campo centro de custo pelo usuário atual";
+//    		}
 
     		if (usuario.isAtivo() != usuarioLogado.isAtivo()) {
     			return "Não permitida a alteração do campo 'usuário ativo' pelo usuário atual";
@@ -143,15 +147,23 @@ public class UsuarioService implements IUsuario {
 	}
 
 	@Override
-	public List<Usuario> findByPerfilAcessoId(int id) {
-		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(id, false));
-		return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
+	public List<Usuario> findByPerfilAcessoId(List<Usuario> usuarios, int id) {
+	    return usuarios.stream()
+	    		.filter(x->x.getFuncao().getPerfilAcessoId() == id || x.getUsuarioFuncaoAdicionais().stream().anyMatch(y->y.getFuncao().getPerfilAcessoId() == id))
+	    		.sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto))
+	    		.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Usuario> findByPerfilAcessoId(int[] ids) {
-		List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(ids, false));
-		return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
+	public List<Usuario> findByPerfilAcessoId(List<Usuario> usuarios, List<Integer> ids) {
+	       return usuarios.stream().filter(x->
+	       ids.contains(x.getFuncao().getPerfilAcessoId()) || 
+      		(x.getUsuarioFuncaoAdicionais() != null && 
+      		 x.getUsuarioFuncaoAdicionais().stream().anyMatch(y-> ids.contains(y.getFuncao().getPerfilAcessoId()) ) ))
+    		  .sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto))
+    		  .collect(Collectors.toList());
+		//List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(ids, false));
+		//return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
 	}
 
 	@Override

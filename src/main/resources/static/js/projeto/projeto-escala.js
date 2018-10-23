@@ -120,7 +120,7 @@ function selectEscala(item) {
 	 //$("#form-escala input[id='monitor.id']").val($("#monitor"+item).html());
 	 $("select[name='monitor.id'] option").each(function () { 
          $(this).removeAttr("selected");
- 		if ($(this).val() == $("#monitor"+item).val()) {
+ 		if ($(this).val() == $("#monitor-id" + item).val()) {
             $(this).attr("selected", "selected");
             //$(this).editableSelect('select', $("#monitor"+item).val());
         }
