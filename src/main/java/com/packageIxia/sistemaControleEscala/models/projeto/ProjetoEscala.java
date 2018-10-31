@@ -2,6 +2,7 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -104,6 +105,10 @@ public class ProjetoEscala {
 	transient private int quantidadePrestadoresReal;
 
 	transient private List<AusenciaReposicao> ausenciaReposicoes;
+	
+	private String jsonPrestadorDiasHoras;
+
+	transient private List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho;
 
 	public long getId() {
 		return id;
@@ -314,5 +319,38 @@ public class ProjetoEscala {
 
 	public List<AusenciaReposicao> getAusenciaReposicoes() {
 		return this.ausenciaReposicoes;
+	}
+
+	public String getJsonPrestadorDiasHoras() {
+		return this.jsonPrestadorDiasHoras;
+	}
+
+	public void setJsonPrestadorDiasHoras(String json) {
+		this.jsonPrestadorDiasHoras = json;
+	}
+
+	public List<ProjetoEscalaPrestadorDiaHoraTrabalho> getDiasHorasTrabalho() {
+		if (this.diasHorasTrabalho != null) {
+			return this.diasHorasTrabalho;
+		}
+		
+		this.diasHorasTrabalho = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+		for(int dia = 0; dia <= 6; dia++) {
+			ProjetoEscalaPrestadorDiaHoraTrabalho diaHora = new ProjetoEscalaPrestadorDiaHoraTrabalho();
+			diaHora.setDiaSemana(dia+1);
+			diaHora.setHoraInicio("");
+			diaHora.setHoraFim("");
+			
+			//ProjetoEscalaPrestadorDiaHoraTrabalho diaHoraTrabalho = new ProjetoEscalaPrestadorDiaHoraTrabalho(); // this.escalaSelecionada.getPrestadorDiasHoras().stream().filter(x->x.getDiaSemana()==d).findFirst().orElse(new ProjetoEscalaPrestadorDiaHoraTrabalho());
+
+			if (dia+1  >= this.getDiaSemanaDeId() &&  dia+1 <= this.getDiaSemanaAteId()) {
+				diaHora.setHoraInicio(this.getHoraInicio());
+				diaHora.setHoraFim(this.getHoraFim());
+			}
+			
+			this.diasHorasTrabalho.add(diaHora);
+		}
+		
+		return this.diasHorasTrabalho;
 	}
 }

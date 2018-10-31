@@ -4,14 +4,16 @@
 <%@page session="true"%>
 
 <form:form id="form-escala" modelAttribute="escala" method="POST" class="form-horizontal row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-
-	<h4 class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8" style="margin-bottom: 17px">Escalas</h4> 
-		    
-	<div class="table-container  table-responsive row border-top panel-custom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
 	
-		<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">  
+	<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 border-bottom row" style="padding:0 0 10px 0;">
+        <h4 class="panel-title" style="margin-right: 25px">Escalas</h4> 
+    </div>
+    
+	<div class="table-container table-responsive row panel-custom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
+	
+		<!-- <div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 border-bottom row" style="padding:0 0 10px 0; margin: 25px 10px 20px 15px">  
 		  	<h5>Todas escalas</h5>
-		</div>
+		</div> -->
 		
 		<table id="tabela-escala" class="display tabela-simples">
 	       <!-- Header Table -->
@@ -58,10 +60,17 @@
 	    </table>
 	</div>
 		
-	<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin-top: 25px"> 
-	  	<h5>Detalhes escala</h5>      
-	</div>	       
-	
+	<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 border-bottom row" style="padding:0 0 10px 0; margin: 25px 10px 20px 15px">
+           <h5 class="panel-title" style="margin-right: 25px">Detalhes escala</h5>
+      	 
+      	  	<c:if test="${!isDisableCamposEscala}">
+      	  		<input id="btn-salvar-escala" type="submit" class="btn btn-sm btn-success float-left" value="Salvar" style="display: none; margin: 1px; height: 30px" <c:if test="${isDisableCamposEscala}">disabled</c:if> /> 
+				<input id="btn-editar-escala" type="button" class="btn btn-sm btn-success float-left" value="Novo" style="margin: 1px; height: 30px" <c:if test="${isDisableCamposEscala}">disabled</c:if> />
+      	  		<input id="btn-limpar-escala" type="button" class="btn btn-sm btn-success float-left" value="Cancelar" style="margin: 1px; height: 30px" <c:if test="${isDisableCamposEscala}">disabled</c:if> />
+     	  	</c:if>
+ 	  </div>  	  	
+ 	  	  
+ 	  	  
 	<div class="container row panel-custom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="margin: -20px 0 30px 0">
 
    	 	  <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-4">
@@ -71,6 +80,8 @@
 	          <form:hidden path="projetoId" />
 	      	  <div class="invalid-feedback"><form:errors path="descricaoEscala" /></div>
 		  </div>    
+		  
+		  
 		   
 		  <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-2">
 		      <label for="horaInicio" class="control-label">Hora início *</label>
@@ -165,17 +176,6 @@
 		  	</div>
 		  </div>
     	</div>		
-		       	 
-			  
-       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-      	  	<c:if test="${!isDisableCamposEscala}">
-      	  		<input id="btn-limpar-escala" type="button" class="btn btn-success float-right" value="Cancelar" style="margin: 0 10px 10px 0" <c:if test="${isDisableCamposEscala}">disabled</c:if> />
-				<input id="btn-editar-escala" type="button" class="btn btn-success float-right" value="Novo" style="margin: 0 10px 10px 0" <c:if test="${isDisableCamposEscala}">disabled</c:if> />
-      	  		<input id="btn-salvar-escala" type="submit" class="btn btn-success float-right" value="Salvar" style="display: none; margin: 0 10px 10px 0" <c:if test="${isDisableCamposEscala}">disabled</c:if> /> 
-		    <br />
-    		<br />
-     	  	</c:if>
-   	  </div>  	
   </div>  
 </form:form>
 		

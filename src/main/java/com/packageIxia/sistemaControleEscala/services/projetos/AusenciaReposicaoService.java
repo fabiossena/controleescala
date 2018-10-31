@@ -265,7 +265,7 @@ public class AusenciaReposicaoService implements IAusenciaReposicao {
 		if (reposicao.isIndicadoOutroUsuario()) {
 			
 	    	if (projetoEscalaPrestadorTroca == null) {
-		    	return "Prestador da troca nao não pertence a escala escolhida";
+		    	return "Prestador da troca não pertence a escala escolhida";
 	    	}  
 	    	
 			if (reposicao.getDataTroca() != null && 
@@ -294,9 +294,9 @@ public class AusenciaReposicaoService implements IAusenciaReposicao {
 		
 
 		if (!Utilities.dataEstaEntreDiasDaSemana(
-				reposicao.getData(),
-				projetoEscalaTroca.getDiaSemanaDe().getId(), 
-				projetoEscalaTroca.getDiaSemanaAte().getId())) {
+			reposicao.getData(),
+			projetoEscalaTroca.getDiaSemanaDe().getId(), 
+			projetoEscalaTroca.getDiaSemanaAte().getId())) {
 			return "Dia da semana da reposição deve estar entra os dias da semana da escala do projeto";
 		}
 		

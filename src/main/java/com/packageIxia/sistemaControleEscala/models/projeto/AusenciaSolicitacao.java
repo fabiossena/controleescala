@@ -2,6 +2,7 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -103,8 +104,8 @@ public class AusenciaSolicitacao {
 	transient private String acesso;
 	
 	@Fetch(value = FetchMode.SELECT)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="ausenciaSolicitacao", cascade = CascadeType.ALL)
-    private List<AusenciaReposicao> ausenciaReposicoes;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="ausenciaSolicitacao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AusenciaReposicao> ausenciaReposicoes = new ArrayList<AusenciaReposicao>();
 
 	transient private String observacaoComplemento;
 

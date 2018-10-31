@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script>
-$(document).ready(function() {	 
+$(document).ready(function() {
+	
 	<c:if test="${usuarioLogado != null}">
 	setTimeout(notificacoes, 10000);
 	</c:if>
@@ -79,7 +80,12 @@ $(document).ready(function() {
        return false;
     }
 </c:if>
-</script> 
+</script>
+
+<div id="panel-block" style="width: 100%; height: 100%; opacity: 0.4; display: none;  z-index: 99999; background-color: black; position: absolute;">
+
+</div>
+ 
 	<nav id="nav-main" class="navbar navbar-dark bg-dark navbar-toggleable-sm navbar-inverse bg-inverse">
 	  <span>
 		<button class="navbar-toggler navbar-toggler-left collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">

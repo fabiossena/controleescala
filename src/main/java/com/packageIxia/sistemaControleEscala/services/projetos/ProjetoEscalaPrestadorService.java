@@ -4,21 +4,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaReposicaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraAprovacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDao;
+import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDiaHoraTrabalhoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestadorDiaHoraTrabalho;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -31,6 +33,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	private AusenciaSolicitacaoDao ausenciaSolicitacaoDao;
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
 	private HoraAprovacaoDao horaAprovacaoDao;
+	private ProjetoEscalaPrestadorDiaHoraTrabalhoDao diaHoraTrabalhoDao;
 
 	@Autowired
 	public ProjetoEscalaPrestadorService(
@@ -39,13 +42,15 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			IProjeto projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			HoraAprovacaoDao  horaAprovacaoDao) {
+			HoraAprovacaoDao  horaAprovacaoDao,
+			ProjetoEscalaPrestadorDiaHoraTrabalhoDao diaHoraTrabalhoDao) {
 		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.projetoService = projetoService;
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
 		this.horaAprovacaoDao = horaAprovacaoDao;
+		this.diaHoraTrabalhoDao = diaHoraTrabalhoDao;
 	}
 	
 	@Override
@@ -64,7 +69,28 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			return new ArrayList<ProjetoEscalaPrestador>();
 		}
 		
-		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
+		List<ProjetoEscalaPrestador> projetoEscalaPrestadores = projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
+		for (ProjetoEscalaPrestador projetoEscalaPrestador : projetoEscalaPrestadores) {
+						
+			//projetoEscalaPrestador.setDiasHorasTrabalhoDataView(new ProjetoEscalaPrestadorDiasHorasTrabalhoDataView(projetoEscalaPrestador.getProjetoEscalaPrestadorDiasHorasTrabalho(), projetoEscalaPrestador.getProjetoEscala()));
+			
+			String json = this.convertoToJson(projetoEscalaPrestador.getDiasHorasTrabalho());	
+			projetoEscalaPrestador.setJsonDiasHorasTrabalho(json);
+		}
+		
+		return projetoEscalaPrestadores;
+	}
+
+	public String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) {
+		String json ="";
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			json = mapper.writeValueAsString(diasHorasTrabalho);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return json;
 	}
 	
 	@Override
@@ -73,8 +99,10 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			return new ArrayList<Usuario>();
 		}
 		
-		return projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false)
-				.stream().filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId).map(x->x.getPrestador()).collect(Collectors.toList());
+		List<ProjetoEscalaPrestador> projetoPrestadores = projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
+		List<Usuario> usuarios = projetoPrestadores.stream().filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId).map(x->x.getPrestador()).distinct().collect(Collectors.toList());
+		
+		return usuarios;
 	}
 	
 	@Override
@@ -120,9 +148,142 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 				return "Ramal de integração com o robô já cadastrado em outro prestador";
 			}
 		}
+
+//		List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+//    	List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+
+    	//String message = this.getAtualizacoesPrestadorDiasHoras(prestador, apagar, atualizar);
+    	String message = this.getAtualizacoesPrestadorDiasHoras(prestador);
+		if (message != "") {
+			return message;
+		}
+
+//		prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(atualizar);
 		
+//    	if (apagar != null && 
+//			apagar.size() > 0) { //atual.getProjetoEscalaPrestadorDiasHorasTrabalho()
+//    		for (ProjetoEscalaPrestadorDiaHoraTrabalho item : apagar) {
+//        		this.diaHoraTrabalhoDao.deleteAllById(item.getId()); //prestador.getId());	
+//			}
+//    	}
+    	
 		ProjetoEscalaPrestador prestadorSalvo = this.projetoEscalaPrestadorDao.save(prestador);
 		prestador.setId(prestadorSalvo.getId());
+		return "";
+	}
+
+	private String  getAtualizacoesPrestadorDiasHoras(ProjetoEscalaPrestador prestador) {
+			//List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar, List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar
+
+    	if (prestador.getDiasHorasTrabalho() == null || 
+			prestador.getDiasHorasTrabalho().size() == 0 ||
+			prestador.getDiasHorasTrabalho().stream().allMatch(x->x.getHoraInicio().equals("") && x.getHoraFim().equals(""))) {
+    		
+			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>());
+		}
+		else {
+			
+    		// valida informação de hora e verifica se os dados são igual a escala, se forem iguais apaga registros para prevalecer o que tem na escala base
+    		return validaAjustaDiasHorasAndComparaComDiasHorasEscala(prestador);
+
+			// se todos registros forem iguais a escala apaga tudo para prevalecer o que tem na escala base
+//			this.getDiasHorasParaApagarAndAtualizar(prestador, apagar, atualizar, projetoPrestadorBaseDadosAtual,
+//					igualEscala, diasHorasDaEscala);
+		}
+    	
+    	return "";
+	}
+
+//	private void getDiasHorasParaApagarAndAtualizar(ProjetoEscalaPrestador prestador,
+//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar, List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar,
+//			ProjetoEscalaPrestador projetoPrestadorBaseDadosAtual, boolean igualEscala,
+//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasDaEscala) {
+//		
+//		if (igualEscala) {
+//			//prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>());
+//			if (projetoPrestadorBaseDadosAtual != null && 
+//				projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho()!= null && 
+//				projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho().size() > 0) {
+//				apagar.addAll(projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho());
+//			}
+//		}
+////		else {
+////
+////			// se não tiver nada na base de dados prevalecer o que tem na escala TELA
+////			if (diasHorasDaEscala == null || 
+////				projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho() == null || 
+////				projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho().size() == 0) {
+////				
+////				atualizar.addAll(prestador.getDiasHorasTrabalho().stream().filter(x->!x.getHoraInicio().equals("")).collect(Collectors.toList()));
+////			}
+////			else {
+////				
+////				// percorre registros da tela para comparar com base de dados
+////		    	comparaDiasHorasComSalvoBanco(prestador, apagar, atualizar, projetoPrestadorBaseDadosAtual);			    	
+////			}
+////		}
+//	}
+
+//	private void comparaDiasHorasComSalvoBanco(ProjetoEscalaPrestador prestador,
+//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar, List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar,
+//			ProjetoEscalaPrestador projetoPrestadorBaseDadosAtual) {
+//		for (int itemIndex = 0; itemIndex < prestador.getDiasHorasTrabalho().size(); itemIndex++) {
+//			ProjetoEscalaPrestadorDiaHoraTrabalho item = prestador.getDiasHorasTrabalho().get(itemIndex);
+//			ProjetoEscalaPrestadorDiaHoraTrabalho diaSemanaBaseDadosAtual = 
+//					projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho().stream().filter(x->
+//					x.getDiaSemana() == item.getDiaSemana()).findFirst().orElse(new ProjetoEscalaPrestadorDiaHoraTrabalho(0, "", ""));
+//
+//			// tem id mas não dados nas horas entao apaga
+//			if (item.getId() > 0 &&
+//				item.getHoraInicio().equals("") &&
+//				item.getHoraFim().equals("")) {
+//				apagar.add(item);
+//			}
+//			// tem id e horas são diferentes de branco e diferente da base dados (dados originais) então atualiza
+//			else if (item.getId() > 0 &&
+//					(!item.getHoraInicio().equals(diaSemanaBaseDadosAtual.getHoraInicio()) ||
+//					!item.getHoraFim().equals(diaSemanaBaseDadosAtual.getHoraFim()))) {
+//				atualizar.add(item);
+//			}
+//			// não tem id mas tem horas então insere
+//			else if (item.getId() == 0 && 
+//					!item.getHoraInicio().equals("")) {
+//				atualizar.add(item);
+//			}
+//		}
+//	}
+
+	private String validaAjustaDiasHorasAndComparaComDiasHorasEscala(
+			ProjetoEscalaPrestador prestador) {
+
+    	List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasDaEscala = prestador.getProjetoEscala().getDiasHorasTrabalho();
+		boolean igualEscala = true;
+		
+		for (int itemIndex = 0; itemIndex < prestador.getDiasHorasTrabalho().size(); itemIndex++) {
+			ProjetoEscalaPrestadorDiaHoraTrabalho item = prestador.getDiasHorasTrabalho().get(itemIndex);
+			item.setProjetoEscalaPrestador(prestador);
+			if ((item.getHoraInicio() == "" && item.getHoraFim() != "") ||
+				(item.getHoraFim() == "" && item.getHoraInicio() != "") ||
+				!Utilities.validarHoraPreenchida(item.getHoraInicio()) || !Utilities.validarHoraPreenchida(item.getHoraFim()) ||
+				(Utilities.validarHora(item.getHoraInicio()) && Utilities.horaToInt(item.getHoraInicio()) > Utilities.horaToInt(item.getHoraFim()))) {				
+					return "Preencha corretamente as horas customizadas"; 			
+			}
+			
+			ProjetoEscalaPrestadorDiaHoraTrabalho diaSemanaDaEscala = diasHorasDaEscala.get(itemIndex); 
+			if (!item.getHoraInicio().equals(diaSemanaDaEscala.getHoraInicio()) ||
+				!item.getHoraFim().equals(diaSemanaDaEscala.getHoraFim())) {
+				igualEscala = false;
+			}
+			
+			item.setProjetoEscalaPrestador(prestador);
+		}
+		
+		if (igualEscala) {
+			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>());
+		}
+		else {
+			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(prestador.getDiasHorasTrabalho().stream().filter(x->!x.getHoraInicio().equals("") && !x.getHoraFim().equals("")).collect(Collectors.toList()));
+		}
 		return "";
 	}
 

@@ -34,7 +34,7 @@ public class UsuarioFuncaoAdicional {
 	@JoinColumn(name="funcaoId") 
 	private Funcao funcao;
 	
-	@ManyToOne //(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne
 	@JoinColumn(name="usuarioId")
 	private Usuario usuario;
 

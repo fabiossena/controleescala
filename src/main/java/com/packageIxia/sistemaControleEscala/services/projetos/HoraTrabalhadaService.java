@@ -291,6 +291,7 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 
 		}
 		
+		horaTrabalhadaAnterior.setMotivoPausa(horaTrabalhadaAnterior.getMotivoPausa() == null ? "" : horaTrabalhadaAnterior.getMotivoPausa());
 		if (!horaTrabalhadaAnterior.getMotivoPausa().equals(horaTrabalhada.getMotivoPausa())) {
 			horaTrabalhada.setHistoricoCorrecao(
 					(horaTrabalhada.getHistoricoCorrecao() == null ? "" : horaTrabalhada.getHistoricoCorrecao()) +

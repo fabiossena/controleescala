@@ -3,6 +3,8 @@ package com.packageIxia.sistemaControleEscala.controllers.projeto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -199,6 +201,8 @@ public class ProjetoController {
 		if (this.escalaSelecionada == null || !(this.escalaSelecionada.getProjetoId() == id)) {
 			this.escalaSelecionada = this.escalas.stream().findFirst().orElse(new ProjetoEscala()) ;
 		}
+
+		this.escalaSelecionada.setJsonPrestadorDiasHoras(this.projetoEscalaPrestadorService.convertoToJson(this.escalaSelecionada.getDiasHorasTrabalho()));
 		
 		modelViewCadastro.addObject("escalaSelecionada", this.escalaSelecionada); 	
 		this.prestadores = this.projetoEscalaPrestadorService.findAllByProjetoEscalaId(this. escalaSelecionada.getId());
@@ -460,6 +464,8 @@ public class ProjetoController {
     	modelViewCadastro.addObject("result", result);      
     	modelViewCadastro.addObject("errorMessage", null);
         if (Strings.isNotBlank(message)) {
+        	prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(prestador.getDiasHorasTrabalho().stream().filter(x-> !x.getHoraInicio().equals("") && !x.getHoraFim().equals("")).collect(Collectors.toList()));
+    		modelViewCadastro.addObject("prestador", prestador);
         	modelViewCadastro.addObject("errorMessage", message);
         	return modelViewCadastro;
         }       
@@ -524,6 +530,11 @@ public class ProjetoController {
     @ModelAttribute("funcoes")
     public List<Funcao> funcoes() {
        return this.funcaoService.findAll();
+    }
+    
+    @ModelAttribute("funcoesAtendentes")
+    public List<Funcao> funcoesAtendentes() {
+       return this.funcaoService.findByPerfilAcessoId(PerfilAcessoEnum.atendimento.getId());
     }
     
     @ModelAttribute("motivos")

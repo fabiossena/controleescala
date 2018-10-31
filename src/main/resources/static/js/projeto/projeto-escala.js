@@ -72,7 +72,8 @@ function editarEscala() {
 	 $("#form-escala #diaSemanaAtePrioridadeId").prop("disabled", false);
 
      if ($("#form-escala #id").val()==0) {
-         $("#form-escala #id").val(-1);
+         $("#form-escala #diaSemanaDeId").val(1);
+    	 $("#form-escala #diaSemanaAteId").val(7);
      }
 }
 
@@ -176,6 +177,9 @@ function selectEscala(item) {
 	 $("select[name='monitor.id'] option").each(function () { 
 		 $(this).removeAttr("selected");
 	 });
+	 
+     $("#form-escala #diaSemanaDeId").val(1);
+	 $("#form-escala #diaSemanaAteId").val(7);
 
 //	 $("select[name='monitor.id']").val("").change();
 //	 $("#diaSemanaDe").val("").change();

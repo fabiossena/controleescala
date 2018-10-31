@@ -6,20 +6,17 @@
 
 <form:form modelAttribute="projeto" id="form-projeto" method="POST"
 	class="form-horizontal row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-	<h4 class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">Dados
-		principais</h4>
-
-
-
-	<span class="col-4 col-sm-4 col-md-4 col-lg-4" style="top: -5px">
-		<c:if test="${!isDisableCamposProjeto}">
-			<input id="btn-salvar" type="submit"
-				class="btn btn-success float-right" value="Salvar" />
+	
+	<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 border-bottom row" style="padding:0 0 10px 0;"> 
+        <h4 class="panel-title" style="margin-right: 25px">Dados principais</h4> 
+		<c:if test="${!isDisableCamposProjeto}"> 
+			<input id="btn-salvar" type="submit" style="height: 30px"
+				class="btn btn-sm btn-success float-right" value="Salvar" />
 		</c:if>
-	</span>
-
+	</div>
+	
 	<div
-		class="container row border-top panel-custom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		class="container row panel-custom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 
 		<div class="form-group col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
 			<label for="nome" class="control-label">Nome *</label>

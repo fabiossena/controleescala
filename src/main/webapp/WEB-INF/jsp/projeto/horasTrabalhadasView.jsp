@@ -378,21 +378,21 @@
 									
 									
        	  							<form:form modelAttribute="horaTrabalhada" class="form-horizontal row container col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" method="POST">	
-										         
-										<div class="row border-bottom col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin: 60px 0 30px 0">					
-											<h5 class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6" style="margin-left: -10px ">Detalhes</h5>	
+		  
+									<div class="form-group col-12 col-xm-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 border-bottom row" style="padding:0 0 10px 0; margin: 25px 10px 20px 15px">	
+   											<h5 class="panel-title"style="margin-right: 25px">Detalhes hora trabalhada</h5>	
 						                	<c:if test="${(isAdministracao || isAtendimento) && aprovacaoHora.aceitePrestador != 1}">
 							        	  		<span class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 float-right">
-								        	  		<input id="btn-cancelar-hora" type="button" class="btn btn-sm btn-primary float-right" value="cancelar" style="margin: 1px"  />
-								        	  		<button id="btn-salvar-hora" type="submit" class="btn btn-sm btn-success float-right " style="margin: 1px">salvar</button>
-								        	  		<input id="btn-editar-hora" type="button" class="btn btn-sm btn-success float-right" value="nova" style="margin: 1px"  />	
+								        	  		<input id="btn-editar-hora" type="button" class="btn btn-sm btn-success float-left" value="nova" style="margin: 1px"  />	
+								        	  		<button id="btn-salvar-hora" type="submit" class="btn btn-sm btn-success float-left" style="margin: 1px">salvar</button>
+								        	  		<input id="btn-cancelar-hora" type="button" class="btn btn-sm btn-primary float-left" value="cancelar" style="margin: 1px"  />
 							        	  		</span>	
 							        	  		<br> 
 						        	  		</c:if>
 					        	  		</div>	
 										  <form:hidden path="id" />
-									      
-									      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
+									      							
+									      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 '>
 										    <label for="projetoEscala.id" class="control-label">Escala projeto *</label>
 									        <form:select 
 									        			path="projetoEscala.id" 
@@ -471,7 +471,6 @@
 										  <div class="form-group col-sm-12 text-primary" id="historico">	
 										  	${historicoCorrecao}
 										  </div>
-										    
           							 </form:form>
 									 </div>
 								 </div>

@@ -100,7 +100,8 @@
 	
 	
 
-</script>         
+</script>       
+  
 <h5>Dados administrativos</h5>
 <div class="container border-top panel-custom">                  
     <div class="form-group">
@@ -174,8 +175,8 @@
                      
     <div class="form-group">
         <label for="matricula" class="col-md-12 control-label">Matrícula Ixia *</label>
-        <div class="col-md-9">
-     		<form:input path="matricula" class="form-control" placeholder="matrícula" disabled="${isDisableCamposChaves || isDisableTodosCampos}" />
+        <div class="col-md-9"> 
+     		<form:input path="matricula" name="matricula" class="form-control" placeholder="matrícula" disabled="${isDisableCamposChaves || isDisableTodosCampos}" />
         </div>
     </div>                     
                     

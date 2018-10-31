@@ -183,9 +183,25 @@
 		             	  	</c:forEach>
 				         </select>
 				     </div>
+				      
+				     <div class="form-group"> 
+				         <label for="banco" class="control-label">&nbsp;</label>
+				        <br> 
+    	  		  		<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrar()" style="margin-left: 10px;  height: 35px">Filtrar</button>
+				     </div>
 				  </div> 
+
+			        	  			
+   	  			<c:if test="${isAdministracao}">					          
+	       	  		<div class="form-group col-sm-12">	
+	       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
+						    <input class="btn btn-sm btn-primary float-left" type="file" style="height: 35px; margin: 1px" name="file" id="integracao-robo" />
+						    <input class="btn btn-sm btn-primary float-left" type="button" style="height: 35px; margin: 1px; font-size: 10pt" value="Integrar dados robô" onclick="integracaoRobo()" />			        	  				
+						</form>
+		  			</div>	 
+      	  		</c:if>
+
 			     
-    	  		  <button id="btn-filtrar" class="btn btn-sm btn-primary float-left" onclick="filtrar()">Filtrar</button> 
 				  <c:if test="${isFinanceiro}">
 				  	
 					  <div class="btn-group" role="group" style="margin-left: 20px">
@@ -204,15 +220,6 @@
 					    </div> 
 				  </c:if> 
 			  </c:if>
-			        	  			
-   	  			<c:if test="${isAdministracao}">					          
-	       	  		<div class="form-group col-sm-12">	
-	       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
-						    <input class="btn btn-primary float-right" type="button" style="margin: 1px;font-size: 12pt" value="Integrar dados robô" onclick="integracaoRobo()" />			        	  				
-						    <input class="btn btn-sm btn-primary float-right" type="file" style="margin: 1px" name="file" id="integracao-robo" />
-						</form>
-		  			</div>	 
-      	  		</c:if>
        	  		
 				<div class="table-container table-responsive" style="margin-top: 100px">
 					<table id="tabela" class="display tabela-avancada">

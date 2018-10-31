@@ -186,6 +186,8 @@
 									style="font-size: 14pt; vertical-align: top">
 									
 									<%-- <c:if test="${dia.data >= escala.projeto.dataInicio && dia.data <= escala.projeto.dataFim}"> --%>
+									
+									<c:if test="${escala.diaSemanaDeId >= dia.diaSemana && escala.diaSemanaAteId <= dia.diaSemana}"> 
 									<div class="badge badge-success">${escala.horaInicio}-
 										${escala.horaFim}</div> <br> <c:if
 										test="${escala.definidaPrioridade}">
@@ -194,7 +196,8 @@
 											<div class="badge badge-danger">Horário prioritario:
 												${escala.horaInicioPrioridade} - ${escala.horaFimPrioridade}</div>
 										</c:if>
-									</c:if> <%-- </c:if>  --%>
+									</c:if> 
+									</c:if>
 
 									<c:set var="reposicoes" value="${escala.ausenciaReposicoes}" scope="request"/>
 									<c:set var="solicitacaoId" value="${solicitacaoId}" scope="request"/>		
@@ -263,9 +266,23 @@
 									<c:if
 										test="${dia.data >= item.dataInicio && (item.dataFim == null || dia.data <= item.dataFim)}">
 										
-										<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
-											- ${item.projetoEscala.horaFim}</div>
+										<c:if test="${!item.hasDiasHorasTrabalho}">
+											<c:if test="${item.projetoEscala.diaSemanaDeId >= dia.diaSemana && item.projetoEscala.diaSemanaAteId <= dia.diaSemana}"> 
+												<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
+												- ${item.projetoEscala.horaFim}</div>
+											</c:if>
+										</c:if>
+										
+										<c:if test="${item.hasDiasHorasTrabalho}">
+											<c:forEach items="${item.projetoEscalaPrestadorDiasHorasTrabalho}" var="diaHoraTrabalho">
+												<c:if test="${diaHoraTrabalho.diaSemana == dia.diaSemana}"> 
+													<div class="badge badge-success" style="font-size: 10pt;">${diaHoraTrabalho.horaInicio}
+													- ${diaHoraTrabalho.horaFim}</div>
+												</c:if>
 
+											</c:forEach>
+										</c:if>
+										
 										<c:forEach items="${item.projetoFolgasSemanais}" var="folga">
 											<c:if test="${folga.diaSemanaId == dia.diaSemana}">
 												<br>

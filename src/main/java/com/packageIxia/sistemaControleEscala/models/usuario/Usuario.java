@@ -22,9 +22,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.packageIxia.sistemaControleEscala.models.referencias.CentroCusto;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 
@@ -141,16 +145,17 @@ public class Usuario {
     
     private int periodoDisponivelId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name="funcaoId") 
 	private Funcao funcao;
 
-	//@Fetch(value = FetchMode.SELECT)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("usuario")
+	@Fetch(value = FetchMode.SELECT)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UsuarioFuncaoAdicional> usuarioFuncaoAdicionais;
 
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, optional = false)
 	@JoinColumn(name="centroCustoId") 
 	private CentroCusto centroCusto;
 	

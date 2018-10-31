@@ -3,6 +3,7 @@ package com.packageIxia.sistemaControleEscala.interfaces.projeto;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestadorDiaHoraTrabalho;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Service
@@ -40,5 +41,7 @@ public interface IProjetoEscalaPrestador {
 	List<ProjetoEscalaPrestador> findAllByPrestadorId(long prestadorId);
 
 	List<ProjetoEscalaPrestador> findAllByRamalIntegracaoRobo(String ramalRobo);
+	
+	String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho);
 
 }

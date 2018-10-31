@@ -54,6 +54,12 @@ public class Utilities {
 		String rex = "^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$";
 		return hora == null || hora == "" ? false : hora.matches(rex);
 	}
+
+	
+	public static boolean validarHoraPreenchida(String hora) {
+		String rex = "^(([0-1][0-9])||([2][0-3])):[0-5][0-9]$";
+		return hora == null || hora == "" ? true : hora.matches(rex);
+	}
 	
 	public static int horaToInt(String hora) {
 		return Integer.parseInt(hora.replace(":", ""));
@@ -93,10 +99,10 @@ public class Utilities {
 		}
 		
 		List<Integer> diasSemanas = new ArrayList<Integer>();
-		if (ajuste) {
-			diaSemanaInicio = diaSemanaInicio == 1 ? 7 : diaSemanaInicio - 1;
-			diaSemanaFim = diaSemanaFim == 1 ? 7 : diaSemanaFim - 1;
-		}
+//		if (ajuste) {
+//			diaSemanaInicio = diaSemanaInicio == 1 ? 7 : diaSemanaInicio - 1;
+//			diaSemanaFim = diaSemanaFim == 1 ? 7 : diaSemanaFim - 1;
+//		}
 		
 		while (diaSemanaInicio <= diaSemanaFim) {
 			diasSemanas.add(diaSemanaInicio);

@@ -127,7 +127,7 @@ public class UsuarioController {
 
 	@GetMapping("/usuario/{id}/editar")
 	public ModelAndView cadastroPorUsuarioEdit(
-			@PathVariable("id") int id) {		
+			@PathVariable("id") int id) {
 		return getCadastroPorUsuario(id, false);
 	}
 
@@ -199,6 +199,20 @@ public class UsuarioController {
     public ModelAndView submitMeuCadastro(
     		@Valid @ModelAttribute("usuario")Usuario usuario, 
     		BindingResult result) throws IOException {
+    	
+    	// atraves do "meu cadastro" estes campos são mostrados como desabilitados
+    	if (usuario.getMatricula() == null) {
+    		usuario.setMatricula(usuarioEditado.getMatricula());
+    	}
+    	
+    	if (usuario.getCentroCusto() == null) {
+    		usuario.setCentroCusto(usuarioEditado.getCentroCusto());
+    	}
+
+    	if (usuario.getFuncao() == null) {
+    		usuario.setFuncao(usuarioEditado.getFuncao());
+    	}
+    	
     	return usuarioPost(usuario, result, false);        
     }
     

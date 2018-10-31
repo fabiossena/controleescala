@@ -9,7 +9,14 @@ $(function() {
 	 
      $("#tabela-prestador tbody td.rowclick").click(function(e){
 		selectPrestador($(this).closest("tr").attr("id").replace("prestador", ""));	
-     });
+     });  
+
+   	if (!$("#form-prestador #chk-dias-horas-trabalho-customizado").prop("checked")){
+ 		$("#form-prestador #panel-dias-horas-trabalho-customizado").hide();
+ 	}
+ 	else {
+ 		$("#form-prestador #panel-dias-horas-trabalho-customizado").show();
+ 	}
      
      $("#btn-cancelar-prestador").click(function(e){
     	 limparPrestador(true);
@@ -59,8 +66,26 @@ $(function() {
   		}
   		
  		$("#form-prestador #dataFim").prop("disabled", !$(this).prop("checked"));
-  	});  
+  	});
+  	
+  	$("#form-prestador #chk-dias-horas-trabalho-customizado").click(function(e){
+  		//limparDiasHoras();
+        //setCamposJsonDiasHorasTrabalho($("#form-prestador #json-prestador-dias-horas").val());
+  		if (!$(this).prop("checked")){
+  			$("#form-prestador #panel-dias-horas-trabalho-customizado").hide();
+  		}
+  		else {
+  			$("#form-prestador #panel-dias-horas-trabalho-customizado").show();
+  		}
+  	}); 
+  	
 
+	 $("#form-prestador #btn-salvar-prestador").click(function(e) {
+	   	 if (!$("#chk-dias-horas-trabalho-customizado").prop("checked")) {
+	   		 limparDiasHoras(true);
+    	 }
+     });
+	     
 
     $("#indicar-folga-semanal").click(function(e) {
    	 if ($(this).prop("checked")) {
@@ -102,6 +127,46 @@ function editarFolga() {
 	 $("#form-prestador #btn-salvar-prestador").prop("disabled", true);	
 }
 
+function setCamposJsonDiasHorasTrabalho(jsonDiasHorasTrabalho) {
+	if (jsonDiasHorasTrabalho != null && jsonDiasHorasTrabalho != "") {
+		 var json = JSON.parse(jsonDiasHorasTrabalho);
+		 $("#form-prestador #segunda-id").val(json[0] == null ? "" : json[0].id);
+		 $("#form-prestador #segunda-diaSemana").val(json[0] == null ? "" : json[0].diaSemana);
+		 $("#form-prestador #segunda-hora-inicio").val(json[0] == null ? "" : json[0].horaInicio);
+		 $("#form-prestador #segunda-hora-fim").val(json[0] == null ? "" : json[0].horaFim);
+
+		 $("#form-prestador #terca-id").val(json[1] == null ? "" : json[1].id);
+		 $("#form-prestador #terca-diaSemana").val(json[1] == null ? "" : json[1].diaSemana);
+		 $("#form-prestador #terca-hora-inicio").val(json[1] == null ? "" : json[1].horaInicio);
+		 $("#form-prestador #terca-hora-fim").val(json[1] == null ? "" : json[1].horaFim);
+
+		 $("#form-prestador #quarta-id").val(json[2] == null ? "" : json[2].id);
+		 $("#form-prestador #quarta-diaSemana").val(json[2] == null ? "" : json[2].diaSemana);
+		 $("#form-prestador #quarta-hora-inicio").val(json[2] == null ? "" : json[2].horaInicio);
+		 $("#form-prestador #quarta-hora-fim").val(json[2] == null ? "" : json[2].horaFim);
+
+		 $("#form-prestador #quinta-id").val(json[3] == null ? "" : json[3].id);
+		 $("#form-prestador #quinta-diaSemana").val(json[3] == null ? "" : json[3].diaSemana);
+		 $("#form-prestador #quinta-hora-inicio").val(json[3] == null ? "" : json[3].horaInicio);
+		 $("#form-prestador #quinta-hora-fim").val(json[3] == null ? "" : json[3].horaFim);
+
+		 $("#form-prestador #sexta-id").val(json[4] == null ? "" : json[4].id);
+		 $("#form-prestador #sexta-diaSemana").val(json[4] == null ? "" : json[4].diaSemana);
+		 $("#form-prestador #sexta-hora-inicio").val(json[4] == null ? "" : json[4].horaInicio);
+		 $("#form-prestador #sexta-hora-fim").val(json[4] == null ? "" : json[4].horaFim);
+
+		 $("#form-prestador #sabado-id").val(json[5] == null ? "" : json[5].id);
+		 $("#form-prestador #sabado-diaSemana").val(json[5] == null ? "" : json[5].diaSemana);
+		 $("#form-prestador #sabado-hora-inicio").val(json[5] == null ? "" : json[5].horaInicio);
+		 $("#form-prestador #sabado-hora-fim").val(json[5] == null ? "" : json[5].horaFim);
+
+		 $("#form-prestador #domingo-id").val(json[6] == null ? "" : json[6].id);
+		 $("#form-prestador #domingo-diaSemana").val(json[6] == null ? "" : json[6].diaSemana);
+		 $("#form-prestador #domingo-hora-inicio").val(json[6] == null ? "" : json[6].horaInicio);
+		 $("#form-prestador #domingo-hora-fim").val(json[6] == null ? "" : json[6].horaFim);
+	 }
+}
+
 function editarPrestador() {
 	 $("#btn-editar-prestador").hide();
 	 $("#btn-salvar-prestador").show();
@@ -111,6 +176,9 @@ function editarPrestador() {
 		 $("#form-prestador #check-box-data-fim").val($("#form-projeto #check-box-data-fim").val());
 		 $("#form-prestador input[name='ativo']").prop("checked", true);
          $("#form-prestador #id").val(-1);
+         
+         setCamposJsonDiasHorasTrabalho($("#form-prestador #json-prestador-dias-horas").val());
+    	 
 	 }
 	 
 	 $("#form-prestador #indicar-folga-semanal").prop("disabled", false);
@@ -139,6 +207,30 @@ function editarPrestador() {
 	 $("#folgaMotivo").prop("disabled", false);
 	 $("#tabela-folga-semanal input").prop("disabled", false);
 	 
+
+	 $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("disabled", false); 
+
+	 $("#form-prestador #segunda-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #segunda-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #terca-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #terca-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #quarta-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #quarta-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #quinta-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #quinta-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #sexta-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #sexta-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #sabado-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #sabado-hora-fim").prop("disabled", false); 
+	 
+	 $("#form-prestador #domingo-hora-inicio").prop("disabled", false); 
+	 $("#form-prestador #domingo-hora-fim").prop("disabled", false); 
+	 
 	 limparFolga();
 }
 
@@ -156,7 +248,25 @@ function selectPrestador(item) {
 	 else {
 		 $("#panel-reenviar-convite").hide();		 
 	 }
-			
+	
+	 var jsonDiasHorasTrabalho = $("#form-prestador #json-prestador-dias-horas"+item).val();
+	 
+     
+	 if (jsonDiasHorasTrabalho == null || jsonDiasHorasTrabalho == "")
+	 {
+		 jsonDiasHorasTrabalho = $("#form-prestador #json-prestador-dias-horas").val();
+	 }	 
+
+	 $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("checked", $("#form-prestador #chk-dias-horas-trabalho-customizado"+item).val() == "true"); 
+	 if ( $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("checked")) {
+		 $("#form-prestador #panel-dias-horas-trabalho-customizado").show();
+	 }
+	 else {
+		 $("#form-prestador #panel-dias-horas-trabalho-customizado").hide();
+	 }
+     
+     setCamposJsonDiasHorasTrabalho(jsonDiasHorasTrabalho);	 
+
 	 $("#form-prestador #id").val(item);
 	 $("#form-prestador #projeto.id").val($("#form-prestador #projeto.id"+item).html());
 	
@@ -177,6 +287,7 @@ function selectPrestador(item) {
             $(this).attr("selected", "selected");
         }
 	 });
+	 
 	 $("#ramalIntegracaoRobo").val($("#ramalIntegracaoRobo"+item).val())
 	 selectTabelaFolga(item);
 
@@ -245,6 +356,8 @@ function escalaFolgaSugeridaPrestador(id) {
 	 $("#btn-salvar-folga").prop("disabled", true);
 	 $("#btn-cancelar-folga").prop("disabled", true);
 
+	 $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("checked", false);
+	 
 	$("#panel-reenviar-convite").hide();
 		
 	$("#escala-sugerida").html("");
@@ -276,6 +389,66 @@ function escalaFolgaSugeridaPrestador(id) {
 	 $("#form-prestador input[name='ativo']").prop("disabled", true);
 	 $("#form-prestador #observacaoPrestador").prop("disabled", true); 
 	 
+
+	 $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("checked", false); 
+
+	 $("#form-prestador #chk-dias-horas-trabalho-customizado").prop("disabled", true); 
+	 
+	 $("#form-prestador #segunda-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #segunda-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #terca-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #terca-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #quarta-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #quarta-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #quinta-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #quinta-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #sexta-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #sexta-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #sabado-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #sabado-hora-fim").prop("disabled", true); 
+	 
+	 $("#form-prestador #domingo-hora-inicio").prop("disabled", true); 
+	 $("#form-prestador #domingo-hora-fim").prop("disabled", true); 
+	 
+
+	 limparDiasHoras();
+ }
+ 
+ function limparDiasHoras(onlyHoras) {
+	 onlyHoras = onlyHoras == null ? false : onlyHoras; 
+
+	 if (!onlyHoras) { $("#form-prestador #segunda-id").val(""); }
+	 $("#form-prestador #segunda-hora-inicio").val("");
+	 $("#form-prestador #segunda-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #terca-id").val(""); }
+	 $("#form-prestador #terca-hora-inicio").val("");
+	 $("#form-prestador #terca-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #quarta-id").val(""); }
+	 $("#form-prestador #quarta-hora-inicio").val("");
+	 $("#form-prestador #quarta-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #quinta-id").val(""); }
+	 $("#form-prestador #quinta-hora-inicio").val("");
+	 $("#form-prestador #quinta-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #sexta-id").val(""); }
+	 $("#form-prestador #sexta-hora-inicio").val("");
+	 $("#form-prestador #sexta-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #sabado-id").val(""); }
+	 $("#form-prestador #sabado-hora-inicio").val("");
+	 $("#form-prestador #sabado-hora-fim").val("");
+
+	 if (!onlyHoras) { $("#form-prestador #domingo-id").val(""); }
+	 $("#form-prestador #domingo-hora-inicio").val("");
+	 $("#form-prestador #domingo-hora-fim").val("");
  }
  
  function deletePrestador(id) {

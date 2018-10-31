@@ -2,8 +2,10 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,10 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -81,14 +83,33 @@ public class ProjetoEscalaPrestador {
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataExcluido;
-
+	
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="projetoEscalaPrestador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjetoEscalaPrestadorDiaHoraTrabalho> projetoEscalaPrestadorDiaHoraTrabalhos = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+    
 	// todo: ajustar
     transient private List<ProjetoFolgaSemanal> projetoFolgasSemanais;
 
     transient private List<AusenciaSolicitacao> ausenciaSolicitacoes;
 
     transient private List<AusenciaReposicao> ausenciaReposicoes;
-    
+
+    transient private String json;
+
+	transient private List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho;
+	
+	public String getJsonDiasHorasTrabalho() {
+		return this.json;
+	}
+	
+	public void setJsonDiasHorasTrabalho(String json) {
+		this.json= json;
+	}
+	
+	public boolean getHasDiasHorasTrabalho() {
+		return this.getProjetoEscalaPrestadorDiasHorasTrabalho() != null && this.getProjetoEscalaPrestadorDiasHorasTrabalho().size() > 0;
+	}
+	
 	public Projeto getProjeto() {
 		return this.projeto;
 	}
@@ -239,6 +260,48 @@ public class ProjetoEscalaPrestador {
 
 	public List<AusenciaReposicao> getAusenciaReposicoes() {
 		return	this.ausenciaReposicoes;		
+	}
+
+	public List<ProjetoEscalaPrestadorDiaHoraTrabalho> getDiasHorasTrabalho() {
+		if (this.diasHorasTrabalho != null) {
+			return this.diasHorasTrabalho;
+		}
+		
+		this.diasHorasTrabalho = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+
+		if (getProjetoEscalaPrestadorDiasHorasTrabalho() == null || getProjetoEscalaPrestadorDiasHorasTrabalho().size() == 0) {
+			if (getProjetoEscala() != null) {
+				this.diasHorasTrabalho.addAll(getProjetoEscala().getDiasHorasTrabalho());
+			}
+		}
+		else {
+			for(int dia = 0; dia <= 6; dia++) {
+				ProjetoEscalaPrestadorDiaHoraTrabalho diaHora = new ProjetoEscalaPrestadorDiaHoraTrabalho();
+				int d = dia+1;
+				diaHora.setDiaSemana(d);
+				ProjetoEscalaPrestadorDiaHoraTrabalho diaHoraTrabalho = getProjetoEscalaPrestadorDiasHorasTrabalho().stream().filter(x->x.getDiaSemana()==d).findFirst().orElse(new ProjetoEscalaPrestadorDiaHoraTrabalho());
+
+				diaHora.setId(diaHoraTrabalho.getId()); 
+				diaHora.setHoraInicio(diaHoraTrabalho.getHoraInicio());
+				diaHora.setHoraFim(diaHoraTrabalho.getHoraFim());
+				this.diasHorasTrabalho.add(diaHora);
+			}
+		}
+		
+		return this.diasHorasTrabalho;
+	}
+
+	public void setDiasHorasTrabalho(
+			List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) {
+		this.diasHorasTrabalho = diasHorasTrabalho;
+	}
+
+	public List<ProjetoEscalaPrestadorDiaHoraTrabalho> getProjetoEscalaPrestadorDiasHorasTrabalho() {
+		return projetoEscalaPrestadorDiaHoraTrabalhos;
+	}
+
+	public void setProjetoEscalaPrestadorDiasHorasTrabalho(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) {
+		this.projetoEscalaPrestadorDiaHoraTrabalhos = diasHorasTrabalho;
 	}
 
 }

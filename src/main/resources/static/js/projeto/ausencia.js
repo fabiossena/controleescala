@@ -390,6 +390,7 @@
 	 	var data = $("#data-reposicao").val().split("/");
 	 	var dataTroca = $("#data-troca").val().split("/");
 	 	console.log("#id-reposicao " +  $("#id-reposicao").val());
+	 	var checkTrocaDisable = !$("#checkbox-indicar-outro-usuario-troca").prop("checked");
 	 	var item = {
 			id : $("#id-reposicao").val(),
 			data : data[2]+"-"+data[1]+"-"+data[0], 
@@ -397,10 +398,10 @@
 			horaInicio : $("#hora-inicio-reposicao").val(), 
 			horaFim : $("#hora-fim-reposicao").val(),
 			
-			dataTroca : dataTroca[2]+"-"+dataTroca[1]+"-"+dataTroca[0], 
-			dataTrocaFormatada :  $("#data-troca").val(), 
-			horaInicioTroca : $("#hora-inicio-troca").val(), 
-			horaFimTroca : $("#hora-fim-troca").val(),
+			dataTroca : (checkTrocaDisable || dataTroca == null ? null : (dataTroca[2]+"-"+dataTroca[1]+"-"+dataTroca[0])), 
+			dataTrocaFormatada :  checkTrocaDisable ? "" : $("#data-troca").val(), 
+			horaInicioTroca : checkTrocaDisable ? "" : $("#hora-inicio-troca").val(), 
+			horaFimTroca : checkTrocaDisable ? "" : $("#hora-fim-troca").val(),
 			
 			projetoEscalaTroca : { id: projetoEscalaSelected.val(), descricaoPrestador: projetoEscalaSelected.text() },
 			indicadoOutroUsuario : $("#checkbox-indicar-outro-usuario-troca").prop("checked"),
@@ -448,9 +449,10 @@
 						  '</tr>';
 						  
 
-	 				if ($('#tabela-reposicao input').html() == null || $('#tabela-reposicao input').html() == "") {
+	 				if ($('#tabela-reposicao input').val() == null || $('#tabela-reposicao input').val() == "") {
 	 					$('#tabela-reposicao tbody tr.odd').remove();
 	 				}
+	 				 
 				   $('#tabela-reposicao tbody').prepend(row);
 				   aplicarSelecionarTabela();
 	    		}

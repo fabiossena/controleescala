@@ -59,10 +59,9 @@ public class AusenciaReposicao {
 	
 	private boolean indicadoOutroUsuario;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name="ausenciaSolicitacaoId")
 	private AusenciaSolicitacao ausenciaSolicitacao;
-
 	
 	@ManyToOne
 	@JoinColumn(name="usuarioTrocaId")

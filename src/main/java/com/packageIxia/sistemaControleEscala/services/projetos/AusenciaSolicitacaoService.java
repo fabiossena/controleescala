@@ -170,7 +170,11 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
     	}  
     	
     	ProjetoEscala escala = projetoEscalaPrestador.getProjetoEscala(); 
-    	
+
+		if (solicitacao.getTipoAusencia() == 2 && (solicitacao.getAusenciaReposicoes() == null || solicitacao.getAusenciaReposicoes().size() == 0)) {
+			solicitacao.setTipoAusencia(0);
+		}
+		
     	String errorMessage = this.validaDataHoraSolicitacao(solicitacao, projetoEscalaPrestador, escala);
 		if (!errorMessage.isEmpty()) {
 			return errorMessage;
@@ -198,16 +202,17 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			solicitacao.setAusenciaReposicoes(null);
 		}
 			
-		this.ausenciaSolicitacaoDao.save(solicitacao);
+		//this.ausenciaSolicitacaoDao.save(solicitacao);
 		if (solicitacaoEditada.getAusenciaReposicoes() != null && solicitacaoEditada.getAusenciaReposicoes().size() > 0) {
 			solicitacao.setAusenciaReposicoes(solicitacaoEditada.getAusenciaReposicoes());
 			for (int i = 0; i < solicitacao.getAusenciaReposicoes().size();i++) {
 				AusenciaReposicao reposicao = solicitacao.getAusenciaReposicoes().get(i);
+				reposicao.setId(0);
 				reposicao.setAusenciaSolicitacao(solicitacao);
 			}
-			
-			this.ausenciaSolicitacaoDao.save(solicitacao);
 		}
+		
+		this.ausenciaSolicitacaoDao.save(solicitacao);
 		
 		//solicitacaoEditada = solicitacao;
 		
@@ -232,15 +237,15 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		}
 		
 		
-		if (!Utilities.dataEstaEntreDiasDaSemana(
+		if (!projetoEscalaPrestador.getHasDiasHorasTrabalho() &&
+			(!Utilities.dataEstaEntreDiasDaSemana(
 				solicitacao.getDataInicio(),
 				projetoEscalaPrestador.getProjetoEscala().getDiaSemanaDe().getId(), 
 				projetoEscalaPrestador.getProjetoEscala().getDiaSemanaAte().getId()) ||
 			!Utilities.dataEstaEntreDiasDaSemana(
 					solicitacao.getDataFim(),
 					projetoEscalaPrestador.getProjetoEscala().getDiaSemanaDe().getId(), 
-					projetoEscalaPrestador.getProjetoEscala().getDiaSemanaAte().getId())
-				) {
+					projetoEscalaPrestador.getProjetoEscala().getDiaSemanaAte().getId())) ) {
 			return "O dia da semana início/fim da solicitação deve estar entra os dias da semana da escala do projeto";
 		}
 

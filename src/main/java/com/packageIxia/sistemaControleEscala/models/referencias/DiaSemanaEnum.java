@@ -2,7 +2,7 @@ package com.packageIxia.sistemaControleEscala.models.referencias;
 
 public enum DiaSemanaEnum {
 
-	domingo(1, "Domingo"), segunda(2, "Segunda-feira"), terca(3, "Terça-feira"), quarta(4, "Quarta-feira"), quinta(5, "Quinta-feira"), sexta(6, "Sexta-feira"), sabado(7, "Sabádo");
+	segunda(1, "Segunda-feira"), terca(2, "Terça-feira"), quarta(3, "Quarta-feira"), quinta(4, "Quinta-feira"), sexta(5, "Sexta-feira"), sabado(6, "Sabádo"), domingo(7, "Domingo");
 
     public DiaSemana diaSemana;
     

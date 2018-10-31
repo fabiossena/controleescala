@@ -42,8 +42,9 @@
             
                 <div class="panel-heading">
                     <h3 class="panel-title" style="font-weight: bold;">Efetuar login</h3>
-                    <div style="font-size: 10pt; float:right; position: relative"><a href="<c:url value='/esqueceuSenha' />">Esqueceu a senha? Clique aqui!</a></div>                                           
-                </div>
+                    <div style="font-size: 10pt; float:right; position: relative">
+                    <a class="block-click" href="<c:url value='/esqueceuSenha' />">Esqueceu a senha? Clique aqui!</a></div>                                           
+                </div> 
                 
                 <div style="padding-top:30px" class="container border-top panel-body">
                 
@@ -90,7 +91,7 @@
                         <div class="input-group" style="display: none;">
                             <div class="checkbox">
                                 <label>
-                                <input id="login-remember" type="checkbox" name="remember" value="1">Lembrar senha
+                                <input id="login-remember" class="block-click" type="checkbox" name="remember" value="1">Lembrar senha
                                 </label>
                             </div>
                         </div>
@@ -104,7 +105,7 @@
                         
                          <div class="border-top" style="padding: 10px 0 0 5px; font-size:10pt" >
                              Recebeu o convite por e-mail!
-                             <a href="<c:url value='/cadastroinicial' />">
+                             <a href="<c:url value='/cadastroinicial' />" class="block-click">
                              Clique aqui para se cadastrar
                              </a>
                          </div>

@@ -1,10 +1,17 @@
 
 		var lastActiveTab;
 		
-	    
+		function blockScreen() {
+//			setTimeout(function() { 
+//				$("#panel-block").show(1500);
+//			}, 1500);
+		}
 		
 		$(document).ready(function() {
-			
+
+//			$(".block-click, .nav-brand").click(blockScreen);
+//			$("form").submit(blockScreen);
+			 
 			$(".mask-phone").mask("(00) 000000009");	
 			$(".mask-date").mask("00/00/0000");		
 			$(".mask-date-hour").mask("00/00/0000 00:00");	
