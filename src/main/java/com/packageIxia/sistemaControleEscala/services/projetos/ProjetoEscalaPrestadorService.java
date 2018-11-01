@@ -13,7 +13,6 @@ import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaReposicaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.HoraAprovacaoDao;
 import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDao;
-import com.packageIxia.sistemaControleEscala.daos.projeto.ProjetoEscalaPrestadorDiaHoraTrabalhoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
@@ -33,7 +32,6 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	private AusenciaSolicitacaoDao ausenciaSolicitacaoDao;
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
 	private HoraAprovacaoDao horaAprovacaoDao;
-	private ProjetoEscalaPrestadorDiaHoraTrabalhoDao diaHoraTrabalhoDao;
 
 	@Autowired
 	public ProjetoEscalaPrestadorService(
@@ -42,15 +40,13 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			IProjeto projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			HoraAprovacaoDao  horaAprovacaoDao,
-			ProjetoEscalaPrestadorDiaHoraTrabalhoDao diaHoraTrabalhoDao) {
+			HoraAprovacaoDao  horaAprovacaoDao) {
 		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.projetoService = projetoService;
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
 		this.horaAprovacaoDao = horaAprovacaoDao;
-		this.diaHoraTrabalhoDao = diaHoraTrabalhoDao;
 	}
 	
 	@Override

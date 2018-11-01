@@ -1,7 +1,6 @@
 package com.packageIxia.sistemaControleEscala.unitTests.usuario;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,14 +123,14 @@ public class UsuarioMockup implements UsuarioDao {
 		return this.entities.stream().filter(x->x.getFuncao().getId()==id).collect(Collectors.toList());
 	}
 
-	@Override
-	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(int perfilAcessoId, boolean excluido) {
-		return this.entities.stream().filter(x->x.getFuncao().getPerfilAcessoId()==perfilAcessoId && x.isExcluido() == excluido).collect(Collectors.toList());
-	}
-
-	@SuppressWarnings("unlikely-arg-type")
-	@Override
-	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(int[] ids, boolean excluido) {
-		return this.entities.stream().filter(x-> Arrays.asList(ids).contains(x.getFuncao().getPerfilAcessoId()) && x.isExcluido() == excluido).collect(Collectors.toList());
-	}
+//	@Override
+//	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(int perfilAcessoId, boolean excluido) {
+//		return this.entities.stream().filter(x->x.getFuncao().getPerfilAcessoId()==perfilAcessoId && x.isExcluido() == excluido).collect(Collectors.toList());
+//	}
+//
+//	@SuppressWarnings("unlikely-arg-type")
+//	@Override
+//	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(int[] ids, boolean excluido) {
+//		return this.entities.stream().filter(x-> Arrays.asList(ids).contains(x.getFuncao().getPerfilAcessoId()) && x.isExcluido() == excluido).collect(Collectors.toList());
+//	}
 }
