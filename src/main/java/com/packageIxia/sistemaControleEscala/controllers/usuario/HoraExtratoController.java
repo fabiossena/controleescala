@@ -1,6 +1,5 @@
 package com.packageIxia.sistemaControleEscala.controllers.usuario;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraExtrato;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
@@ -63,8 +64,8 @@ public class HoraExtratoController {
 
 		this.loadUsuarios();
 		
-		ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
-		ano = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
+		ano = ano == 0 ? Utilities.now().getYear() : ano;
+		ano = mes == 0 ? Utilities.now().getMonthValue() : mes;
 
 		mv.addObject("anos", new int[] {2018, 2019});
 		mv.addObject("meses", new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});

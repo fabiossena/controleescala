@@ -1,6 +1,5 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -341,7 +340,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 
 				item.setAceito(aceita ? 1 : 2);
 				item.setMotivoRecusa((motivo.isEmpty() ? "" : "("+ usuarioLogado.getFuncao().getNome() +") " +  motivo));
-				item.setDataAceiteRecusa(LocalDateTime.now());
+				item.setDataAceiteRecusa(Utilities.now());
 			}
 		}
 		
@@ -355,7 +354,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 
 					reposicao.setAceitoUsuarioTroca(aceita ? 1 : 2);
 					reposicao.setMotivoRecusaUsuarioTroca((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
-					reposicao.setDataAceiteUsuarioTroca(LocalDateTime.now());
+					reposicao.setDataAceiteUsuarioTroca(Utilities.now());
 				}
 			}
 
@@ -368,7 +367,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 
 					reposicao.setAceitoUsuarioAprovacao(aceita ? 1 : 2);
 					reposicao.setMotivoRecusaUsuarioAprovacao((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
-					reposicao.setDataAceiteUsuarioAprovacao(LocalDateTime.now());
+					reposicao.setDataAceiteUsuarioAprovacao(Utilities.now());
 				}
 			}
 		}

@@ -48,9 +48,15 @@
 	    }
 		
 		function iniciar(tipo, iniciar){
+						
 			var escala= $("#selected-projeto-escala-principal").val();
 			var motivo = $("#motivo").val();
-			if (tipo == 2 && !$("#motivo").prop("disabled") && motivo == "") {
+			if (tipo == 2 && !$("#panel-motivo").is(":visible") && "${pausar}" ==  "pausar") {
+				$("#panel-motivo").show(100); 
+				setTimeout(function () { if ($("#panel-motivo").val() == "") { $("#panel-motivo").hide(500); } }, 10000); 
+				return;
+			}
+			else if (tipo == 2 && !$("#motivo").prop("disabled") && motivo == "") {
 				alert("Preencha o campo motivo");	
 				return;
 			} else if (tipo == 2 && !$("#motivo").prop("disabled")) {
@@ -165,14 +171,25 @@
 				    <h5 class="card-title">${item.projeto.descricaoProjeto} - ${item.projetoEscala.descricaoEscala}</h5>
 				    
 				    <h6 class="card-subtitle mb-2 text-muted">
-	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataInicio} " var="dataInicio" />
+	                	Data início: <fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataInicio} " var="dataInicio" />
 	                	<fmt:formatDate value="${dataInicio}" pattern="dd/MM/yyyy" />	                	
 	                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataFim}" var="dataFim" />
 	                	<fmt:formatDate value="${dataFim}" pattern="dd/MM/yyyy" />
 			    	</h6>
-			    	
-				    <h6 class="card-subtitle mb-2 text-muted">Horário: ${item.projetoEscala.horaInicio} às ${item.projetoEscala.horaFim}</h6>
 				    <h6 class="card-subtitle mb-2 text-muted">Função: ${item.funcao.nome}</h6>
+			    	
+			    	<c:if test="${!item.hasDiasHorasTrabalho}">
+				    <h6 class="card-subtitle mb-2 text-muted">Horário: ${item.projetoEscala.horaInicio} às ${item.projetoEscala.horaFim}</h6>
+				    </c:if>
+				    
+			    	<c:if test="${item.hasDiasHorasTrabalho}">
+				    	<br>
+					    <h6 class="card-subtitle mb-2 text-muted">Horários:</h6>
+						    <c:forEach items="${item.projetoEscalaPrestadorDiasHorasTrabalho}" var="diaHora">				    
+						    <span style="font-size: 10pt" class="card-subtitle mb-2 text-muted">${diaHora.diaSemanaNome} - ${diaHora.horaInicio} às ${diaHora.horaFim} </span> <br> 
+						    </c:forEach>
+					    	<br>
+				    </c:if>
 				    
 				    <p class="card-text" style="font-size: 10pt" id="observacao-prestador${item.id}">${item.observacaoPrestador}</p>
 				                    	

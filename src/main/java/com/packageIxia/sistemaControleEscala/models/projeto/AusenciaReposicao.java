@@ -22,23 +22,22 @@ import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Entity
 @Table(name = "AusenciaReposicao")
-public class AusenciaReposicao {	
-	
+public class AusenciaReposicao {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
+
 	@CreationTimestamp
-	@Column(updatable=false)
+	@Column(updatable = false)
 	private LocalDateTime dataCriacao;
-	
+
 	@UpdateTimestamp
-	private LocalDateTime ultimaModificacao; 
+	private LocalDateTime ultimaModificacao;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(name="projetoEscalaTrocaId")
+	@JoinColumn(name = "projetoEscalaTrocaId")
 	private ProjetoEscala projetoEscalaTroca;
-	
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
@@ -46,39 +45,39 @@ public class AusenciaReposicao {
 	private String horaInicio;
 
 	private String horaFim;
-	
+
 	private String observacao;
 
 	private int aceitoUsuarioTroca;
-	
+
 	private String motivoRecusaUsuarioTroca;
 
 	private LocalDateTime dataAceiteUsuarioTroca;
-	
+
 	private boolean excluido;
-	
+
 	private boolean indicadoOutroUsuario;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name="ausenciaSolicitacaoId")
+	@JoinColumn(name = "ausenciaSolicitacaoId")
 	private AusenciaSolicitacao ausenciaSolicitacao;
-	
+
 	@ManyToOne
-	@JoinColumn(name="usuarioTrocaId")
+	@JoinColumn(name = "usuarioTrocaId")
 	private Usuario usuarioTroca;
 
 	@ManyToOne
-	@JoinColumn(name="usuarioAprovacaoId")
+	@JoinColumn(name = "usuarioAprovacaoId")
 	private Usuario usuarioAprovacao;
 
 	private int aceitoUsuarioAprovacao;
-	
+
 	private String motivoRecusaUsuarioAprovacao;
 
 	private LocalDateTime dataAceiteUsuarioAprovacao;
 
 	@ManyToOne
-	@JoinColumn(name="gerenciaAprovacaoId")
+	@JoinColumn(name = "gerenciaAprovacaoId")
 	private Usuario gerenciaAprovacao;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -93,7 +92,7 @@ public class AusenciaReposicao {
 	}
 
 	public void setId(long id) {
-		this.id= id;
+		this.id = id;
 	}
 
 	public Usuario getGerenciaAprovacao() {

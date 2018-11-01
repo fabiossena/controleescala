@@ -114,6 +114,7 @@ public class DadosAcessoAprovacaoHoras {
 						this.totalSegundos -= segundos;
 					}
 					
+					dadoGenerico.setDescricao(Utilities.converterToTime((int)(dadoGenerico.getDoubleValue()*60*60)));
 					encontrou = true;
 					break;
 				}
@@ -128,7 +129,8 @@ public class DadosAcessoAprovacaoHoras {
 								(horaTrabalhada.getMotivoRecusa() != null && horaTrabalhada.getMotivoRecusa().trim().isEmpty() ? "" : "<i>Motivo: " + horaTrabalhada.getMotivoRecusa() + "</i><br>") + 
 								"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "</i>", 
 								
-								Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3)));
+								Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3),
+								(horaTrabalhada.getTipoAcao() == 1 ? "" : "-") + Utilities.converterToTime(horaTrabalhada.isExcluido() ? 0 : (int)horaTrabalhada.getSegundos())));
 				
 				if (horaTrabalhada.getTipoAcao() == 1) {
 					this.totalValor += ((segundos/60) * prestador.getValorMinuto());
@@ -171,6 +173,10 @@ public class DadosAcessoAprovacaoHoras {
 
 	public double getTotalHoras() {
 		return totalHoras;
+	}
+
+	public String getTotalHorasFormatada() {
+		return Utilities.converterToTime((int)this.totalSegundos);
 	}
 
 	public void setTotalHoras(double totalHoras) {

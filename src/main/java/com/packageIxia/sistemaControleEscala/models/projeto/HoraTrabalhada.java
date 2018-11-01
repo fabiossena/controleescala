@@ -172,13 +172,17 @@ public class HoraTrabalhada {
 	public LocalDateTime getDataHoraInicio() {
 		return dataHoraInicio;
 	}
+
+	public String getHorasFormatada() {
+		return Utilities.converterToTime((int)this.getSegundos());
+	}
 	
 	public double getHoras() {
-		return Utilities.Round(Double.valueOf(ChronoUnit.MINUTES.between(getDataHoraInicio(), getDataHoraFim() == null ? LocalDateTime.now() : getDataHoraFim()))/60, 3);
+		return Utilities.Round(Double.valueOf(getSegundos())/60/60, 3);
 	}
 	
 	public double getSegundos() {
-		return Utilities.Round(Double.valueOf(ChronoUnit.SECONDS.between(getDataHoraInicio(), getDataHoraFim() == null ? LocalDateTime.now() : getDataHoraFim())), 3);
+		return Utilities.Round(Double.valueOf(ChronoUnit.SECONDS.between(getDataHoraInicio(), getDataHoraFim() == null ? Utilities.now() : getDataHoraFim())), 3);
 	}
 	public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
 		this.dataHoraInicio = dataHoraInicio;

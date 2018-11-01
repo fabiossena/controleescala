@@ -4,11 +4,15 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -142,6 +146,40 @@ public class Utilities {
 	public static String getExtension(String file) {
 		String[] partes = file.split("\\.");        
 		return partes[partes.length-1];
+	}
+	
+	public static String converterToTime(int sec) {
+		if (sec <= 0) {
+			return "00:00:00";
+		}
+		
+	    int seconds = sec % 60;
+	    int minutes = sec / 60;
+	    if (minutes >= 60) {
+	        int hours = minutes / 60;
+	        minutes %= 60;
+	        if( hours >= 24) {
+	            int days = hours / 24;
+	            return String.format("%d days %02d:%02d:%02d", days,hours%24, minutes, seconds);
+	        }
+	        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	    }
+	    return String.format("00:%02d:%02d", minutes, seconds);
+	}
+
+	public static LocalDateTime now() {
+		Calendar c= Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"));
+		Date dataNow= c.getTime();
+		System.out.println("DATA AGORA " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataNow));
+
+		Calendar c2 = Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"), new Locale("pt", "BR"));
+		System.out.println("DATA AGORA " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(c2.getTime()));
+		
+		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1);
+	}
+
+	public static LocalDate now2() {
+		return LocalDate.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId());
 	}
 	
 }

@@ -52,6 +52,10 @@ public class Funcao {
 		return nome;
 	}
 	
+	public String getNomeCompleto() {
+		return nome + " (" + this.getPerfilAcesso().getNome() + ")";
+	}
+	
 	public void setNome(String nome) {
 		this.nome = nome;
 	}

@@ -48,10 +48,14 @@ public class ProjetoService implements IProjeto {
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId() ||
 			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
+			
 			projetos = Utilities.toList(projetoDao.findAllByExcluido(false));			
+			
 		} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
+			
     		List<ProjetoEscalaPrestador> prestadores = projetoEscalaPrestadorDao.findAllByPrestadorId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(prestadores.stream().map(y->y.getProjeto().getId()))));
+    		
     	} else if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId()) {
     		List<Projeto> projs = projetoDao.findAllByGerenteId(usuarioLogado.getId());
     		projetos = Utilities.toList(projetoDao.findAllById(Utilities.streamLongToIterable(projs.stream().map(y->y.getId()))));

@@ -50,11 +50,11 @@
 					return;
 				}
 				
-				filtrar();
+				filtrarGerarHoras();
 			});
 		});
 		
-		function filtrar() {
+		function filtrarGerarHoras() {
 			var mes = $("#txt-pesquisar-mes").val();
 			var ano = $("#txt-pesquisar-ano").val();
 			var banco = $("#banco-id").val();
@@ -68,9 +68,27 @@
 				alert("Digite um ano válido");
 				return;
 			}
+
+			var item = $("#selected-id-gerar-horas").val();
 			
-			$("*").css("cursor", "progress");
-        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "") + (prestador != null && prestador != 0 ? "&prestador=" + prestador : "");
+
+			if (item == "2") {
+				
+				if (prestador == "" || prestador == null || prestador == 0) {
+					alert("Selecione um prestador");
+					return;
+				}
+				
+	     		window.location.href = urlBase + "geracaoHoras/" + prestador + "?ano=" + $("#txt-pesquisar-ano").val() + "&mes=" + $("#txt-pesquisar-mes").val();
+			} else if (item == "4") {
+				integracaoRobo();				
+			} else if (item == "3") {
+				gerarCsv();
+			} else {
+				$("*").css("cursor", "progress");
+	        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "") + (prestador != null && prestador != 0 ? "&prestador=" + prestador : "");
+			}
+			
 		}
 		
 		function aprovar(id){
@@ -107,7 +125,7 @@
 			});	
 		}
 
-		function gerar() {
+		function gerarCsv() {
 			var banco = $("#banco-id").val();
 			if (banco == null || banco <= 0) {
 				alert("Selecione um banco");
@@ -174,6 +192,31 @@
 				$("#selected-text-gerar-csv").html("Todos aprovados financeiro e ainda não gerados");
 			}
 		}
+		
+		function selectGerarHoras(item) {
+			$("#selected-id-gerar-horas").val(item);
+			$("#panel-gerar-csv").hide();
+			$("#panel-banco").show();
+			$("#panel-prestador").show();
+			$("#panel-dados-robo").hide();
+			if (item == 3) {
+				$("#selected-text-gerar-horas").html("Gerar CSV");
+				$("#panel-gerar-csv").show();
+			}
+			else if (item == 4) {
+				$("#selected-text-gerar-horas").html("Integrar dados robô");
+				$("#panel-banco").hide();
+				$("#panel-prestador").hide();
+				$("#panel-dados-robo").show();
+			}
+			else if (item == 2) {
+				$("#selected-text-gerar-horas").html("Gerar mês para prestador");
+				$("#panel-banco").hide();
+			}
+			else {
+				$("#selected-text-gerar-horas").html("Filtro");
+			}
+		}
 	</script>
 </head>
 <body>
@@ -200,7 +243,7 @@
 				          <input id="txt-pesquisar-mes" class="form-control mask-month" value="${mes}" />
 					  </div>
 
-				     <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+				     <div id="panel-banco" class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
 				         <label for="banco" class="control-label">Banco</label>
 			             <select id="banco-id" class="form-control">
 			             	<option <c:if test="${bancoId == 0}">selected</c:if> value="0">Todos</option>
@@ -214,7 +257,7 @@
 	
 					
 					<c:if test="${isAdministracao}">				
-						<div class="form-group  col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+						<div id="panel-prestador" class="form-group  col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
 					      <label for="projetoEscala" class="control-label">Selecione um prestador</label>
 				          <select 
 				          	id="prestador" 
@@ -227,51 +270,77 @@
 			       	    </div>    
 			        </c:if>
 
-				     <div class="form-group"> 
+				     <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
 				         <label for="banco" class="control-label">&nbsp;</label>
 				        <br> 
-    	  		  		<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrar()" style="margin-left: 10px;  height: 35px">Filtrar</button>
+				        
+				  	
+					  <div class="btn-group " role="group">
+						  
+						<c:if test="${!isAdministracao && !isFinanceiro}">	
+    	  		  			<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrarGerarHoras()" style="height: 35px">Filtrar</button>						
+						</c:if>
+						
+						<c:if test="${isAdministracao || isFinanceiro}">	
+	    	  		  		<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrarGerarHoras()" style="height: 35px">Executar</button>
+							  <div class="btn-group" role="group">
+								    <button id="btnGroupDrop2"  style=";height: 35px" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								      <span id="selected-text-gerar-horas">Filtro</span>
+								      <input type="hidden" id="selected-id-gerar-horas" value="1" />
+								    </button>
+						           	<div id="select-gerar-csv" class="dropdown-menu">
+							        	<button type="button" class="dropdown-item" onclick="selectGerarHoras(1)">Filtro</button> 
+										  <c:if test="${isAdministracao}">
+							        		<button type="button" class="dropdown-item" onclick="selectGerarHoras(2)">Gerar mês para prestador</button>
+							        		<button type="button" class="dropdown-item" onclick="selectGerarHoras(4)">Integrar dados robô</button>
+										  </c:if>
+										  <c:if test="${isFinanceiro}">
+											<button type="button" class="dropdown-item" onclick="selectGerarHoras(3)">Gerar CSV</button>
+										  </c:if>
+							        </div>
+							        
+							        
+									  <c:if test="${isFinanceiro}">				  	
+											  <!-- <button type="button" class="btn btn-sm btn-primary" onclick="gerarCsv()">Gerar CSV</button> -->
+											  <div id="panel-gerar-csv" class="btn-group" role="group" style="display: none; margin-left: -2px;">
+											    <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+											      <span id="selected-text-gerar-csv">Todos aprovados financeiro e ainda não gerados</span> 
+											      <input type="hidden" id="selected-id-gerar-csv" value="1" />
+											    </button>
+										           	<div id="select-gerar-csv" class="dropdown-menu">
+											        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(1)">Todos aprovados financeiro e ainda não gerados</button>
+											        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(2)">Todos aprovados financeiro</button>
+											        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(3)">Selecionados</button>
+											        </div>
+											    </div> 
+									  </c:if> 
+							        
+							    </div> 
+						    </c:if>
+						  </c:if>
+						        	  			
+			   	  			<c:if test="${isAdministracao}">					          
+				       	  		<div id="panel-dados-robo" class="form-group" style="display: none; height: 35px; margin-left: -2px;">	
+				       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
+									    <input class="btn btn-sm btn-primary float-left" type="file" style="height: 35px;" name="file" id="integracao-robo" />			        	  				
+									</form>
+					  			</div>	 
+			      	  		</c:if>
+			      	  		
+					    </div> 
+					    
+					    
 				     </div>
 
-					<c:if test="${isAdministracao}">				
+					<!--<c:if test="${isAdministracao}">				
 					     <div class="form-group"> 
 					         <label for="banco" class="control-label">&nbsp;</label>
 					        <br> 
 		   	  		  		<button id="btn-gerar-prestador" class="btn btn-sm btn-primary" style="margin-left: 10px;  height: 35px">Gerar mês para prestador</button>
 					     </div>
-			        </c:if> 
+			        </c:if>--> 
 				      				     
 				  </div> 
-
-			        	  			
-   	  			<c:if test="${isAdministracao}">					          
-	       	  		<div class="form-group col-sm-12">	
-	       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
-						    <input class="btn btn-sm btn-primary float-left" type="file" style="height: 35px; margin: 1px" name="file" id="integracao-robo" />
-						    <input class="btn btn-sm btn-primary float-left" type="button" style="height: 35px; margin: 1px; font-size: 10pt" value="Integrar dados robô" onclick="integracaoRobo()" />			        	  				
-						</form>
-		  			</div>	 
-      	  		</c:if>
-
-			     
-				  <c:if test="${isFinanceiro}">
-				  	
-					  <div class="btn-group" role="group" style="margin-left: 20px">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="gerar()">Gerar CSV</button>
-						  <div class="btn-group" role="group">
-						    <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						      <span id="selected-text-gerar-csv">Todos aprovados financeiro e ainda não gerados</span> 
-						      <input type="hidden" id="selected-id-gerar-csv" value="1" />
-						    </button>
-					           	<div id="select-gerar-csv" class="dropdown-menu">
-						        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(1)">Todos aprovados financeiro e ainda não gerados</button>
-						        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(2)">Todos aprovados financeiro</button>
-						        	<button type="button" class="dropdown-item" onclick="selectGerarCsv(3)">Selecionados</button>
-						        </div>
-						    </div> 
-					    </div> 
-				  </c:if> 
-			  </c:if>
        	  		
 				<div class="table-container table-responsive" style="margin-top: 100px">
 					<table id="tabela" class="display tabela-avancada">
@@ -321,7 +390,7 @@
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHoras}<br>
+									  	<b>Horas:</b> ${item.totalHorasFormatada} (${item.totalHoras}hrs)<br> 
 										<b>Valor:</b> ${item.totalValor}
 									  </div>
 									</td> 
@@ -354,7 +423,7 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.doubleValue} horas</b></label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}  (${item2.doubleValue}hrs)</b></label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

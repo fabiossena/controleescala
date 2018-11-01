@@ -2,6 +2,7 @@ package com.packageIxia.sistemaControleEscala.controllers.projeto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
@@ -125,7 +127,7 @@ public class DashboardController {
     		erroModelView.addObject("errorMessage", "Sem projetos cadastrados para este usuário");
             return erroModelView;
     	}
-
+    	
     	modelView.addObject("projetos", projetos);
     	modelView.addObject("projeto", projeto);
     	
@@ -138,13 +140,26 @@ public class DashboardController {
 		modelView.addObject("escala", esc);
     	
 		this.prestadores = this.prestadorService.findAllByProjetoId(projetoId);
+		this.prestadores = this.prestadores.stream().sorted(new Comparator<ProjetoEscalaPrestador>() {
+
+			public int compare(ProjetoEscalaPrestador p1, ProjetoEscalaPrestador p2) {
+			   String item1 = p1.getPrestador().getPrimeiroNome().toUpperCase();
+			   String item2 = p2.getPrestador().getPrimeiroNome().toUpperCase();
+
+			   //ascending order
+			   return item1.compareTo(item2);
+
+			   //descending order
+			   //return item1.compareTo(item2);
+		    }}).collect(Collectors.toList());
+		
 		for (ProjetoEscalaPrestador prest : prestadores) {
 			prest.setProjetoFolgasSemanais(projetoFolgaSemanalService.findAllByProjetoEscalaPrestadorId(prest.getId()));
 		}
 
 		
-		int mesAtual = (mes != 0 ? mes : LocalDate.now().getMonth().getValue());
-		int anoAtual = (ano != 0 ? ano : LocalDate.now().getYear());
+		int mesAtual = (mes != 0 ? mes : Utilities.now().getMonth().getValue());
+		int anoAtual = (ano != 0 ? ano : Utilities.now().getYear());
 
 		
 		List<AusenciaReposicao> ausenciaReposicoes = null;
@@ -190,12 +205,12 @@ public class DashboardController {
 		modelView.addObject("mesAnterior", mesAtual == 1 ? 12 : mesAtual-1);	
 		modelView.addObject("anoAnterior", mesAtual == 1 ? anoAtual-1 : anoAtual);
 		
-    	LocalDate data = LocalDate.of((ano != 0 ? ano : LocalDate.now().getYear()), (mes != 0 ? mes : LocalDate.now().getMonth().getValue()), 1);
+    	LocalDate data = LocalDate.of((ano != 0 ? ano : Utilities.now().getYear()), (mes != 0 ? mes : Utilities.now().getMonth().getValue()), 1);
     	modelView.addObject("data", data);	
     	List<DiasMes> diasMes = new ArrayList<DiasMes>();
     	LocalDate dataIni = data;
 		while (data.getMonth() == dataIni.getMonth()) {
-			int diaSemana = data.getDayOfWeek().getValue() == 7 ? 1 : data.getDayOfWeek().getValue() + 1;
+			int diaSemana = data.getDayOfWeek().getValue();
 			diasMes.add(new DiasMes(diaSemana, DiaSemanaEnum.GetDiaSemanaFromId(diaSemana).getNome() + " " + data.getDayOfMonth() + "/" + data.getMonthValue(), data));
 			data = data.plusDays(1);
 		}

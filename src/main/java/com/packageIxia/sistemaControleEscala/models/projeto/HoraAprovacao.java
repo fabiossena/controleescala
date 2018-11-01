@@ -22,6 +22,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Entity
@@ -138,6 +139,10 @@ public class HoraAprovacao {
 
 	public void setTotalHoras(double totalHoras) {
 		this.totalHoras = totalHoras;
+	}
+
+	public String getTotalHorasFormatada() {		
+		return dadosAcessoAprovacaoHoras.getTotalHorasFormatada(); // Utilities.converterToTime((int)(this.totalHoras * 60 * 60));
 	}
 
 	public double getTotalValor() {

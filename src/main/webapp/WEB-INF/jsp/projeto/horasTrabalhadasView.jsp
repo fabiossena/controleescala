@@ -214,7 +214,7 @@
 												  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
 												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
-										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.doubleValue} horas</b></label>
+										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} (${item.doubleValue}hrs)</b></label>
 								          	  <br>
 									      </c:forEach>
 								       </div>	
@@ -229,8 +229,8 @@
 									   </div>
 									      
 								  	  <div class="form-group col-sm-12" style="font-size: 10pt"> 								          
-								      	<label class="control-label">
-											<b>Total horas:</b> ${aprovacaoHora.totalHoras}
+								      	<label class="control-label"> 
+											<b>Total:</b> ${aprovacaoHora.totalHorasFormatada} (${aprovacaoHora.totalHoras}hrs) 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
 										</label><br>					          
 								      	<label class="control-label">
@@ -324,11 +324,11 @@
 															<td>${item.projetoEscala.descricaoEscala}</td>
 											                <td>
 												                <div style="width: 150px"> 
-													                <fmt:formatDate value="${dataHrIni}" pattern="dd/MM/yyyy" /> ${item.dataHoraInicio.toString().substring(11, 16)} <br>
-																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 16)}
+													                <fmt:formatDate value="${dataHrIni}" pattern="dd/MM/yyyy" /> ${item.dataHoraInicio.toString().substring(11, 19)} <br>
+																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 19)}
 																</div>
 															</td>
-														  	<td>${item.horas}</td> 
+														  	<td>${item.horasFormatada} (${item.horas}hrs)</td> 
 											                <td>
 											                	<c:if test="${item.tipoAcao == 1 || item.tipoAcao == 3}">Inicio/Parada</c:if>
 											                	<c:if test="${item.tipoAcao == 2 || item.tipoAcao == 4}">Pausado/Reiniciado</c:if>

@@ -113,7 +113,7 @@
            		class="form-control" 
            		items="${funcoes}"  
            		itemValue="id" 
-           		itemLabel="nome" 
+           		itemLabel="nomeCompleto" 
            		disabled="${isDisableCamposChaves || isDisableTodosCampos}" />
 			<span class="text-success" style="font-size: 10pt" id="perfil-acesso">Perfil acesso: ${usuario.funcao.perfilAcesso.nome}</span>
         </div>

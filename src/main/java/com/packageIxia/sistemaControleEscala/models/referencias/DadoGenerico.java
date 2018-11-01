@@ -6,6 +6,8 @@ public class DadoGenerico {
 	
 	private String nome;
 
+	private String descricao;
+	
 	private double doubleValue;
 	
 	public DadoGenerico(long id, String nome) {
@@ -17,6 +19,13 @@ public class DadoGenerico {
 		this.id = id;
 		this.nome = nome;
 		this.doubleValue = doubleValue;
+	}
+	
+	public DadoGenerico(long id, String nome, double doubleValue, String descricao) {
+		this.id = id;
+		this.nome = nome;
+		this.doubleValue = doubleValue;
+		this.descricao = descricao;
 	}
 
 	public long getId() {
@@ -42,5 +51,13 @@ public class DadoGenerico {
 	
 	public void setDoubleValue(double doubleValue) {
 		this.doubleValue = doubleValue;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 }

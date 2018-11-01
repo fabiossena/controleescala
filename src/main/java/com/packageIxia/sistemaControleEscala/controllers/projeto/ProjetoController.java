@@ -143,7 +143,7 @@ public class ProjetoController {
     	
 		this.projetoEditado = new Projeto();
 		this.projetoEditado.setId(0);
-		this.projetoEditado.setDataInicio(LocalDate.now());
+		this.projetoEditado.setDataInicio(Utilities.now2());
 		this.projetoEditado.setAtivo(true);
 		modelViewCadastro.addObject("projeto", this.projetoEditado); 
 

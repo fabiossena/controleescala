@@ -4,8 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,7 +167,7 @@ public class HoraTrabalhadaAprovacaoController {
 				this.horaAprovacaoService,
 				this.notificacaoService);
 
-        String fileName = "integracao_robo_usuario" + usuarioLogado.getId() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss"));
+        String fileName = "integracao_robo_usuario" + usuarioLogado.getId() + "_" + Utilities.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss"));
         String nome = storageService.store(file, fileName);
         String nomeCompleto = storageService.getRootPath() + "\\" + nome;
         
@@ -201,11 +199,11 @@ public class HoraTrabalhadaAprovacaoController {
 		this.horaAprovacaoView.addObject("escalas", this.projetoEscalas);
 
 		if (this.ano == 0 || this.mes == 0) {
-			this.ano = LocalDate.now().getMonthValue() == 1 ? LocalDate.now().getYear() - 1: LocalDate.now().getYear();
-			this.mes = LocalDate.now().getMonthValue() == 1 ? 12: LocalDate.now().getMonthValue()-1;
+			this.ano = Utilities.now().getMonthValue() == 1 ? Utilities.now().getYear() - 1: Utilities.now().getYear();
+			this.mes = Utilities.now().getMonthValue() == 1 ? 12: Utilities.now().getMonthValue()-1;
 		}
 		
-		this.horaAprovacaoView.addObject("anoBase", LocalDate.now().getYear());
+		this.horaAprovacaoView.addObject("anoBase", Utilities.now().getYear());
 		this.horaAprovacaoView.addObject("ano", this.ano);
 		this.horaAprovacaoView.addObject("mes", this.mes);
 		this.horaAprovacaoView.addObject("bancoId", this.banco);
@@ -261,7 +259,7 @@ public class HoraTrabalhadaAprovacaoController {
 
 		horaTrabalhadaView.addObject("isDisableInsertCampos", true);   
     	this.aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(this.aprovacaoHora, usuarioLogado));
-    	if ((LocalDate.now().getYear() + LocalDate.now().getMonthValue()) <= (this.aprovacaoHora.getData().getYear() + this.aprovacaoHora.getData().getMonthValue()) ||
+    	if ((Utilities.now().getYear() + Utilities.now().getMonthValue()) <= (this.aprovacaoHora.getData().getYear() + this.aprovacaoHora.getData().getMonthValue()) ||
     			!this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getDadosAcesso()) {
     		horaTrabalhadaView.addObject("isDisableCampos", true);    		
     	}  
@@ -350,7 +348,7 @@ public class HoraTrabalhadaAprovacaoController {
 	        List<Banco> bancos =  this.referenciasService.getBancos();
 	        String bancoNumero = bancos.stream().filter(x->x.getId() == this.banco).findFirst().get().getNumero();
 	        
-            String fileName = "csv-financeiro_banco" + bancoNumero + "_usuario" + usuarioLogado.getId() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss")) + ".csv";
+            String fileName = "csv-financeiro_banco" + bancoNumero + "_usuario" + usuarioLogado.getId() + "_" + Utilities.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss")) + ".csv";
             String fullFileName = pasta.toAbsolutePath() + "\\" + fileName;
             
             FileWriter writer = new FileWriter(fullFileName);	 
@@ -372,7 +370,7 @@ public class HoraTrabalhadaAprovacaoController {
 			        				horaAprovacao.getPrestador().getDigito(),
 			        				horaAprovacao.getPrestador().getNomeCompletoCadastradoBanco(),
 			        				horaAprovacao.getPrestador().getCpf(),
-			        				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")),
+			        				Utilities.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")),
 			        				String.valueOf(horaAprovacao.getTotalValor())));
 				}
 			}			
@@ -426,7 +424,7 @@ public class HoraTrabalhadaAprovacaoController {
     	this.horaAprovacaoView.addObject("errorMessage", null);
 
 		
-    	this.horaAprovacaoView.addObject("anoBase", LocalDate.now().getYear());
+    	this.horaAprovacaoView.addObject("anoBase", Utilities.now().getYear());
     	this.horaAprovacaoView.addObject("ano", this.ano);
     	this.horaAprovacaoView.addObject("mes", this.mes);
 		
@@ -435,13 +433,13 @@ public class HoraTrabalhadaAprovacaoController {
     		return this.horaAprovacaoView;
     	}
 
-		if (ano < 2018 || ano > LocalDate.now().getYear()) {
+		if (ano < 2018 || ano > Utilities.now().getYear()) {
 			this.horaAprovacaoView.addObject("errorMessage", "Digite um ano válido");
     		return this.horaAprovacaoView;
     	}
 
 		if (Utilities.stringToDateTime(ano + "-" + (mes > 9 ? "" : "0") + mes + "-01 00:00:00").isAfter(  
-			Utilities.stringToDateTime(LocalDate.now().getYear() + "-"  + (LocalDate.now().getMonthValue() > 9 ? "" : "0") + LocalDate.now().getMonthValue() + "-01 00:00:00"))) {
+			Utilities.stringToDateTime(Utilities.now().getYear() + "-"  + (Utilities.now().getMonthValue() > 9 ? "" : "0") + Utilities.now().getMonthValue() + "-01 00:00:00"))) {
 			this.horaAprovacaoView.addObject("errorMessage", "Não é permitido gerar horas para os meses acima do atual");
     		return this.horaAprovacaoView;
     	}
@@ -467,8 +465,8 @@ public class HoraTrabalhadaAprovacaoController {
 
     	ModelAndView mv = new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
     	
-		this.ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
-		this.mes = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
+		this.ano = ano == 0 ? Utilities.now().getYear() : ano;
+		this.mes = mes == 0 ? Utilities.now().getMonthValue() : mes;
 		
     	HoraAprovacao horaAprovacao = this.horaAprovacaoService.findByDateAndPrestadorId(id, ano, mes);
     	if (horaAprovacao == null) {

@@ -127,7 +127,7 @@ public class UsuarioTurnosDisponiveisService implements IUsuarioTurnosDisponivei
 		String folgaSemanalSugerida = "";
 		List<FolgaSemanalPlanejadaUsuario> list = this.getFolgasSemanaisPlanejadasUsuario(id);
 		for (FolgaSemanalPlanejadaUsuario item : list) {			
-			folgaSemanalSugerida += folgaSemanalSugerida == "" ? "Folga semanal sugerida pelo prestador: <br />" : folgaSemanalSugerida  + "<br />";
+			folgaSemanalSugerida += folgaSemanalSugerida == "" ? "<br />Folga semanal sugerida pelo prestador: <br />" : folgaSemanalSugerida  + "<br />";
 			folgaSemanalSugerida += item.getDiaSemana().getNome() + " " + item.getHoraInicio() + " às " + item.getHoraFim() + " (" + item.getMotivo().getNome() + ")";
 		}
 		

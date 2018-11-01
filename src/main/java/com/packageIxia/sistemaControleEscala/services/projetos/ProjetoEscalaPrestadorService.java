@@ -1,6 +1,5 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,23 +144,10 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			}
 		}
 
-//		List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
-//    	List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
-
-    	//String message = this.getAtualizacoesPrestadorDiasHoras(prestador, apagar, atualizar);
     	String message = this.getAtualizacoesPrestadorDiasHoras(prestador);
 		if (message != "") {
 			return message;
 		}
-
-//		prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(atualizar);
-		
-//    	if (apagar != null && 
-//			apagar.size() > 0) { //atual.getProjetoEscalaPrestadorDiasHorasTrabalho()
-//    		for (ProjetoEscalaPrestadorDiaHoraTrabalho item : apagar) {
-//        		this.diaHoraTrabalhoDao.deleteAllById(item.getId()); //prestador.getId());	
-//			}
-//    	}
     	
 		ProjetoEscalaPrestador prestadorSalvo = this.projetoEscalaPrestadorDao.save(prestador);
 		prestador.setId(prestadorSalvo.getId());
@@ -181,73 +167,10 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			
     		// valida informação de hora e verifica se os dados são igual a escala, se forem iguais apaga registros para prevalecer o que tem na escala base
     		return validaAjustaDiasHorasAndComparaComDiasHorasEscala(prestador);
-
-			// se todos registros forem iguais a escala apaga tudo para prevalecer o que tem na escala base
-//			this.getDiasHorasParaApagarAndAtualizar(prestador, apagar, atualizar, projetoPrestadorBaseDadosAtual,
-//					igualEscala, diasHorasDaEscala);
 		}
     	
     	return "";
 	}
-
-//	private void getDiasHorasParaApagarAndAtualizar(ProjetoEscalaPrestador prestador,
-//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar, List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar,
-//			ProjetoEscalaPrestador projetoPrestadorBaseDadosAtual, boolean igualEscala,
-//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasDaEscala) {
-//		
-//		if (igualEscala) {
-//			//prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>());
-//			if (projetoPrestadorBaseDadosAtual != null && 
-//				projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho()!= null && 
-//				projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho().size() > 0) {
-//				apagar.addAll(projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho());
-//			}
-//		}
-////		else {
-////
-////			// se não tiver nada na base de dados prevalecer o que tem na escala TELA
-////			if (diasHorasDaEscala == null || 
-////				projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho() == null || 
-////				projetoPrestadorBaseDadosAtual.getProjetoEscalaPrestadorDiasHorasTrabalho().size() == 0) {
-////				
-////				atualizar.addAll(prestador.getDiasHorasTrabalho().stream().filter(x->!x.getHoraInicio().equals("")).collect(Collectors.toList()));
-////			}
-////			else {
-////				
-////				// percorre registros da tela para comparar com base de dados
-////		    	comparaDiasHorasComSalvoBanco(prestador, apagar, atualizar, projetoPrestadorBaseDadosAtual);			    	
-////			}
-////		}
-//	}
-
-//	private void comparaDiasHorasComSalvoBanco(ProjetoEscalaPrestador prestador,
-//			List<ProjetoEscalaPrestadorDiaHoraTrabalho> apagar, List<ProjetoEscalaPrestadorDiaHoraTrabalho> atualizar,
-//			ProjetoEscalaPrestador projetoPrestadorBaseDadosAtual) {
-//		for (int itemIndex = 0; itemIndex < prestador.getDiasHorasTrabalho().size(); itemIndex++) {
-//			ProjetoEscalaPrestadorDiaHoraTrabalho item = prestador.getDiasHorasTrabalho().get(itemIndex);
-//			ProjetoEscalaPrestadorDiaHoraTrabalho diaSemanaBaseDadosAtual = 
-//					projetoPrestadorBaseDadosAtual.getDiasHorasTrabalho().stream().filter(x->
-//					x.getDiaSemana() == item.getDiaSemana()).findFirst().orElse(new ProjetoEscalaPrestadorDiaHoraTrabalho(0, "", ""));
-//
-//			// tem id mas não dados nas horas entao apaga
-//			if (item.getId() > 0 &&
-//				item.getHoraInicio().equals("") &&
-//				item.getHoraFim().equals("")) {
-//				apagar.add(item);
-//			}
-//			// tem id e horas são diferentes de branco e diferente da base dados (dados originais) então atualiza
-//			else if (item.getId() > 0 &&
-//					(!item.getHoraInicio().equals(diaSemanaBaseDadosAtual.getHoraInicio()) ||
-//					!item.getHoraFim().equals(diaSemanaBaseDadosAtual.getHoraFim()))) {
-//				atualizar.add(item);
-//			}
-//			// não tem id mas tem horas então insere
-//			else if (item.getId() == 0 && 
-//					!item.getHoraInicio().equals("")) {
-//				atualizar.add(item);
-//			}
-//		}
-//	}
 
 	private String validaAjustaDiasHorasAndComparaComDiasHorasEscala(
 			ProjetoEscalaPrestador prestador) {
@@ -344,8 +267,8 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		if (trazerSomenteDataAtiva) {	
 			projetosCadastrados =
 					projetosCadastrados.stream().filter(x->
-						x.getDataInicio().isAfter(LocalDate.now()) &&
-						(x.getDataFim() == null || x.getDataFim().isBefore(LocalDate.now()))).collect(Collectors.toList());
+						x.getDataInicio().isAfter(Utilities.now2()) &&
+						(x.getDataFim() == null || x.getDataFim().isBefore(Utilities.now2()))).collect(Collectors.toList());
 		}
 
 		if (trazerSomentePendentes) {
@@ -424,10 +347,8 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			return "Preencha o campo motivo recusa";
 		}
 		
-		projetoEscalaPrestador.setAceito(statusAceite);
-		projetoEscalaPrestador.setMotivoRecusa(motivo);
-		
-		return save(projetoEscalaPrestador);
+		projetoEscalaPrestadorDao.aceiteRecusa(projetoEscalaPrestadorId, statusAceite, motivo);
+		return "";
 	}
 
 	@Override
@@ -442,7 +363,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 
 	@Override
 	public List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId) {
-		List<ProjetoEscalaPrestador> projetosCadastrados = Utilities.toList(this.projetoEscalaPrestadorDao.findAllByProjetoId(projetoId));
+		List<ProjetoEscalaPrestador> projetosCadastrados = this.projetoEscalaPrestadorDao.findAllByProjetoId(projetoId);
 		return this.trazerFiltrosAndObservacoesAdicionais(false, true, false, false, false, false, true, projetosCadastrados);
 	}
 

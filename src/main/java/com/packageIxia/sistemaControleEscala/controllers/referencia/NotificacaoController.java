@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
@@ -44,7 +45,7 @@ public class NotificacaoController {
 			return "Notificação não encontrada";
 		}
 		
-		notificacao.setLeitura(LocalDateTime.now());
+		notificacao.setLeitura(Utilities.now());
 		return this.notificacaoService.save(notificacao);
     }
     		

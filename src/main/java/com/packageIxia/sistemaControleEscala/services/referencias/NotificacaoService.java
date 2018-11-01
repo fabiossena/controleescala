@@ -1,12 +1,12 @@
 package com.packageIxia.sistemaControleEscala.services.referencias;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.referencias.NotificacaoDao;
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 
@@ -30,7 +30,7 @@ public class NotificacaoService implements INotificacao {
 		if (ler) {
 			for (Notificacao notificacao : notificacoes) {
 				if (notificacao.getAberta() != null) { 
-					notificacao.setAberta(LocalDateTime.now());
+					notificacao.setAberta(Utilities.now());
 					this.notificacaoDao.save(notificacao);
 				}				
 			}

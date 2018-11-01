@@ -13,6 +13,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.packageIxia.sistemaControleEscala.models.referencias.DiaSemanaEnum;
+
 @Entity
 @Table(name = "ProjetoEscalaPrestadorDiaHoraTrabalho")
 public class ProjetoEscalaPrestadorDiaHoraTrabalho {
@@ -75,6 +77,10 @@ public class ProjetoEscalaPrestadorDiaHoraTrabalho {
 
 	public int getDiaSemana() {
 		return diaSemana;
+	}
+
+	public String getDiaSemanaNome() {
+		return DiaSemanaEnum.GetDiaSemanaFromId(diaSemana).getNome();
 	}
 
 	public void setDiaSemana(int diaSemana) {
