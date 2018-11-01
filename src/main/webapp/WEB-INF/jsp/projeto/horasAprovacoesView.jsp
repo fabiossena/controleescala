@@ -12,11 +12,35 @@
     <jsp:include page="../shared/headerPartialView.jsp"/>
 	<script>
 		$(document).ready(function() {
+
+         $('#btn-gerar-prestador').on('click',function() {
+			var mes = $("#txt-pesquisar-mes").val();
+			var ano = $("#txt-pesquisar-ano").val();
+			var prestador = $("#prestador").val();
+			if (mes == "" || mes == null || mes <= 0 || mes > 12) {
+				alert("Digite um mês válido");
+				return;
+			}
+			
+			if (ano == "" || ano == null || ano < 2018 || ano > ${anoBase}) {
+				alert("Digite um ano válido");
+				return;
+			}
+			
+			if (prestador == "" || prestador == null || prestador == 0) {
+				alert("Selecione um prestador");
+				return;
+			}
+			
+     		window.location.href = urlBase + "geracaoHoras/" + prestador + "?ano=" + $("#txt-pesquisar-ano").val() + "&mes=" + $("#txt-pesquisar-mes").val();
+    	 });
+
+
 			$("#banco-id").change(function() {
 				var mes = $("#txt-pesquisar-mes").val();
 				var ano = $("#txt-pesquisar-ano").val();
 				var banco = $("#banco-id").val();
-				if (mes == 0 || mes > 12){
+				if (mes <= 0 || mes > 12) {
 					alert("Digite um mês válido");
 					$("#banco-id").val(0)
 					 $("#banco-id option").each(function () { 
@@ -34,6 +58,7 @@
 			var mes = $("#txt-pesquisar-mes").val();
 			var ano = $("#txt-pesquisar-ano").val();
 			var banco = $("#banco-id").val();
+			var prestador = $("#prestador").val();
 			if (mes == 0 || mes > 12){
 				alert("Digite um mês válido");
 				return;
@@ -43,8 +68,9 @@
 				alert("Digite um ano válido");
 				return;
 			}
+			
 			$("*").css("cursor", "progress");
-        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "");
+        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "") + (prestador != null && prestador != 0 ? "&prestador=" + prestador : "");
 		}
 		
 		function aprovar(id){
@@ -163,32 +189,58 @@
 			<div class="container border-top panel-custom"> 
 				  <c:if test="${!isAtendimento}">
 				  <div class="form-group col-sm-12 row">
-					  <div class="form-group" style="margin-right: 10px">
+				  
+					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-ano" class="control-label">Ano</label>
 				          <input id="txt-pesquisar-ano" class="form-control mask-year" value="${ano}" />
 					  </div> 
 					
-					  <div class="form-group" style="margin-right: 10px">
+					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-mes" class="control-label">Mês</label>
 				          <input id="txt-pesquisar-mes" class="form-control mask-month" value="${mes}" />
 					  </div>
 
-				     <div class="form-group">
+				     <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
 				         <label for="banco" class="control-label">Banco</label>
 			             <select id="banco-id" class="form-control">
 			             	<option <c:if test="${bancoId == 0}">selected</c:if> value="0">Todos</option>
 			             	<option <c:if test="${bancoId < 0}">selected</c:if> value="-1">Sem banco cadastrado</option>
 			             	<c:forEach items="${bancos}" var="banco">
 				             	<option <c:if test="${banco.id == bancoId}">selected</c:if> value="${banco.id}">${banco.nome}</option>
-		             	  	</c:forEach>
+		             	  	</c:forEach> 
 				         </select>
 				     </div>
-				      
+
+	
+					
+					<c:if test="${isAdministracao}">				
+						<div class="form-group  col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+					      <label for="projetoEscala" class="control-label">Selecione um prestador</label>
+				          <select 
+				          	id="prestador" 
+				          	class='form-control select-cache-tab'>
+				          	<option value="0"></option>
+				          	<c:forEach var="prestador" items="${prestadores}">
+				          		<option <c:if test="${prestadorId==prestador.id}">selected</c:if> value="${prestador.id}">${prestador.nomeCompletoMatricula}</option>
+				          	</c:forEach>
+				          	</select>
+			       	    </div>    
+			        </c:if>
+
 				     <div class="form-group"> 
 				         <label for="banco" class="control-label">&nbsp;</label>
 				        <br> 
     	  		  		<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrar()" style="margin-left: 10px;  height: 35px">Filtrar</button>
 				     </div>
+
+					<c:if test="${isAdministracao}">				
+					     <div class="form-group"> 
+					         <label for="banco" class="control-label">&nbsp;</label>
+					        <br> 
+		   	  		  		<button id="btn-gerar-prestador" class="btn btn-sm btn-primary" style="margin-left: 10px;  height: 35px">Gerar mês para prestador</button>
+					     </div>
+			        </c:if> 
+				      				     
 				  </div> 
 
 			        	  			

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpSession;
 
@@ -148,22 +149,20 @@ public class UsuarioService implements IUsuario {
 
 	@Override
 	public List<Usuario> findByPerfilAcessoId(List<Usuario> usuarios, int id) {
-	    return usuarios.stream()
-	    		.filter(x->x.getFuncao().getPerfilAcessoId() == id || x.getUsuarioFuncaoAdicionais().stream().anyMatch(y->y.getFuncao().getPerfilAcessoId() == id))
-	    		.sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto))
-	    		.collect(Collectors.toList());
+		Stream<Usuario> usrs =  usuarios.stream()
+	    		.filter(x->x.getFuncao().getPerfilAcessoId() == id || x.getUsuarioFuncaoAdicionais().stream().anyMatch(y->y.getFuncao().getPerfilAcessoId() == id) && !x.isExcluido());
+		
+		return usrs.sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Usuario> findByPerfilAcessoId(List<Usuario> usuarios, List<Integer> ids) {
-	       return usuarios.stream().filter(x->
-	       ids.contains(x.getFuncao().getPerfilAcessoId()) || 
-      		(x.getUsuarioFuncaoAdicionais() != null && 
-      		 x.getUsuarioFuncaoAdicionais().stream().anyMatch(y-> ids.contains(y.getFuncao().getPerfilAcessoId()) ) ))
-    		  .sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto))
-    		  .collect(Collectors.toList());
-		//List<Usuario> usuarios = Utilities.toList(usuarioDao.findAllByPerfilAcessoIdAndExcluido(ids, false));
-		//return usuarios.stream().sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
+		Stream<Usuario> usrs =  usuarios.stream().filter(x->
+	       (ids.contains(x.getFuncao().getPerfilAcessoId()) || 
+	       		(x.getUsuarioFuncaoAdicionais() != null && 
+	       		x.getUsuarioFuncaoAdicionais().stream().anyMatch(y-> ids.contains(y.getFuncao().getPerfilAcessoId())))) && !x.isExcluido());
+		
+		return usrs.sorted(Comparator.comparing(Usuario::getNomeCompleto).reversed().thenComparing(Usuario::getNomeCompleto)).collect(Collectors.toList());
 	}
 
 	@Override

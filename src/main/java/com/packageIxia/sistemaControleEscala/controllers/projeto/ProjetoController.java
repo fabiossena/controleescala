@@ -487,10 +487,8 @@ public class ProjetoController {
 	}
 	
 	private void loadUsuarios() {
-		if (this.usuarios == null) {
-			this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
-			this.usuarios = this.usuarioService.findAllByUsuarioLogado(this.usuarioLogado);
-		}
+		this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+		this.usuarios = this.usuarioService.findAllByUsuarioLogado(this.usuarioLogado);
 	}
 	
     @ModelAttribute("gerentes")

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.helpers.GeradorCsv;
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
@@ -37,6 +40,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
+import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacaoHoras;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
@@ -68,6 +72,11 @@ public class HoraTrabalhadaAprovacaoController {
 	private int banco;
 	private INotificacao notificacaoService;
 	private IProjetoEscalaPrestador projetoEscalaPrestadorService;
+	private HttpServletRequest request;
+	private IUsuario usuarioService;
+	private int mes;
+	private int ano;
+	private List<Usuario> usuarios;
     
 	public HoraTrabalhadaAprovacaoController(
 			IProjetoEscala projetoEscalaService,
@@ -78,7 +87,9 @@ public class HoraTrabalhadaAprovacaoController {
 			HttpSession session,
 			StorageService storageService,
 			INotificacao notificacaoService,
-			IProjetoEscalaPrestador projetoEscalaPrestadorService) {
+			HttpServletRequest request,
+			IProjetoEscalaPrestador projetoEscalaPrestadorService,
+			IUsuario usuarioService) {
 		this.projetoEscalaService = projetoEscalaService;
 		this.horaAprovacaoService = horaAprovacaoService;
 		this.horaTrabalhadaService = horaTrabalhadaService;
@@ -87,6 +98,8 @@ public class HoraTrabalhadaAprovacaoController {
 		this.referenciasService = referenciasService;
 		this.notificacaoService = notificacaoService;
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
+		this.request = request;
+		this.usuarioService = usuarioService;
 	}
 
     @GetMapping("nota/{id}")
@@ -177,31 +190,37 @@ public class HoraTrabalhadaAprovacaoController {
 	public ModelAndView index(
 			@RequestParam(value = "ano", defaultValue = "0") int ano,
 			@RequestParam(value = "mes", defaultValue = "0") int mes,
-			@RequestParam(value = "banco", defaultValue = "0") int banco) throws Exception {
+			@RequestParam(value = "banco", defaultValue = "0") int banco,
+			@RequestParam(value = "prestadorId", defaultValue = "0") long prestadorId) throws Exception {
 
+		this.ano = ano;
+		this.mes = mes;
+		this.banco = banco;
+		
 		this.projetoEscalas = this.projetoEscalaService.findAllByPermissao();
 		this.horaAprovacaoView.addObject("escalas", this.projetoEscalas);
 
-		if (ano == 0 || mes == 0) {
-			ano = LocalDate.now().getMonthValue() == 1 ? LocalDate.now().getYear() - 1: LocalDate.now().getYear();
-			mes = LocalDate.now().getMonthValue() == 1 ? 12: LocalDate.now().getMonthValue()-1;
+		if (this.ano == 0 || this.mes == 0) {
+			this.ano = LocalDate.now().getMonthValue() == 1 ? LocalDate.now().getYear() - 1: LocalDate.now().getYear();
+			this.mes = LocalDate.now().getMonthValue() == 1 ? 12: LocalDate.now().getMonthValue()-1;
 		}
-		
-		this.banco = banco;
 		
 		this.horaAprovacaoView.addObject("anoBase", LocalDate.now().getYear());
-		this.horaAprovacaoView.addObject("ano", ano);
-		this.horaAprovacaoView.addObject("mes", mes);
-		this.horaAprovacaoView.addObject("bancoId", banco);
-		this.banco = banco;
+		this.horaAprovacaoView.addObject("ano", this.ano);
+		this.horaAprovacaoView.addObject("mes", this.mes);
+		this.horaAprovacaoView.addObject("bancoId", this.banco);
 
 		Usuario usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
-		this.aprovacaoHoras = this.horaAprovacaoService.findAll(ano, mes);
-		if (banco == -1) {
-			this.aprovacaoHoras = this.horaAprovacaoService.findAll(ano, mes).stream().filter(x->x.getPrestador().getBancoId() == 0).collect(Collectors.toList());
+		this.aprovacaoHoras = this.horaAprovacaoService.findAll(this.ano, this.mes);
+		if (banco < 0) {
+			this.aprovacaoHoras = this.horaAprovacaoService.findAll(this.ano, this.mes).stream().filter(x->x.getPrestador().getBancoId() == 0).collect(Collectors.toList());
 		}
 		else if (banco > 0) {
-			this.aprovacaoHoras = this.horaAprovacaoService.findAll(ano, mes).stream().filter(x->x.getPrestador().getBancoId() == banco).collect(Collectors.toList());
+			this.aprovacaoHoras = this.horaAprovacaoService.findAll(this.ano, this.mes).stream().filter(x->x.getPrestador().getBancoId() == this.banco).collect(Collectors.toList());
+		}
+
+		if (prestadorId > 0 && this.aprovacaoHoras.stream().anyMatch(x->x.getPrestador().getId() == prestadorId)) {
+			this.aprovacaoHoras = this.aprovacaoHoras.stream().filter(x->x.getPrestador().getId() == prestadorId).collect(Collectors.toList());
 		}
 		
 		for (HoraAprovacao horaAprovacao : aprovacaoHoras) {
@@ -377,4 +396,95 @@ public class HoraTrabalhadaAprovacaoController {
     public List<Banco> bancos() {
        return this.referenciasService.getBancos();
     }
+
+    @ModelAttribute("prestadores")
+    public List<Usuario> prestadores() {
+    	Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+    	List<Usuario> prestadores =  new ArrayList<Usuario>();
+    	
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
+    		List<Integer> ids = new ArrayList<Integer>();
+    		ids.add(PerfilAcessoEnum.atendimento.getId());
+    		ids.add(PerfilAcessoEnum.monitoramento.getId());
+    		this.loadUsuarios();
+    		prestadores =  this.usuarioService.findByPerfilAcessoId(this.usuarios, ids);
+    	}
+    	
+    	return prestadores;
+    }	
+    
+    @GetMapping("/geracaoHoras/{id}")
+	public ModelAndView geracaoHoras(
+			@PathVariable(value = "id") long id,
+			@RequestParam(value = "mes", defaultValue="0") int mes,
+			@RequestParam(value = "ano", defaultValue="0") int ano) throws Exception {	
+
+
+    	this.horaAprovacaoView.addObject("result", null);
+    	this.horaAprovacaoView.addObject("errorMessage", null);
+
+		
+    	this.horaAprovacaoView.addObject("anoBase", LocalDate.now().getYear());
+    	this.horaAprovacaoView.addObject("ano", this.ano);
+    	this.horaAprovacaoView.addObject("mes", this.mes);
+		
+		if (mes <= 0 || mes > 12) {
+			this.horaAprovacaoView.addObject("errorMessage", "Digite um mês válido");
+    		return this.horaAprovacaoView;
+    	}
+
+		if (ano < 2018 || ano > LocalDate.now().getYear()) {
+			this.horaAprovacaoView.addObject("errorMessage", "Digite um ano válido");
+    		return this.horaAprovacaoView;
+    	}
+
+		if (Utilities.stringToDateTime(ano + "-" + (mes > 9 ? "" : "0") + mes + "-01 00:00:00").isAfter(  
+			Utilities.stringToDateTime(LocalDate.now().getYear() + "-"  + (LocalDate.now().getMonthValue() > 9 ? "" : "0") + LocalDate.now().getMonthValue() + "-01 00:00:00"))) {
+			this.horaAprovacaoView.addObject("errorMessage", "Não é permitido gerar horas para os meses acima do atual");
+    		return this.horaAprovacaoView;
+    	}
+
+
+		if (id <= 0) {
+			this.horaAprovacaoView.addObject("errorMessage", "Digite um prestador válido");
+    		return this.horaAprovacaoView;
+    	}
+		
+		Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+
+    	if (id > 0 &&
+			!(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() 
+			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() 
+			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() 
+			|| usuarioLogado.getId() != id)) {
+    		//ModelAndView erroModelView = new ModelAndView("redirect/:error");
+    		this.horaAprovacaoView.addObject("errorMessage", "Não permitido gerar horas com o usuário logado atual");
+            return this.horaAprovacaoView;
+    	}
+
+
+    	ModelAndView mv = new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
+    	
+		this.ano = ano == 0 ? LocalDateTime.now().getYear() : ano;
+		this.mes = mes == 0 ? LocalDateTime.now().getMonthValue() : mes;
+		
+    	HoraAprovacao horaAprovacao = this.horaAprovacaoService.findByDateAndPrestadorId(id, ano, mes);
+    	if (horaAprovacao == null) {
+    		horaAprovacaoService.findLastByPrestadorIdOrInsert(id, ano, mes);
+		}
+    	else {
+    		mv.addObject("errorMessage", "Usuário já possui horas geradas para o mês selecionado");
+    	}
+    	
+		return mv;
+	}
+	
+	private void loadUsuarios() {
+		if (this.usuarios == null) {
+			Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
+			this.usuarios = this.usuarioService.findAllByUsuarioLogado(usuarioLogado);
+		}
+	}
 }

@@ -16,14 +16,14 @@ public interface UsuarioDao extends CrudRepository<Usuario, Long> {
 	public boolean existsByEmail(String email);
 	public Usuario findByEmail(String email);
 	
-	@Query("select u from Usuario u inner join Funcao f on funcao_id = f.id where f.perfilAcessoId=:perfilAcessoId and excluido=:excluido")
-	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(@Param("perfilAcessoId")int perfilAcessoId, @Param("excluido")boolean excluido);
+//	@Query("select u from Usuario u inner join Funcao f ON f.id = funcao_id left join UsuarioFuncaoAdicional ufa on u.id = usuario_id where (perfil_acesso_id=:perfilAcessoId OR f.perfilAcessoId:perfilAcessoId=:perfilAcessoId) and excluido=:excluido")
+//	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(@Param("perfilAcessoId")int perfilAcessoId, @Param("excluido")boolean excluido);
 	
 	public Usuario findByCpf(String cpf);
 	public Iterable<Usuario> findAllByExcluido(boolean excluido);
 	public Iterable<Usuario> findAllByFuncaoId(int id);
 	
-	@Query("select u from Usuario u inner join Funcao f on funcao_id = f.id where f.perfilAcessoId in (:perfilAcessoIds) and excluido=:excluido")
-	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(@Param("perfilAcessoIds")int[] ids, @Param("excluido")boolean excluido);
+//	@Query("select u from Usuario u inner join Funcao f ON f.id = funcao_id left join UsuarioFuncaoAdicional ufa on u.id = usuario_id where (perfil_acesso_id in (:perfilAcessoIds)  OR f.perfilAcessoId=:perfilAcessoId in (:perfilAcessoIds)) and excluido=:excluido")
+//	public List<Usuario> findAllByPerfilAcessoIdAndExcluido(@Param("perfilAcessoIds")List<Integer> ids, @Param("excluido")boolean excluido);
 
 }
