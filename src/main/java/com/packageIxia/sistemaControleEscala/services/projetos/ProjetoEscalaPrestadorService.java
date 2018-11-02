@@ -262,7 +262,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 						x.isAtivo() && 
 						!x.isExcluido() &&
 						x.getProjetoEscala().isAtivo() &&
-						x.getProjetoEscala().isExcluido() &&
+						!x.getProjetoEscala().isExcluido() &&
 						x.getProjeto().isAtivo()).collect(Collectors.toList());
 		}
 
