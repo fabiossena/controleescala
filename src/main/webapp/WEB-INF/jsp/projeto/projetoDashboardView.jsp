@@ -271,18 +271,15 @@
 											<c:if test="${dia.diaSemana >= item.projetoEscala.diaSemanaDeId && dia.diaSemana <= item.projetoEscala.diaSemanaAteId}"> 
 												<div class="badge badge-success" style="font-size: 10pt;margin: 1px">${item.projetoEscala.horaInicio}
 												- ${item.projetoEscala.horaFim}</div>
-												<!-- <br> 
-												<br>   -->
 											</c:if>
 										</c:if>
 										
 										<c:if test="${item.hasDiasHorasTrabalho}">
 											<c:forEach items="${item.projetoEscalaPrestadorDiasHorasTrabalho}" var="diaHoraTrabalho">
 												<c:if test="${diaHoraTrabalho.diaSemana == dia.diaSemana}"> 
-													<div class="badge badge-success" style="font-size: 10pt;">${diaHoraTrabalho.horaInicio}
+													<div class="badge badge-success" style="font-size: 10pt;margin: 1px">${diaHoraTrabalho.horaInicio}
 													- ${diaHoraTrabalho.horaFim}</div>
-													<br> 
-												<br> 
+													
 												</c:if>
 
 											</c:forEach>
@@ -294,8 +291,6 @@
 												<br> -->
 												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">${folga.motivo.nome}
 													(${folga.horaInicio} - ${folga.horaFim})</div>
-												<!-- <br>
-												<br>  -->
 											</c:if>
 										</c:forEach>
 
