@@ -112,11 +112,11 @@
 							test="${isAdministracao || solicitacao.usuario.id == usuarioLogado.id}">
 
 								<c:if test="${solicitacao.id != 0}">
-									<!-- <c:if test="${!isDisableCampos}"> -->
 										<input onclick="apagarSolicitacao(${solicitacao.id})"
 											id="btn-apagar-solicitacao" type="button"
 											class="btn btn-sm btn-danger float-right" value="apagar"
 											style="margin: 1px" />
+									<!-- <c:if test="${!isDisableCampos}"> --> 
 									<!-- </c:if> -->
 									<c:if test="${(solicitacao.ativo == 0 || solicitacao.ativo == 2)}">
 										<c:if test='${isDisableCampos}'>
