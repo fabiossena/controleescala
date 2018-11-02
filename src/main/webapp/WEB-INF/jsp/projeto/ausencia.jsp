@@ -126,7 +126,7 @@
 										</c:if>
 									</c:if>
 
-								<c:if
+								<c:if	
 									test="${!isDisableCampos && (solicitacao.ativo == 0 || solicitacao.ativo == 2)}">
 
 									<c:if test="${solicitacao.ativo == 0 && solicitacao.id != 0}">
