@@ -319,7 +319,7 @@
 													  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
 											<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
 												<div class="badge badge-info" style="font-size: 10pt;">
-													Trabalhado de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
+													Trabalhou de ${hora.dataHoraInicio.toString().substring(11, 16)} às ${hora.dataHoraFim.toString().substring(11, 16)}
 												</div>
 											</c:if>
 											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
