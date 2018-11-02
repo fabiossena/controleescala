@@ -271,8 +271,8 @@
 											<c:if test="${dia.diaSemana >= item.projetoEscala.diaSemanaDeId && dia.diaSemana <= item.projetoEscala.diaSemanaAteId}"> 
 												<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
 												- ${item.projetoEscala.horaFim}</div>
-												<br> 
-												<br> 
+												<!-- <br> 
+												<br>   -->
 											</c:if>
 										</c:if>
 										
@@ -294,8 +294,8 @@
 												<br> -->
 												<div class="badge badge-warning" style="font-size: 10pt">${folga.motivo.nome}
 													(${folga.horaInicio} - ${folga.horaFim})</div>
-												<br>
-												<br> 
+												<!-- <br>
+												<br>  -->
 											</c:if>
 										</c:forEach>
 
