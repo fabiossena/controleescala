@@ -9,17 +9,16 @@
 <c:forEach items="${solicitacoes}"
 	var="solicitacao" varStatus="status">
 	<c:if
-		test="${(solicitacao.dataFim == null ? solicitacao.dataInicio == dia.data : dia.data <= solicitacao.dataFim && dia.data >= solicitacao.dataInicio) }">
+		test="${(solicitacao.ativo > 0 && solicitacao.dataFim == null ? solicitacao.dataInicio == dia.data : dia.data <= solicitacao.dataFim && dia.data >= solicitacao.dataInicio) }">
 		
-		<br>
-		<h5>Solicitação folga</h5>
-		<button style="font-size: 10pt; font-weight: bold"
+		<div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<h5><b>Solicitação folga</b></h5>
+		<button style="font-size: 10pt; font-weight: bold; margin: 1px 1px 1px 5px" 
 			class="btn btn-sm btn-warning"
-			onclick="toggleCard(this)"
-			style="margin: 1px">detalhes</button>
-
+			onclick="toggleCard(this)">detalhes</button>
+		</div>
 		<div id="card-solicitacao${solicitacao.id}${indexString}"
-			class="card bg-light" style="position: absolute; display: none">
+			class="card bg-light" style="z-index: 9999;position: absolute; display: none">
 
 		   <button onclick="$(this).parent().hide()" type="button" class="bt-close close" aria-label="Close">
 		   	<span aria-hidden="true">&times;</span>
@@ -28,7 +27,7 @@
 			<div class="card-body">
 			   	
 				<!-- Data inicio e fim -->
-				<fmt:parseDate pattern="yyyy-MM-dd"
+				<fmt:parseDate pattern="yyyy-MM-dd" 
 					value="${solicitacao.dataInicio}"
 					var="dtIni" />					
 				<c:set var="dataInicio">

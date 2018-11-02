@@ -72,16 +72,16 @@
     		}
     	}
     	
-    	return url
+    	return url;
     }
     
     function toggleCard(e){
-    	if (e.nextElementSibling.id != $('.card:visible').attr("id")) {
+    	if (e.parentElement.nextElementSibling.id != $('.card:visible').attr("id")) {
     		$('.card').hide();
    		} 
     	
-    	$(e.nextElementSibling).toggle(); 
-    } 
+    	$(e.parentElement.nextElementSibling).toggle(); 
+    }  
     </script>
     </script>
 </head>
@@ -154,7 +154,7 @@
 								<div style="width: 120px; opacity: 0.8">${dia.descricao}</div> 
 								<span
 									class="fixar-x badge badge-secondary"
-									style="vertical-align: top; display: none; opacity: 0.8; position: absolute; font-size: 11pt">${dia.descricao}</span>
+									style="vertical-align: top; display: none; opacity: 0.8; position: absolute; font-size: 11pt;z-index: 99999;">${dia.descricao}</span>
 							</th>
 						</c:forEach>
 
@@ -167,7 +167,7 @@
 							<th style="vertical-align: top; font-size: 11pt">
 								<span
 									class="fixar badge badge-secondary"
-									style="vertical-align: top; display: none; position: absolute; margin-top: -13px; opacity: 0.8; font-size: 11pt">${escala.descricaoEscala}</span>
+									style="vertical-align: top; display: none; position: absolute; margin-top: -13px; opacity: 0.8; font-size: 11pt;z-index: 99999;">${escala.descricaoEscala}</span>
 									Escala: ${escala.descricaoEscala}<c:if test="${!escala.ativo}">
 									<i class="badge badge-danger">desativada</i>
 								</c:if> 
@@ -213,7 +213,7 @@
 														  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
 												<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
 													<div class="badge badge-info" style="font-size: 10pt;">
-														Trabalhado de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
+														Trabalhou de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
@@ -252,10 +252,10 @@
 						<tr>
 							<td style="vertical-align: top">${item.prestador.nomeCompletoMatricula}
 								<span class="fixar"
-								style="vertical-align: top; display: none; position: absolute; margin-top: -15px; opacity: 0.8; font-size: 11pt">
+								style="vertical-align: top; display: none; position: absolute; margin-top: -15px; opacity: 0.8; font-size: 11pt;z-index: 99999;">
 									<span style="font-size: 11pt" class=" badge badge-secondary">${item.prestador.nomeCompletoMatricula}</span><br>
 									<span style="font-size: 11pt" class=" badge badge-secondary">${item.projetoEscala.descricaoEscala}</span>
-							</span>
+								</span>
 							</td>
 
 							<td class="border-left" style="vertical-align: top">${item.observacaoPrestador.trim()}</td>
@@ -271,6 +271,8 @@
 											<c:if test="${dia.diaSemana >= item.projetoEscala.diaSemanaDeId && dia.diaSemana <= item.projetoEscala.diaSemanaAteId}"> 
 												<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
 												- ${item.projetoEscala.horaFim}</div>
+												<br> 
+												<br> 
 											</c:if>
 										</c:if>
 										
@@ -279,6 +281,8 @@
 												<c:if test="${diaHoraTrabalho.diaSemana == dia.diaSemana}"> 
 													<div class="badge badge-success" style="font-size: 10pt;">${diaHoraTrabalho.horaInicio}
 													- ${diaHoraTrabalho.horaFim}</div>
+													<br> 
+												<br> 
 												</c:if>
 
 											</c:forEach>
@@ -286,12 +290,12 @@
 										
 										<c:forEach items="${item.projetoFolgasSemanais}" var="folga">
 											<c:if test="${folga.diaSemanaId == dia.diaSemana}">
-												<br>
 												<b>Folga programada</b>
 												<br>
 												<div class="badge badge-info" style="font-size: 10pt">${folga.motivo.nome}
 													(${folga.horaInicio} - ${folga.horaFim})</div>
 												<br>
+												<br> 
 											</c:if>
 										</c:forEach>
 
