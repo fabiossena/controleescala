@@ -13,10 +13,10 @@
 		
 		<div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 		<!-- <h5><b>Solicitação folga</b></h5> -->
-		<button style="font-size: 10pt; font-weight: bold; margin: 1px 1px 1px 5px" 
+		<button style="font-size: 10pt; font-weight: bold; margin: 1px" 
 			class="btn btn-sm btn-danger"
 			onclick="toggleCard(this)">${solicitacao.motivoAusencia.nome}
-			(${solicitacao.horaInicio} - ${solicitacao.horaFim}</button> 
+			(${solicitacao.horaInicio} - ${solicitacao.horaFim})</button> 
 		</div>
 		<div id="card-solicitacao${solicitacao.id}${indexString}"
 			class="card bg-light" style="z-index: 9999;position: absolute; display: none">
@@ -159,14 +159,14 @@
 				</c:if>
 			</div>
 		</div>
-
+<!-- 
 		<div style="font-size: 10pt;">
 			<b>Status: </b>
 			<c:if test='${solicitacao.aceito == 0}'>Pendente</c:if>
 			<c:if test='${solicitacao.aceito == 1}'>Aceita</c:if>
 			<c:if test='${solicitacao.aceito == 2}'>Recusada</c:if>
 		</div>
-<!-- 
+
 		<div class="badge badge-info" style="font-size: 10pt">${solicitacao.motivoAusencia.nome}
 			(${solicitacao.horaInicio} - ${solicitacao.horaFim} |
 			${solicitacao.horas}/dia)</div>

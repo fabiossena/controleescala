@@ -189,12 +189,12 @@
 									<%-- <c:if test="${dia.data >= escala.projeto.dataInicio && dia.data <= escala.projeto.dataFim}">
 									${escala.diaSemanaDeId} >= ${dia.diaSemana} - ${dia.diaSemana}  <=  ${escala.diaSemanaAteId} --%>
 									<c:if test="${dia.diaSemana >= escala.diaSemanaDeId && dia.diaSemana <= escala.diaSemanaAteId}">  
-									<div class="badge badge-success">${escala.horaInicio}-
+									<div class="badge badge-success" style="margin: 1px">${escala.horaInicio}-
 										${escala.horaFim}</div> <br> <c:if
 										test="${escala.definidaPrioridade}">
 										<c:if
 											test="${dia.diaSemana >= escala.diaSemanaDePrioridadeId && dia.diaSemana <= escala.diaSemanaAtePrioridadeId}">
-											<div class="badge badge-danger">Horário prioritario:
+											<div class="badge badge-danger" style="margin: 1px">Horário prioritario:
 												${escala.horaInicioPrioridade} - ${escala.horaFimPrioridade}</div><br>
 										</c:if>
 									</c:if> 
@@ -212,17 +212,17 @@
 														  hora.horaAprovacao.prestador.id == escala.monitor.id && 
 														  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
 												<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
-													<div class="badge badge-info" style="font-size: 10pt;">
+													<div class="badge badge-info" style="font-size: 10pt;margin: 1px">
 														Trabalhou de ${hora.dataHoraInicio.toString().substring(11, 16)} até ${hora.dataHoraFim.toString().substring(11, 16)}
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
-													<div class="badge badge-warning" style="font-size: 10pt;">
+													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
 														Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
-													<div class="badge badge-warning" style="font-size: 10pt;">
+													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
 														Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
@@ -269,7 +269,7 @@
 										
 										<c:if test="${!item.hasDiasHorasTrabalho}">
 											<c:if test="${dia.diaSemana >= item.projetoEscala.diaSemanaDeId && dia.diaSemana <= item.projetoEscala.diaSemanaAteId}"> 
-												<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
+												<div class="badge badge-success" style="font-size: 10pt;margin: 1px">${item.projetoEscala.horaInicio}
 												- ${item.projetoEscala.horaFim}</div>
 												<!-- <br> 
 												<br>   -->
@@ -292,7 +292,7 @@
 											<c:if test="${folga.diaSemanaId == dia.diaSemana}">
 												<!-- <b>Folga programada</b>
 												<br> -->
-												<div class="badge badge-warning" style="font-size: 10pt">${folga.motivo.nome}
+												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">${folga.motivo.nome}
 													(${folga.horaInicio} - ${folga.horaFim})</div>
 												<!-- <br>
 												<br>  -->
@@ -322,17 +322,17 @@
 													  hora.horaAprovacao.prestador.id == item.prestador.id && 
 													  hora.dataHoraInicio.dayOfMonth == dia.data.dayOfMonth}">
 											<c:if test="${hora.dataHoraFim != null && hora.tipoAcao == 1}">
-												<div class="badge badge-info" style="font-size: 10pt;">
+												<div class="badge badge-info" style="font-size: 10pt;margin: 1px">
 													Trabalhou de ${hora.dataHoraInicio.toString().substring(11, 16)} às ${hora.dataHoraFim.toString().substring(11, 16)}
 												</div>
 											</c:if>
 											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
-												<div class="badge badge-warning" style="font-size: 10pt;">
+												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
 													Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 												</div>
 											</c:if>
 											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
-												<div class="badge badge-warning" style="font-size: 10pt;">
+												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
 													Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 												</div>
 											</c:if>

@@ -12,10 +12,10 @@
 	
 		<div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<!-- <b>Reposição</b>  -->
-			<button style="font-size: 10pt; font-weight: bold; margin: 1px 1px 1px 5px"
+			<button style="font-size: 10pt; font-weight: bold; margin: 1px"
 				class="btn btn-sm btn-warning"
 				onclick="toggleCard(this)"
-				style="margin: 1px">Reposição ${reposicao.horaInicio} - ${reposicao.horaFim}</button>
+				style="margin: 1px">Reposição (${reposicao.horaInicio} - ${reposicao.horaFim})</button>
 		</div>
 		<div
 			id="card-reposicao${reposicao.ausenciaSolicitacao.id}"
