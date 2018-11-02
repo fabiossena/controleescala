@@ -44,4 +44,6 @@ public interface IProjetoEscalaPrestador {
 	
 	String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho);
 
+	List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId, boolean b);
+
 }

@@ -139,7 +139,7 @@ public class DashboardController {
     	
 		modelView.addObject("escala", esc);
     	
-		this.prestadores = this.prestadorService.findAllByProjetoId(projetoId);
+		this.prestadores = this.prestadorService.findAllByProjetoId(projetoId, true);
 		this.prestadores = this.prestadores.stream().sorted(new Comparator<ProjetoEscalaPrestador>() {
 
 			public int compare(ProjetoEscalaPrestador p1, ProjetoEscalaPrestador p2) {

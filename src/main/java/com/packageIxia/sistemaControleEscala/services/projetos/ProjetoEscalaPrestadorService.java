@@ -260,7 +260,9 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			projetosCadastrados =
 					projetosCadastrados.stream().filter(x->
 						x.isAtivo() && 
+						!x.isExcluido() &&
 						x.getProjetoEscala().isAtivo() &&
+						x.getProjetoEscala().isExcluido() &&
 						x.getProjeto().isAtivo()).collect(Collectors.toList());
 		}
 
@@ -365,6 +367,12 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	public List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId) {
 		List<ProjetoEscalaPrestador> projetosCadastrados = this.projetoEscalaPrestadorDao.findAllByProjetoId(projetoId);
 		return this.trazerFiltrosAndObservacoesAdicionais(false, true, false, false, false, false, true, projetosCadastrados);
+	}
+
+	@Override
+	public List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId, boolean ativo) {
+		List<ProjetoEscalaPrestador> projetosCadastrados = this.projetoEscalaPrestadorDao.findAllByProjetoId(projetoId);
+		return this.trazerFiltrosAndObservacoesAdicionais(false, true, false, ativo, false, false, true, projetosCadastrados);
 	}
 
 	@Override
