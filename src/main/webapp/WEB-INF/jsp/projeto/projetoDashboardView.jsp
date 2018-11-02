@@ -151,9 +151,10 @@
 						<th class="border-left"><div style="width: 150px">Observações</div></th>
 						<c:forEach items="${diasMes}" var="dia">
 							<th>
-								<div style="width: 120px">${dia.descricao}</div> <span
-								class="fixar-x badge badge-primary"
-								style="vertical-align: top; display: none; position: absolute; font-size: 9pt">${dia.descricao}</span>
+								<div style="width: 120px; opacity: 0.8">${dia.descricao}</div> 
+								<span
+									class="fixar-x badge badge-secondary"
+									style="vertical-align: top; display: none; opacity: 0.8; position: absolute; font-size: 11pt">${dia.descricao}</span>
 							</th>
 						</c:forEach>
 
@@ -165,8 +166,8 @@
 						<tr>
 							<th style="vertical-align: top; font-size: 11pt">
 								<span
-									class="fixar badge badge-primary"
-									style="vertical-align: top; display: none; position: absolute; margin-top: -13px; font-size: 9pt">${escala.descricaoEscala}</span>
+									class="fixar badge badge-secondary"
+									style="vertical-align: top; display: none; position: absolute; margin-top: -13px; opacity: 0.8; font-size: 11pt">${escala.descricaoEscala}</span>
 									Escala: ${escala.descricaoEscala}<c:if test="${!escala.ativo}">
 									<i class="badge badge-danger">desativada</i>
 								</c:if> 
@@ -185,9 +186,9 @@
 								<td class="border-left"
 									style="font-size: 14pt; vertical-align: top">
 									
-									<%-- <c:if test="${dia.data >= escala.projeto.dataInicio && dia.data <= escala.projeto.dataFim}"> --%>
-									
-									<c:if test="${escala.diaSemanaDeId >= dia.diaSemana && escala.diaSemanaAteId <= dia.diaSemana}"> 
+									<%-- <c:if test="${dia.data >= escala.projeto.dataInicio && dia.data <= escala.projeto.dataFim}">
+									${escala.diaSemanaDeId} >= ${dia.diaSemana} - ${dia.diaSemana}  <=  ${escala.diaSemanaAteId} --%>
+									<c:if test="${dia.diaSemana >= escala.diaSemanaDeId && dia.diaSemana <= escala.diaSemanaAteId}">  
 									<div class="badge badge-success">${escala.horaInicio}-
 										${escala.horaFim}</div> <br> <c:if
 										test="${escala.definidaPrioridade}">
@@ -251,9 +252,9 @@
 						<tr>
 							<td style="vertical-align: top">${item.prestador.nomeCompletoMatricula}
 								<span class="fixar"
-								style="vertical-align: top; display: none; position: absolute; margin-top: -15px">
-									<span style="font-size: 10pt" class=" badge badge-info">${item.prestador.nomeCompletoMatricula}</span><br>
-									<span style="font-size: 10pt" class=" badge badge-info">${item.projetoEscala.descricaoEscala}</span>
+								style="vertical-align: top; display: none; position: absolute; margin-top: -15px; opacity: 0.8; font-size: 11pt">
+									<span style="font-size: 11pt" class=" badge badge-secondary">${item.prestador.nomeCompletoMatricula}</span><br>
+									<span style="font-size: 11pt" class=" badge badge-secondary">${item.projetoEscala.descricaoEscala}</span>
 							</span>
 							</td>
 

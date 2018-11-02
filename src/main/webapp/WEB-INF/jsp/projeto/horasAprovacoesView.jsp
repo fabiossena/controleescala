@@ -303,7 +303,7 @@
 									  <c:if test="${isFinanceiro}">				  	
 											  <!-- <button type="button" class="btn btn-sm btn-primary" onclick="gerarCsv()">Gerar CSV</button> -->
 											  <div id="panel-gerar-csv" class="btn-group" role="group" style="display: none; margin-left: -2px;">
-											    <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+											    <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											      <span id="selected-text-gerar-csv">Todos aprovados financeiro e ainda não gerados</span> 
 											      <input type="hidden" id="selected-id-gerar-csv" value="1" />
 											    </button>
