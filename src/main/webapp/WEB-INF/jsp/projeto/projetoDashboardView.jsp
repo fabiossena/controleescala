@@ -195,7 +195,7 @@
 										<c:if
 											test="${dia.diaSemana >= escala.diaSemanaDePrioridadeId && dia.diaSemana <= escala.diaSemanaAtePrioridadeId}">
 											<div class="badge badge-danger">Horário prioritario:
-												${escala.horaInicioPrioridade} - ${escala.horaFimPrioridade}</div>
+												${escala.horaInicioPrioridade} - ${escala.horaFimPrioridade}</div><br>
 										</c:if>
 									</c:if> 
 									</c:if>
@@ -290,9 +290,9 @@
 										
 										<c:forEach items="${item.projetoFolgasSemanais}" var="folga">
 											<c:if test="${folga.diaSemanaId == dia.diaSemana}">
-												<b>Folga programada</b>
-												<br>
-												<div class="badge badge-info" style="font-size: 10pt">${folga.motivo.nome}
+												<!-- <b>Folga programada</b>
+												<br> -->
+												<div class="badge badge-warning" style="font-size: 10pt">${folga.motivo.nome}
 													(${folga.horaInicio} - ${folga.horaFim})</div>
 												<br>
 												<br> 
