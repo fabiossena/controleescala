@@ -36,10 +36,8 @@
 				<div style="font-size: 10pt;">
 					<b>Status: </b>
 					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 0}'>Pendente</c:if>
-					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 1}'>Em aprovação</c:if>
+					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 1}'>Aceita</c:if>
 					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 2}'>Recusada</c:if>
-					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 3}'>Aprovada</c:if>
-					<c:if test='${reposicao.ausenciaSolicitacao.aceito == 4}'>Finalizada</c:if>
 				</div>
 
 				<c:if
@@ -153,10 +151,8 @@
 		<div style="font-size: 10pt;">
 			<b>Status: </b>
 			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 0}'>Pendente</c:if>
-			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 1}'>Em aprovação</c:if>
+			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 1}'>Aceita</c:if>
 			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 2}'>Recusada</c:if>
-			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 3}'>Aprovada</c:if>
-			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 4}'>Finalizada</c:if>
 		</div>
 				
 		<c:if
