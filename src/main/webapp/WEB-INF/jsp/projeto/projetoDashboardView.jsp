@@ -268,7 +268,7 @@
 										test="${dia.data >= item.dataInicio && (item.dataFim == null || dia.data <= item.dataFim)}">
 										
 										<c:if test="${!item.hasDiasHorasTrabalho}">
-											<c:if test="${item.projetoEscala.diaSemanaDeId >= dia.diaSemana && item.projetoEscala.diaSemanaAteId <= dia.diaSemana}"> 
+											<c:if test="${dia.diaSemana >= item.projetoEscala.diaSemanaDeId && dia.diaSemana <= item.projetoEscala.diaSemanaAteId}"> 
 												<div class="badge badge-success" style="font-size: 10pt;">${item.projetoEscala.horaInicio}
 												- ${item.projetoEscala.horaFim}</div>
 											</c:if>
