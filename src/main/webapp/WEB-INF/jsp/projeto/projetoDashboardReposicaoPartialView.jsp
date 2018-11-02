@@ -11,11 +11,11 @@
 	<c:if test="${reposicao.ausenciaSolicitacao.ativo > 0 && reposicao.data == dia.data}"> 
 	
 		<div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<b>Reposição</b>  
+			<!-- <b>Reposição</b>  -->
 			<button style="font-size: 10pt; font-weight: bold; margin: 1px 1px 1px 5px"
 				class="btn btn-sm btn-warning"
 				onclick="toggleCard(this)"
-				style="margin: 1px">detalhes</button>
+				style="margin: 1px">Reposição ${reposicao.horaInicio} - ${reposicao.horaFim}</button>
 		</div>
 		<div
 			id="card-reposicao${reposicao.ausenciaSolicitacao.id}"
@@ -146,7 +146,7 @@
 				<br>
 			</div>
 		</div>
-
+<!-- 
 		<div style="font-size: 10pt;">
 			<b>Status: </b>
 			<c:if test='${reposicao.ausenciaSolicitacao.aceito == 0}'>Pendente</c:if>
@@ -164,7 +164,6 @@
 				| ${reposicao.horaInicio} - ${reposicao.horaFim}
 				<c:if test="${reposicao.horas != ''}">(${reposicao.horas})</c:if>
 			</div>
-			
 			<c:if test='${reposicao.indicadoOutroUsuario}'>
 				<div style="font-size: 10pt">
 					<b>Solicitada para:</b>
@@ -181,6 +180,7 @@
 			
 		</c:if>
 
+			  -->
 		<c:if
 			test="${solicitacaoId == reposicao.ausenciaSolicitacao.id}">
 			<input type="hidden"
