@@ -62,9 +62,12 @@
 
 				<div style="font-size: 10pt;">
 					<b>Status: </b>
-                	<c:if test="${solicitacao.aceito==0}">Pendente</c:if>
-                	<c:if test="${solicitacao.aceito==1}">Aceita</c:if>
-                	<c:if test="${solicitacao.aceito==2}">Recusada</c:if>
+					<c:if test='${solicitacao.aceito == 0}'>Pendente</c:if>
+					<c:if test='${solicitacao.aceito == 1}'>Em aprovação</c:if>
+					<c:if test='${solicitacao.aceito == 2}'>Recusada</c:if>
+					<c:if test='${solicitacao.aceito == 3}'>Aprovada</c:if>
+					<c:if test='${solicitacao.aceito == 4}'>Finalizada</c:if>
+				</div>
 
 				<div style="font-size: 10pt">
 					<b>Solicitante: </b>${solicitacao.usuario.nomeCompletoMatricula}
