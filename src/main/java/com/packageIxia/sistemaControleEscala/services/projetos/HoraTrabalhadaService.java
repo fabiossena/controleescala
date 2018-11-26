@@ -270,6 +270,22 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 		if (horaTrabalhada.isExcluido()) {
 			horaTrabalhada.setUsuarioExclusao(usuarioLogado);
 			horaTrabalhada.setDataHoraExclusao(Utilities.now());
+			if (horaTrabalhada.getTipoAcao() == 1 && horaTrabalhada.getDataHoraFim() != null) {
+
+				for (HoraTrabalhada data : datas) {
+					if (data.getTipoAcao() == 2 && !data.isExcluido()) {
+						if (data.getDataHoraInicio().plusSeconds(1).isAfter(horaTrabalhada.getDataHoraInicio()) && 
+							data.getDataHoraInicio().minusSeconds(1).isBefore(horaTrabalhada.getDataHoraFim()) &&
+							data.getDataHoraInicio().isAfter(horaTrabalhada.getDataHoraInicio()) && 
+							data.getDataHoraInicio().minusSeconds(1).isBefore(horaTrabalhada.getDataHoraFim())) {
+							data.setUsuarioExclusao(usuarioLogado);
+							data.setExcluido(true);
+							data.setDataHoraExclusao(Utilities.now());
+							this.horaTrabalhadaDao.save(data);
+						}						
+					}
+				}
+			}
 		}
 
 		horaTrabalhada.setAprovadoResponsavel(0);

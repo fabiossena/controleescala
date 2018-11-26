@@ -339,15 +339,17 @@
 																	  <c:if test="${item.aprovadoResponsavel == 0}"><span class="text-primary">Aprovação pendente responsável | ${item.projetoEscala.monitor.nomeCompletoMatricula}</span></c:if>
 																	  <c:if test="${item.aprovadoResponsavel == 1}"><span class="text-success">Aprovado responsável<c:if test="${item.responsavelAprovacao != null}"> | ${item.responsavelAprovacao.nomeCompletoMatricula}</c:if></span></c:if>
 																	  <c:if test="${item.aprovadoResponsavel == 2}"><span class="text-danger">Recusado responsável<c:if test="${item.responsavelAprovacao != null}"> | ${item.responsavelAprovacao.nomeCompletoMatricula}</c:if></span></c:if>
-																	  <br> <br> 
+																	  
 												                	<c:if test="${item.incluidoManualmente}">
-												                		Inclusão manual					                	
-												                		<c:if test="${item.usuarioCriacao != null}"> (${item.usuarioCriacao.nomeCompletoMatricula})<br></c:if>
+												                		<br> <br> 
+												                		<i>Inclusão manual					                	
+												                		<c:if test="${item.usuarioCriacao != null}"> (${item.usuarioCriacao.nomeCompletoMatricula})<br></c:if></i>
 												                	</c:if>
-												                	<br>
+												                	
 												                	<c:if test="${item.excluido}">
-												                		Excluido
-												                		<c:if test="${item.usuarioExclusao != null}"> (${item.usuarioExclusao.nomeCompletoMatricula})<br></c:if>
+												                		<br><br><i>Excluido
+												                		<c:if test="${item.usuarioExclusao != null}"> (${item.usuarioExclusao.nomeCompletoMatricula})</c:if>
+												                		</i>
 												                	</c:if> 
 											                	</div>
 										                	</td>
@@ -395,15 +397,15 @@
 									      <div class='form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 '>
 										    <label for="projetoEscala.id" class="control-label">Escala projeto *</label>
 									        <form:select 
-									        			path="projetoEscala.id" 
-									        			id="select-projeto-escala-id" 
-									        			items="${escalas}" itemLabel="descricaoCompletaEscala" itemValue="id"
-									        			class='form-control ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}' 
-									        			disabled="${isDisableInsertCampos}" >
-											            <option value="0"></option>
-												        <c:forEach items="${escalas}" var="esc">
-												            <option value="${esc.id}" <c:if test="${esc.id == horaTrabalhada.projetoEscala.id}">select</c:if> >${esc.descricaoCompletaEscala}</option>
-												        </c:forEach>
+							        			path="projetoEscala.id" 
+							        			id="select-projeto-escala-id" 
+							        			items="${escalas}" itemLabel="descricaoCompletaEscala" itemValue="id"
+							        			class='form-control ${result.hasFieldErrors("projetoEscala.id") ? "is-invalid" : ""}' 
+							        			disabled="${isDisableInsertCampos}" >
+									            <option value="0"></option>
+										        <c:forEach items="${escalas}" var="esc">
+										            <option value="${esc.id}" <c:if test="${esc.id == horaTrabalhada.projetoEscala.id}">select</c:if> >${esc.descricaoCompletaEscala}</option>
+										        </c:forEach>
 									        </form:select>
 									        <div class="invalid-feedback"><form:errors path="projetoEscala.id" /></div>
 										  </div>		 
@@ -468,7 +470,7 @@
 														class="form-control" /> </label>
 											</div>		
 										  
-										  <div class="form-group col-sm-12 text-primary" id="historico">	
+										  <div class="form-group col-sm-12 text-primary" id="historico" style="font-size: 10pt">	
 										  	${historicoCorrecao}
 										  </div>
           							 </form:form>
