@@ -324,8 +324,8 @@
 															<td>${item.projetoEscala.descricaoEscala}</td>
 											                <td>
 												                <div style="width: 150px"> 
-													                <fmt:formatDate value="${dataHrIni}" pattern="dd/MM/yyyy" /> ${item.dataHoraInicio.toString().substring(11, 19)} <br>
-																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 19)}
+													                <fmt:formatDate value="${dataHrIni}" pattern="dd/MM/yyyy" /> ${item.dataHoraInicio.toString().substring(11, 16)} <br>
+																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 16)}
 																</div>
 															</td>
 														  	<td>${item.horasFormatada} (${item.horas}hrs)</td> 

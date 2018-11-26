@@ -16,7 +16,6 @@ public class UsuarioConfiguraDados {
 		entity.setFuncao(f);
 		entity.setEmail("test1@gmail.com");
 		entity.setAtivo(true);
-		entity.setAtivo(true);
 		return entity;
 	}
 

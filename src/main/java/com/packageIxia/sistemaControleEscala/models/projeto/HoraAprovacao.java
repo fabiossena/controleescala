@@ -3,7 +3,6 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,14 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
 @Entity

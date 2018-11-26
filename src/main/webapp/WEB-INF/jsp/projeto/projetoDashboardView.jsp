@@ -171,7 +171,7 @@
 									Escala: ${escala.descricaoEscala}<c:if test="${!escala.ativo}">
 									<i class="badge badge-danger">desativada</i>
 								</c:if> 
-								<br> 
+								<	> 
 								<c:if test="${escala.monitor.sexo=='M'}">Monitor</c:if>
 								<c:if test="${escala.monitor.sexo=='F'}">Monitora</c:if> <c:if
 									test="${escala.monitor.sexo==null || escala.monitor.sexo==''}">Monitor(a)</c:if>:

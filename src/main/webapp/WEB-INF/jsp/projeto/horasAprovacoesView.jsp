@@ -317,31 +317,19 @@
 							        
 							    </div> 
 						    </c:if>
-						  </c:if>
+					  </c:if>
 						        	  			
-			   	  			<c:if test="${isAdministracao}">					          
-				       	  		<div id="panel-dados-robo" class="form-group" style="display: none; height: 35px; margin-left: -2px;">	
-				       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
-									    <input class="btn btn-sm btn-primary float-left" type="file" style="height: 35px;" name="file" id="integracao-robo" />			        	  				
-									</form>
-					  			</div>	 
-			      	  		</c:if>
-			      	  		
-					    </div> 
-					    
-					    
-				     </div>
-
-					<!--<c:if test="${isAdministracao}">				
-					     <div class="form-group"> 
-					         <label for="banco" class="control-label">&nbsp;</label>
-					        <br> 
-		   	  		  		<button id="btn-gerar-prestador" class="btn btn-sm btn-primary" style="margin-left: 10px;  height: 35px">Gerar mês para prestador</button>
-					     </div>
-			        </c:if>--> 
-				      				     
-				  </div> 
-       	  		
+		   	  			<c:if test="${isAdministracao}">					          
+			       	  		<div id="panel-dados-robo" class="form-group" style="display: none; height: 35px; margin-left: -2px;">	
+			       	  			<form method="POST" id="form-integracao-robo" action="<c:url value='integracaoRobo'/>" enctype="multipart/form-data"> 				
+								    <input class="btn btn-sm btn-primary float-left" type="file" style="height: 35px;" name="file" id="integracao-robo" />			        	  				
+								</form>
+				  			</div>	 
+		      	  		</c:if> 
+		      	  		
+	
+				</div> 
+			</div>
 				<div class="table-container table-responsive" style="margin-top: 100px">
 					<table id="tabela" class="display tabela-avancada">
 
@@ -440,8 +428,6 @@
 					        </c:forEach>
 				        </tbody>
 				    </table>
-				</div>
-			</div>
 
                 
          </div> 

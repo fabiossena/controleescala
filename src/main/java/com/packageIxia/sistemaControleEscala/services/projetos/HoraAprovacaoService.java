@@ -75,19 +75,38 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 
 		List<Long> iterator = all.stream().map(x->x.getId()).collect(Collectors.toList());
 		all =  Utilities.toList(this.horaAprovacaoDao.findAllById(iterator));
-		
+
+		List<HoraAprovacao> result = new ArrayList<HoraAprovacao>();
 		for (HoraAprovacao horaAprovacao : all) {
-			if (horaAprovacao.getTotalHoras() == 0) {
+			boolean retorna = false;
+			//if (horaAprovacao.getTotalHoras() == 0) {
 				for (HoraTrabalhada horaTrabalhada : horaAprovacao.getHorasTrabalhadas()) {
 					//horaAprovacao.setTotalHoras(horaAprovacao.getTotalHoras() + horaTrabalhada.getHoras());
 					this.setProjetos(projetos, horaTrabalhada.getHoraAprovacao());
+					
+					retorna = usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+							  usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId() ||
+							  usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.diretoria.getId();
+					
+					if (!retorna) {
+						if (horaTrabalhada.getProjetoEscala().getProjeto().getGerente().getId() == usuarioLogado.getId()) {
+							retorna = true;
+						}
+						else if (horaTrabalhada.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()) {
+							retorna = true;
+						}
+					}
+				}
+				
+				if (retorna) {
+					result.add(horaAprovacao);
 				}
 				
 				//horaAprovacao.setTotalValor(horaAprovacao.getTotalHoras() * 1.6); 
-			}
+			//}
 		}
 		
-		return all;		
+		return result;		
 	}
 	
 	@Override
