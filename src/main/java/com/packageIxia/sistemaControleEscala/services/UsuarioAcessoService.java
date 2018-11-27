@@ -60,7 +60,8 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		}
 		
 		if (login.getFuncao().getId() == 0 
-			|| usuario.getUsuarioFuncaoAdicionais().size() == 0) {
+			|| usuario.getUsuarioFuncaoAdicionais().size() == 0 
+			|| login.getFuncao().getId() == usuario.getFuncao().getId()) {
 			return LoginUsuario(usuario, usuario.getFuncao());	
 		}
 		

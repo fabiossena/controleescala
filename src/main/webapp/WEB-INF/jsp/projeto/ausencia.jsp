@@ -107,9 +107,9 @@
 							<a class="btn btn-sm btn-primary float-right" style="margin: 1px"
 								href="<c:url value='/dashboard' />/${solicitacao.projetoEscala.projetoId}?aceito=0&solicitacao=${solicitacao.id}&ano=${solicitacao.dataInicio.year}&mes=${solicitacao.dataInicio.monthValue}#selecionar">dashboard</a>
 						</c:if>
-														
+	
 						<c:if
-							test="${isAdministracao || solicitacao.usuario.id == usuarioLogado.id}">
+							test="${isAdministracao || solicitacao.usuario.id == usuarioLogado.id || solicitacao.id == 0}">
 
 								<c:if test="${solicitacao.id != 0}">
 										<input onclick="apagarSolicitacao(${solicitacao.id})"
@@ -118,7 +118,7 @@
 											style="margin: 1px" />
 									<!-- <c:if test="${!isDisableCampos}"> --> 
 									<!-- </c:if> -->
-									<c:if test="${(solicitacao.ativo == 0 || solicitacao.ativo == 2)}">
+									<c:if test="${solicitacao.ativo == 0 || solicitacao.ativo == 2}">
 										<c:if test='${isDisableCampos}'>
 											<a id="btn-editar" class="btn btn-sm btn-primary float-right"
 												href="<c:url value='/ausencia' />/${solicitacao.id}/editar"
@@ -126,6 +126,7 @@
 										</c:if>
 									</c:if>  
 								</c:if>
+								
 								<c:if test="${!isDisableCampos && (solicitacao.ativo == 0 || solicitacao.ativo == 2)}">
 
 									<c:if test="${solicitacao.ativo == 0 && solicitacao.id != 0}">
