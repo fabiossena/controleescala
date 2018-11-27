@@ -57,7 +57,8 @@
 		});
 
 		function motivoAusenciaEscondePaineis() {
-			if ($("#motivo-ausencia").val() == 2) {
+			var mot = $("#motivo-ausencia").val();
+			if ($("#motivo-tipo" + mot).val() != 1) {
 				$("#indicar-horario-para-repor").prop("checked", false);
 				$("#observacao-motivo-ausencia").html("Ausencia não descontada do banco de horas");
 				$("#panel-horario-reposicao").hide();	
