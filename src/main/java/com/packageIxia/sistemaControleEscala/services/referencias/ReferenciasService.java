@@ -55,9 +55,8 @@ public class ReferenciasService implements IReferencias {
     }
     
 	@Override
-	public List<Banco> getBancos() {
-    	
-    	List<Banco> list = null;
+	public List<Banco> getBancos() {    	
+    	/*List<Banco> list = null;
     	
     	Object object = session.getAttribute("bancos");
     	if (object != null) {
@@ -69,8 +68,8 @@ public class ReferenciasService implements IReferencias {
     		return new ArrayList<Banco>();
     	}
     	
-    	session.setAttribute("bancos", list);
-    	return list;
+    	session.setAttribute("bancos", list);*/
+    	return Utilities.toList(this.bancoDao.findAll());
     }
 	
     @Override
