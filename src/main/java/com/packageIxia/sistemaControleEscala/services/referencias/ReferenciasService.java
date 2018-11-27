@@ -186,23 +186,8 @@ public class ReferenciasService implements IReferencias {
     }
     
     @Override
-	public List<MotivoAusencia> getMotivosAusencia() {    	
-    	List<MotivoAusencia> list = null;
-    	
-    	Object object = session.getAttribute("motivoAusencia");
-    	if (object != null) {
-    		list = Utilities.converterObjetoParaArrayTipo(session.getAttribute("motivoAusencia"), new MotivoAusencia());
-    	}
-    	else {
-    		list = Utilities.toList(this.motivoAusenciaDao.findAll());
-        	if (list == null || list.isEmpty()) {	  
-        		return new ArrayList<MotivoAusencia>();
-        	}  	
-        	
-    		session.setAttribute("motivoAusencia", list); 
-    	}
-    	
-    	return list;
+	public List<MotivoAusencia> getMotivosAusencia() {       	
+    	return Utilities.toList(this.motivoAusenciaDao.findAll());
     }
 
 	@Override
