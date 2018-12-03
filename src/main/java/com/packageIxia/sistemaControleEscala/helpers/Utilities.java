@@ -174,7 +174,7 @@ public class Utilities {
 		Calendar c2 = Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"), new Locale("pt", "BR"));
 		System.out.println("DATA AGORA " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(c2.getTime()));
 		
-		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1);
+		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId());
 	}
 
 	public static LocalDate now2() {
