@@ -173,9 +173,9 @@ public class Utilities {
 
 		Calendar c2 = Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"), new Locale("pt", "BR"));
 		System.out.println("DATA AGORA2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(c2.getTime()));
-		System.out.println("DATA REAL " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId())));
-		System.out.println("DATA REAL2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1)));
-		System.out.println("DATA REAL2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(2)));		
+		System.out.println("DATA real " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId())));
+		System.out.println("DATA real2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1)));
+		
 		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1);
 	}
 
