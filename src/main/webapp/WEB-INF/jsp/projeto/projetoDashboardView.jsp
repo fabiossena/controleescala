@@ -170,8 +170,7 @@
 									style="vertical-align: top; display: none; position: absolute; margin-top: -13px; opacity: 0.8; font-size: 11pt;z-index: 99999;">${escala.descricaoEscala}</span>
 									Escala: ${escala.descricaoEscala}<c:if test="${!escala.ativo}">
 									<i class="badge badge-danger">desativada</i>
-								</c:if> 
-								<	> 
+								</c:if>
 								<c:if test="${escala.monitor.sexo=='M'}">Monitor</c:if>
 								<c:if test="${escala.monitor.sexo=='F'}">Monitora</c:if> <c:if
 									test="${escala.monitor.sexo==null || escala.monitor.sexo==''}">Monitor(a)</c:if>:
@@ -218,12 +217,12 @@
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
 													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
-														Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+														Andamento - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
 													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
-														Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+														Pausada (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 											</c:if>

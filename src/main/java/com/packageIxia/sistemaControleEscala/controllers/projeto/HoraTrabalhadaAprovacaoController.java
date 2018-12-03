@@ -228,7 +228,7 @@ public class HoraTrabalhadaAprovacaoController {
 		}
 		
 		this.horaAprovacaoView.addObject("aprovacaoHoras", this.aprovacaoHoras);
-		
+    	
 		return this.horaAprovacaoView;
 	}
 	
@@ -256,13 +256,17 @@ public class HoraTrabalhadaAprovacaoController {
     		erroModelView.addObject("errorMessage", "Não permitido acesso a tela de horas trabalhadas");
             return erroModelView;
     	}
-
+    	
 		horaTrabalhadaView.addObject("isDisableInsertCampos", true);   
     	this.aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(this.aprovacaoHora, usuarioLogado));
-    	if ((Utilities.now().getYear() + Utilities.now().getMonthValue()) <= (this.aprovacaoHora.getData().getYear() + this.aprovacaoHora.getData().getMonthValue()) ||
+    	if ((this.aprovacaoHora.getData().getYear() == Utilities.now().getYear() && 
+    			this.aprovacaoHora.getData().getMonthValue() == Utilities.now().getMonthValue()) ||
     			!this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getDadosAcesso()) {
     		horaTrabalhadaView.addObject("isDisableCampos", true);    		
-    	}  
+    	}
+    	else {
+    		horaTrabalhadaView.addObject("isDisableCampos", false);
+    	}
     	
     	this.aprovacaoHora.setTotalHoras(this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getTotalHoras());
     	this.aprovacaoHora.setTotalValor(this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getTotalValor());

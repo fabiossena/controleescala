@@ -193,6 +193,15 @@
 										  <c:if test="${aprovacaoHora.aceitePrestador == 2}">text-danger</c:if>
 									  </c:set>
 									  
+									  <i style="font-size: 10pt" class="form-group col-sm-12 text-danger">
+						        	  	  <c:if test="${isDisableCampos}">As etapas de aprovação serão iniciadas apenas após o ultimo dia do mês, enquanto isso é possivel apenas editar as horas trabalhadas.</c:if>
+										  <c:if test="${!isDisableCampos}">
+										  	<c:if test="${aprovacaoHora.aceitePrestador != 1}">Processo de aprovação iniciado</c:if>
+										  	<c:if test="${aprovacaoHora.aceitePrestador == 1}">Processo finalizado</c:if>
+										  </c:if>
+									  </i> 
+									  <br>
+									  
 									  <div class="form-group col-sm-12" style="font-size: 10pt" >
 										  <b>Etapa 1: </b> 
 										  <span class="${styleStatusPrestador}">
@@ -291,7 +300,7 @@
 					        	  			
 				        	  		</c:if>	
 			        	  				
-						            </div>
+					            </div>
 							          
 								<h5 style="margin-top: 30px">Horas trabalhadas</h5>
 								<div class="container border-top panel-custom">																   

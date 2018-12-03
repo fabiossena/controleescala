@@ -360,7 +360,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 
 			List<AusenciaReposicao> reposicaoAprovacoes = item.getAusenciaReposicoes().stream().filter(
 					x->x.getUsuarioAprovacao().getId() == usuarioLogado.getId() ||
-					x.getGerenciaAprovacao().getId() == usuarioLogado.getId()).collect(Collectors.toList());
+					(x.getGerenciaAprovacao() != null && x.getGerenciaAprovacao().getId() == usuarioLogado.getId())).collect(Collectors.toList());
 			for (AusenciaReposicao reposicao : reposicaoAprovacoes) {
 				if (isAdmin || 
 					reposicao.getAceitoUsuarioAprovacao() != 1) {

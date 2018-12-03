@@ -281,9 +281,9 @@ function selectPrestador(item) {
 	 $("#form-prestador #observacaoPrestador").val($("#observacaoPrestador"+item).html());
 	 $("#form-prestador input[name='ativo']").prop("checked", JSON.parse($("#prestadorAtivo"+item).val()));
 	 
-	 $("#funcaoId option").each(function () { 
+	 $("#form-prestador #funcaoId option").each(function () { 
          $(this).removeAttr("selected");
- 		if ($(this).html() == $("#funcao"+item).html()) {
+ 		if ($(this).html().split("(")[0].trim() == $("#form-prestador #funcao"+item).html()) {
             $(this).attr("selected", "selected");
         }
 	 });

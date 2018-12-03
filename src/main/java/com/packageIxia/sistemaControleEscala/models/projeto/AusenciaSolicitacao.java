@@ -95,6 +95,7 @@ public class AusenciaSolicitacao {
 	
 	private boolean excluido;
 
+	// tipo 0 
 	private int tipoAusencia;
 
 	transient private boolean colocarHorarioDisposicao;

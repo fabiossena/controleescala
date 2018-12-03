@@ -385,7 +385,8 @@
 				                							
 								  	<td style="font-size: 10pt">
 		                				<div style="width: 150px">
-										   
+										  
+									  
 										  <c:if test="${item.aceitePrestador == 0}">
 										      <span class="text-primary">(Pendente) Prestador</span>
 										   </c:if>
@@ -398,6 +399,19 @@
 										   </c:if>
 										   <c:if test="${item.arquivoNota!=null && item.arquivoNota!=''}"><br><a class="text-dark" href="<c:url value='nota/${item.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>
 										   </div>
+										   
+											   
+										  <c:set var="status">${item.data.year == ano && item.data.monthValue == mes}</c:set>
+										  <i style="font-size: 10pt" class="text-danger">
+							        	  	  <c:if test="${status}">
+							        	  	  	As etapas de aprovação serão iniciadas apenas após o ultimo dia do mês.
+							        	  	  </c:if>
+											  <c:if test="${!status}">
+											  	<c:if test="${item.aceitePrestador != 1}">Processo de aprovação iniciado</c:if>
+											  	<c:if test="${item.aceitePrestador == 1}">Processo finalizado</c:if>
+											  </c:if>
+										  </i> 
+										  
 									  </td>
 				                	  <td style="font-size: 10pt">
 		                				  <div style="width: 350px">
