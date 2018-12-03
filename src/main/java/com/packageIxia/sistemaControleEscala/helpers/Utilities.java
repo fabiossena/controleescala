@@ -175,8 +175,8 @@ public class Utilities {
 		System.out.println("DATA AGORA2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(c2.getTime()));
 		System.out.println("DATA REAL " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId())));
 		System.out.println("DATA REAL2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1)));
-		System.out.println("DATA REAL3 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(2)));		
-		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId());
+		System.out.println("DATA REAL2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(2)));		
+		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()).minusHours(1);
 	}
 
 	public static LocalDate now2() {
