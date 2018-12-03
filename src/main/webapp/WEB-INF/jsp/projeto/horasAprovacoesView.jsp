@@ -400,8 +400,7 @@
 										   <c:if test="${item.arquivoNota!=null && item.arquivoNota!=''}"><br><a class="text-dark" href="<c:url value='nota/${item.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>
 										   </div>
 										   
-											   
-										  <c:set var="status">${item.data.year == ano && item.data.monthValue == mes}</c:set>
+										  <c:set var="status">${item.data.year == dataAtual.year && item.data.monthValue == dataAtual.monthValue}</c:set>
 										  <i style="font-size: 10pt" class="text-danger">
 							        	  	  <c:if test="${status}">
 							        	  	  	As etapas de aprovação serão iniciadas apenas após o ultimo dia do mês.

@@ -228,6 +228,8 @@ public class HoraTrabalhadaAprovacaoController {
 		}
 		
 		this.horaAprovacaoView.addObject("aprovacaoHoras", this.aprovacaoHoras);
+
+		this.horaAprovacaoView.addObject("dataAtual", Utilities.now());
     	
 		return this.horaAprovacaoView;
 	}
