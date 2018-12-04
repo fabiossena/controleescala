@@ -38,7 +38,7 @@
 			if (!aceita && origem != 2){
 				if (motivo == "" || motivo == null){
 					alert("Preencha o campo observação com o motivo da recusa");
-					return;
+					return; 
 				}
 			}
 			
@@ -48,23 +48,43 @@
 	    }
 		
 		function iniciar(tipo, iniciar){
-						
+			
+			var message = (tipo == 1 ? (iniciar ? "iniciar" : "parar") : ""); 
+			if (message != "" && !confirm("Deseja realmente " + message + " este apontamento de horas?")) {
+				return;
+			}
+			
 			var escala= $("#selected-projeto-escala-principal").val();
 			var motivo = $("#motivo").val();
 			if (tipo == 2 && !$("#panel-motivo").is(":visible") && "${pausar}" ==  "pausar") {
-				$("#panel-motivo").show(100); 
-				setTimeout(function () { if ($("#panel-motivo").val() == "") { $("#panel-motivo").hide(500); } }, 10000); 
-				return;
+				$("#panel-motivo").show(100);
+				clearTimeout(timeout); 
+				timeout = setTimeout(function () { if ($("#panel-motivo").val() == "") { $("#panel-motivo").hide(500); } }, 10000); 
+				return; 
 			}
 			else if (tipo == 2 && !$("#motivo").prop("disabled") && motivo == "") {
 				alert("Preencha o campo motivo");	
 				return;
 			} else if (tipo == 2 && !$("#motivo").prop("disabled")) {
+				if (!confirm("Deseja realmente pausar este apontamento de horas?")) {
+					return;
+				}
+			
 				iniciar = true;
 			}
 			else if (tipo == 2 && $("#motivo").prop("disabled")) {
+				if (!confirm("Deseja realmente retomar este apontamento de horas?")) {
+					return;
+				}
+				
 				iniciar = false;			
 			}		
+
+			$("#btn-iniciar").prop("disabled", true);
+			$("#btn-pausar").prop("disabled", true);
+			$("#panel-motivo").prop("disabled", true);
+			$("#panel-motivo").hide();
+			$("#btn-parar").prop("disabled", true);
 			
 	    	window.location.href = "<c:url value='/horas/iniciarEscala/' />" + escala + "?tipo=" + tipo +"&motivo=" + motivo +"&iniciar=" + iniciar;
 		}
@@ -78,22 +98,23 @@
 			
 			if ("${pausar}" ==  "pausar") {
 				$("#btn-pausar").mouseover(function() {
+					clearTimeout(timeout);
 					timeout = setTimeout(function () { $("#panel-motivo").show(500); }, 200);
 				});
 				var timeout;
 				$("#btn-pausar").mouseleave(function() {
 					clearTimeout(timeout);
-					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 500);
+					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 3500);
 				});
 				
 				$("#panel-motivo, #motivo").mouseover(function() {
 					clearTimeout(timeout);
-					$("#panel-motivo").show();
-				});
+					$("#panel-motivo").show(500);
+				}); 
 	
 				$("#panel-motivo").mouseleave(function() {
 					clearTimeout(timeout);
-					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 500);
+					timeout = setTimeout(function () { $("#panel-motivo").hide(500); }, 3500);
 				});
 			}
 			

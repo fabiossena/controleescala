@@ -129,6 +129,48 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 	}
 	
 	@Override
+	public String insertLastByPrestadorIdOrInsert(long id, int ano, int mes) throws Exception {
+
+		if (mes <= 0 || mes > 12) {
+    		return "Digite um mês válido";
+    	}
+
+		if (ano < 2018 || ano > Utilities.now().getYear()) {
+    		return "Digite um ano válido";
+    	}
+
+		if (Utilities.stringToDateTime(ano + "-" + (mes > 9 ? "" : "0") + mes + "-01 00:00:00").isAfter(  
+			Utilities.stringToDateTime(Utilities.now().getYear() + "-"  + (Utilities.now().getMonthValue() > 9 ? "" : "0") + Utilities.now().getMonthValue() + "-01 00:00:00"))) {
+    		return "Não é permitido gerar horas para os meses acima do atual";
+    	}
+
+
+		if (id <= 0) {
+    		return "Digite um prestador válido";
+    	}
+		
+		Usuario usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
+
+    	if (id > 0 &&
+			!(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() 
+			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() 
+			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() 
+			|| usuarioLogado.getId() != id)) {
+            return "Não permitido gerar horas com o usuário logado atual";
+    	}
+
+    	HoraAprovacao horaAprovacao = this.findByDateAndPrestadorId(id, ano, mes);
+    	if (horaAprovacao == null) {
+    		this.findLastByPrestadorIdOrInsert(id, ano, mes);
+		}
+    	else {
+    		return "Usuário já possui horas geradas para o mês selecionado";
+    	}
+		
+    	return "";
+	}
+	
+	@Override
 	public HoraAprovacao findLastByPrestadorIdOrInsert(long prestadorId, int ano, int mes) throws Exception {
 		
 		if (mes == 0 || ano == 0 || prestadorId == 0) {

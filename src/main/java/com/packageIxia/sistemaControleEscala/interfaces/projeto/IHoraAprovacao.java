@@ -29,4 +29,6 @@ public interface IHoraAprovacao {
 
 	void updateCsvGerado(List<Long> itens);
 
+	String insertLastByPrestadorIdOrInsert(long id, int ano, int mes) throws Exception;
+
 }

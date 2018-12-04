@@ -114,8 +114,15 @@ public class IndexController {
 			@RequestParam(value = "iniciar", defaultValue = "true") boolean iniciar,
 			@RequestParam(value = "motivo", defaultValue = "") String motivo) throws Exception {
 		
-		this.horaTrabalhadaService.save(id, tipo, iniciar, motivo);
-
-		return new ModelAndView("redirect:/");
+		ModelAndView vw = new ModelAndView("redirect:/");
+		
+		String message = this.horaTrabalhadaService.save(id, tipo, iniciar, motivo);  
+		vw.addObject("errorMessage", null);
+		
+		if (message != "") {
+			vw.addObject("errorMessage", message);
+		}
+		
+		return vw;
 	}
 }

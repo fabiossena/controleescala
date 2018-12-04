@@ -434,53 +434,17 @@ public class HoraTrabalhadaAprovacaoController {
     	this.horaAprovacaoView.addObject("ano", this.ano);
     	this.horaAprovacaoView.addObject("mes", this.mes);
 		
-		if (mes <= 0 || mes > 12) {
-			this.horaAprovacaoView.addObject("errorMessage", "Digite um mês válido");
-    		return this.horaAprovacaoView;
-    	}
-
-		if (ano < 2018 || ano > Utilities.now().getYear()) {
-			this.horaAprovacaoView.addObject("errorMessage", "Digite um ano válido");
-    		return this.horaAprovacaoView;
-    	}
-
-		if (Utilities.stringToDateTime(ano + "-" + (mes > 9 ? "" : "0") + mes + "-01 00:00:00").isAfter(  
-			Utilities.stringToDateTime(Utilities.now().getYear() + "-"  + (Utilities.now().getMonthValue() > 9 ? "" : "0") + Utilities.now().getMonthValue() + "-01 00:00:00"))) {
-			this.horaAprovacaoView.addObject("errorMessage", "Não é permitido gerar horas para os meses acima do atual");
-    		return this.horaAprovacaoView;
-    	}
-
-
-		if (id <= 0) {
-			this.horaAprovacaoView.addObject("errorMessage", "Digite um prestador válido");
-    		return this.horaAprovacaoView;
-    	}
-		
-		Usuario usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
-
-    	if (id > 0 &&
-			!(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() 
-			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.gerencia.getId() 
-			|| usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() 
-			|| usuarioLogado.getId() != id)) {
+    	String message = horaAprovacaoService.insertLastByPrestadorIdOrInsert(id, ano, mes);
+    	if (message != "") {
     		//ModelAndView erroModelView = new ModelAndView("redirect/:error");
-    		this.horaAprovacaoView.addObject("errorMessage", "Não permitido gerar horas com o usuário logado atual");
+    		this.horaAprovacaoView.addObject("errorMessage", message);
             return this.horaAprovacaoView;
     	}
 
-
-    	ModelAndView mv = new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
-    	
 		this.ano = ano == 0 ? Utilities.now().getYear() : ano;
 		this.mes = mes == 0 ? Utilities.now().getMonthValue() : mes;
 		
-    	HoraAprovacao horaAprovacao = this.horaAprovacaoService.findByDateAndPrestadorId(id, ano, mes);
-    	if (horaAprovacao == null) {
-    		horaAprovacaoService.findLastByPrestadorIdOrInsert(id, ano, mes);
-		}
-    	else {
-    		mv.addObject("errorMessage", "Usuário já possui horas geradas para o mês selecionado");
-    	}
+    	ModelAndView mv = new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
     	
 		return mv;
 	}
