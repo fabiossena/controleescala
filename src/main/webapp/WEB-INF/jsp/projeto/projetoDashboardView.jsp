@@ -222,7 +222,7 @@
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
 													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
-														Pausada (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+														Pausa (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 											</c:if>
@@ -322,12 +322,12 @@
 											</c:if>
 											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
 												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
-													Andamento - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+													Andamento - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 												</div>
 											</c:if>
 											<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
 												<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
-													Pausada (${hora.motivoPausa}) - início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
+													Pausa (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 												</div>
 											</c:if>
 										</c:if>

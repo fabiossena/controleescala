@@ -167,17 +167,10 @@ public class Utilities {
 	}
 
 	public static LocalDateTime now() {
-		Calendar c= Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"));
-		Date dataNow= c.getTime();
-		System.out.println("DATA AGORA " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataNow));
-
-		Calendar c2 = Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo"), new Locale("pt", "BR"));
-		System.out.println("DATA AGORA2 " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(c2.getTime()));
-		
 		System.out.println("DATA CERTA1");
 		System.out.println(LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()));
 		
-		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId());
+		return LocalDateTime.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId()); // .minusHours(1)
 	}
 
 	public static LocalDate now2() {
