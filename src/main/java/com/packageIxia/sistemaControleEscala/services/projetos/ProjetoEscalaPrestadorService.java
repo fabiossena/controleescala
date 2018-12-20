@@ -95,7 +95,10 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		}
 		
 		List<ProjetoEscalaPrestador> projetoPrestadores = projetoEscalaPrestadorDao.findAllByProjetoEscalaIdAndExcluido(projetoEscalaId, false);
-		List<Usuario> usuarios = projetoPrestadores.stream().filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId).map(x->x.getPrestador()).distinct().collect(Collectors.toList());
+		List<Usuario> usuarios = projetoPrestadores.stream()
+				.filter(x->usuarioId == 0 || x.getPrestador().getId() != usuarioId)
+				.map(x->x.getPrestador()).distinct()
+				.collect(Collectors.toList());
 		
 		return usuarios;
 	}
@@ -201,7 +204,9 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>());
 		}
 		else {
-			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(prestador.getDiasHorasTrabalho().stream().filter(x->!x.getHoraInicio().equals("") && !x.getHoraFim().equals("")).collect(Collectors.toList()));
+			prestador.setProjetoEscalaPrestadorDiasHorasTrabalho(prestador.getDiasHorasTrabalho()
+					.stream().filter(x->!x.getHoraInicio().equals("") && !x.getHoraFim().equals(""))
+					.collect(Collectors.toList()));
 		}
 		return "";
 	}

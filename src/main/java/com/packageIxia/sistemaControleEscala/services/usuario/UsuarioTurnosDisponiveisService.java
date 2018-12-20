@@ -72,6 +72,9 @@ public class UsuarioTurnosDisponiveisService implements IUsuarioTurnosDisponivei
 		this.folgaSemanalPlanejadaUsuarioDao.saveAll(folgasSemanaisPlanejadas);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuarioTurnosDisponiveis#preSaveFolgaSemanalPlanejadaUsuario(java.util.List, com.packageIxia.sistemaControleEscala.models.usuario.FolgaSemanalPlanejadaUsuario)
+	 */
 	@Override
 	public int preSaveFolgaSemanalPlanejadaUsuario(List<FolgaSemanalPlanejadaUsuario> folgasSemanaisPlanejadas,
 			FolgaSemanalPlanejadaUsuario folgaSemanalPlanejada) {
@@ -121,7 +124,8 @@ public class UsuarioTurnosDisponiveisService implements IUsuarioTurnosDisponivei
 		List<String> resultado = new ArrayList<String>();
 		
 		Usuario usuario = this.usuarioService.findByUsuarioId(id);
-		String escalaSugerida = referenciasService.getPeriodos().stream().filter(x->x.getId() == usuario.getPeriodoDisponivelId()).findFirst().orElse(new DadoGenerico(0, "")).getNome();
+		String escalaSugerida = referenciasService.getPeriodos()
+				.stream().filter(x->x.getId() == usuario.getPeriodoDisponivelId()).findFirst().orElse(new DadoGenerico(0, "")).getNome();
 		resultado.add(escalaSugerida == null || escalaSugerida == "" ? "" :  "Escala sugerida pelo prestador: " + escalaSugerida);
 		
 		String folgaSemanalSugerida = "";

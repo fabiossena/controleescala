@@ -1,12 +1,15 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpSession;
+
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +80,10 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 				return ausencias;
 			}
 			
-			List<AusenciaSolicitacao> solicitacoes = Utilities.toList(this.ausenciaSolicitacaoDao.findAll()).stream().collect(Collectors.toList()).stream().filter(x->x.getAtivo() >= 0 && x.getAtivo() < 4).collect(Collectors.toList());
+			List<AusenciaSolicitacao> solicitacoes = Utilities.toList(this.ausenciaSolicitacaoDao.findAll())
+					.stream().collect(Collectors.toList()).stream()
+					.filter(x->x.getAtivo() >= 0 && x.getAtivo() < 4)
+					.collect(Collectors.toList());
 			if (solicitacoes.size() > 0) {
 				ausencias.addAll(solicitacoes);
 			}
@@ -111,7 +117,12 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 				}
 			}
 			
-			List<AusenciaSolicitacao> solicitacoesAprovacaoResposicao = this.ausenciaReposicaoDao.findAllByUsuarioAprovacaoId(usuarioLogado.getId()).stream().map(x->x.getAusenciaSolicitacao()).collect(Collectors.toList()).stream().filter(x->x.getAtivo() > 0 && x.getAtivo() < 4).collect(Collectors.toList());
+			List<AusenciaSolicitacao> solicitacoesAprovacaoResposicao = 
+					this.ausenciaReposicaoDao.findAllByUsuarioAprovacaoId(usuarioLogado.getId())
+					.stream().map(x->x.getAusenciaSolicitacao())
+					.collect(Collectors.toList()).stream()
+					.filter(x->x.getAtivo() > 0 && x.getAtivo() < 4)
+					.collect(Collectors.toList());
 			for (AusenciaSolicitacao paraInserir : solicitacoesAprovacaoResposicao) {
 				if (!ausencias.stream().anyMatch(x->x.getId() == paraInserir.getId())) {
 					ausencias.add(paraInserir);					
@@ -119,7 +130,12 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			}
 			
 	
-			List<AusenciaSolicitacao> solicitacoesAprovacaoReposicaoGerente = this.ausenciaReposicaoDao.findAllByGerenciaAprovacaoId(usuarioLogado.getId()).stream().map(x->x.getAusenciaSolicitacao()).collect(Collectors.toList()).stream().filter(x->x.getAtivo() > 0 && x.getAtivo() < 4).collect(Collectors.toList());
+			List<AusenciaSolicitacao> solicitacoesAprovacaoReposicaoGerente = 
+					this.ausenciaReposicaoDao.findAllByGerenciaAprovacaoId(usuarioLogado.getId())
+					.stream().map(x->x.getAusenciaSolicitacao())
+					.collect(Collectors.toList()).stream()
+					.filter(x->x.getAtivo() > 0 && x.getAtivo() < 4)
+					.collect(Collectors.toList());
 			for (AusenciaSolicitacao paraInserir : solicitacoesAprovacaoReposicaoGerente) {
 				if (!ausencias.stream().anyMatch(x->x.getId() == paraInserir.getId())) {
 					ausencias.add(paraInserir);					
@@ -139,10 +155,17 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			}
 		}
 		
-		return ausencias.size() == 0 ? new ArrayList<AusenciaSolicitacao>() : 
+		if (ausencias.size() == 0) {
+			return new ArrayList<AusenciaSolicitacao>();
+		}
+		
+		List<AusenciaSolicitacao> result =  
 			ausencias.stream().filter(x-> !isSomenteComAcesso || x.getDadosAcesso().isVisivelAprovacao())
-				.sorted(Comparator.comparing(AusenciaSolicitacao::getAceito)
-				.thenComparing(Comparator.comparing(AusenciaSolicitacao::getDataCriacao).reversed())).collect(Collectors.toList());
+				//.sorted(Comparator.comparing(AusenciaSolicitacao::getAceito)
+				//.sorted(Comparator.comparingLong(AusenciaSolicitacao::getId).reversed())
+				.collect(Collectors.toList());
+		result.sort(Comparator.comparingLong(AusenciaSolicitacao::getId).reversed());
+		return result;
 	}
 	
 	@Override
@@ -360,24 +383,22 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 				}
 			}
 
-			if (item.getAusenciaReposicoes() != null && !item.getAusenciaReposicoes().isEmpty()) {
-				Stream<AusenciaReposicao> reposicaoAprovacoes = 
-					item.getAusenciaReposicoes().stream().filter(
-						x->x.getUsuarioAprovacao().getId() == usuarioLogado.getId() ||
-						(x.getGerenciaAprovacao() != null && x.getGerenciaAprovacao().getId() == usuarioLogado.getId()));
+			Stream<AusenciaReposicao> reposicaoAprovacoes = 
+			item.getAusenciaReposicoes().stream().filter(
+				x->
+				(x.getUsuarioAprovacao() != null && x.getUsuarioAprovacao().getId() == usuarioLogado.getId()) ||
+				(x.getGerenciaAprovacao() != null && x.getGerenciaAprovacao().getId() == usuarioLogado.getId()));
 
-				if (reposicaoAprovacoes != null && reposicaoAprovacoes.count() > 0) {
-					for (AusenciaReposicao reposicao : reposicaoAprovacoes.collect(Collectors.toList())) {
-						if (isAdmin || 
-							reposicao.getAceitoUsuarioAprovacao() != 1) {
-		
-							reposicao.setAceitoUsuarioAprovacao(aceita ? 1 : 2);
-							reposicao.setMotivoRecusaUsuarioAprovacao((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
-							reposicao.setDataAceiteUsuarioAprovacao(Utilities.now());
-						}
-					}
+			for (AusenciaReposicao reposicao : reposicaoAprovacoes.collect(Collectors.toList())) {
+				if (isAdmin || 
+					reposicao.getAceitoUsuarioAprovacao() != 1) {
+
+					reposicao.setAceitoUsuarioAprovacao(aceita ? 1 : 2);
+					reposicao.setMotivoRecusaUsuarioAprovacao((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
+					reposicao.setDataAceiteUsuarioAprovacao(Utilities.now());
 				}
 			}
+			
 		}
 		
 		if (!aceita) {
