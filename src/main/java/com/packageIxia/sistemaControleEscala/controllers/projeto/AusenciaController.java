@@ -317,16 +317,17 @@ public class AusenciaController {
 			@RequestParam(value = "prestadorEscalaId", defaultValue = "0") long prestadorEscalaId,
 			HttpServletRequest request) {
 		
-		System.out.println("Get escalaPorUsuarioId");
 		if (usuarioId == 0) {
 			return new ArrayList<ProjetoEscala>();
 		}
+
+		return this.projetoEscalaService.findAllByPrestadorId(usuarioId);
 		
-		if (prestadorEscalaId == 0) {
-			return this.projetoEscalaService.findAllByPrestadorId(usuarioId);
-		}
-		
-		return this.projetoEscalaService.findAllByPrestadorIdExceptPrestadorEscalaId(usuarioId, prestadorEscalaId);
+//		if (prestadorEscalaId == 0) {
+//			return this.projetoEscalaService.findAllByPrestadorId(usuarioId);
+//		}
+//		
+//		return this.projetoEscalaService.findAllByPrestadorIdExceptPrestadorEscalaId(usuarioId, prestadorEscalaId);
 	}
 
 
