@@ -147,8 +147,8 @@ public class ProjetoEscalaService implements IProjetoEscala {
 	}
 	
 	@Override
-	public List<ProjetoEscala> findAllByPrestadorId(long id, boolean somenteTipoApontamentoSistema) {
-		List<ProjetoEscala> escalas =  this.projetoEscalaPrestadorService.findAllByPrestadorId(id)
+	public List<ProjetoEscala> findAllByPrestadorId(long usuarioId, boolean somenteTipoApontamentoSistema) {
+		List<ProjetoEscala> escalas =  this.projetoEscalaPrestadorService.findAllByPrestadorId(usuarioId)
 				.stream().filter(x-> !somenteTipoApontamentoSistema || x.getProjeto().getTipoApontamentoHorasId() == 1)
 				.map(x->x.getProjetoEscala()).distinct().collect(Collectors.toList());		
 		return escalas;
@@ -158,7 +158,8 @@ public class ProjetoEscalaService implements IProjetoEscala {
 	public List<ProjetoEscala> findAllByPrestadorIdExceptPrestadorEscalaId(long usuarioId, long prestadorEscalaId) {
 		List<ProjetoEscalaPrestador> projetosEscalas = this.projetoEscalaPrestadorService.findAllByPrestadorId(usuarioId);
 		return projetosEscalas
-				.stream().filter(x->(prestadorEscalaId == 0 || x.getProjetoEscala().getId() != prestadorEscalaId) && x.getProjeto().getTipoApontamentoHorasId() ==  1)
+				.stream().filter(x->(prestadorEscalaId == 0 || x.getProjetoEscala().getId() != prestadorEscalaId) && 
+						x.getProjeto().getTipoApontamentoHorasId() ==  1)
 				.map(x->x.getProjetoEscala()).distinct().collect(Collectors.toList());
 	}
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -359,17 +361,20 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			}
 
 			if (item.getAusenciaReposicoes() != null && !item.getAusenciaReposicoes().isEmpty()) {
-				List<AusenciaReposicao> reposicaoAprovacoes = 
+				Stream<AusenciaReposicao> reposicaoAprovacoes = 
 					item.getAusenciaReposicoes().stream().filter(
 						x->x.getUsuarioAprovacao().getId() == usuarioLogado.getId() ||
-						(x.getGerenciaAprovacao() != null && x.getGerenciaAprovacao().getId() == usuarioLogado.getId())).collect(Collectors.toList());
-				for (AusenciaReposicao reposicao : reposicaoAprovacoes) {
-					if (isAdmin || 
-						reposicao.getAceitoUsuarioAprovacao() != 1) {
-	
-						reposicao.setAceitoUsuarioAprovacao(aceita ? 1 : 2);
-						reposicao.setMotivoRecusaUsuarioAprovacao((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
-						reposicao.setDataAceiteUsuarioAprovacao(Utilities.now());
+						(x.getGerenciaAprovacao() != null && x.getGerenciaAprovacao().getId() == usuarioLogado.getId()));
+
+				if (reposicaoAprovacoes != null && reposicaoAprovacoes.count() > 0) {
+					for (AusenciaReposicao reposicao : reposicaoAprovacoes.collect(Collectors.toList())) {
+						if (isAdmin || 
+							reposicao.getAceitoUsuarioAprovacao() != 1) {
+		
+							reposicao.setAceitoUsuarioAprovacao(aceita ? 1 : 2);
+							reposicao.setMotivoRecusaUsuarioAprovacao((motivo.isEmpty() ? "" : motivo) +  "("+ usuarioLogado.getFuncao().getNome() +")");
+							reposicao.setDataAceiteUsuarioAprovacao(Utilities.now());
+						}
 					}
 				}
 			}
