@@ -188,7 +188,8 @@ public class DashboardController {
     		projetoEscala.setAusenciaReposicoes(
 					ausenciaReposicoes.stream().filter(x->
 					x.getProjetoEscalaTroca().getId() == projetoEscala.getId() &&
-					(x.getUsuarioTroca() == null) ).collect(Collectors.toList()));
+					(x.getUsuarioTroca() != null &&
+					!prestadores.stream().anyMatch(y->y.getPrestador().getId() == x.getUsuarioTroca().getId())) ).collect(Collectors.toList()));
     		
     		horasTrabalhadas.addAll(this.horaTrabalhadaService.findByProjetoEscalaId(projetoEscala.getId(), anoAtual, mesAtual));
 		}
@@ -224,6 +225,7 @@ public class DashboardController {
 			ausenciaSolicitacoes = this.ausenciaSolicitacaoService.findAllByProjetoId(anoAtual, mesAtual, projetoId, aceito);
 		}
 
+		
 		if (ausenciaSolicitacoes != null && ausenciaSolicitacoes.size() > 0) {
 			for (ProjetoEscalaPrestador projEsc : this.prestadores) {
 				projEsc.setAusenciaSolicitacoes(
@@ -232,17 +234,20 @@ public class DashboardController {
 						x.getUsuario().getId() == projEsc.getPrestador().getId() ).collect(Collectors.toList()));
 			}
 		}
-
+    	
+		
 		if (ausenciaReposicoes != null && ausenciaReposicoes.size() > 0) {
 			for (ProjetoEscalaPrestador projEsc : this.prestadores) {
 				projEsc.setAusenciaReposicoes(
 						ausenciaReposicoes.stream().filter(x->
-						x.getProjetoEscalaTroca().getId() == projEsc.getProjetoEscala().getId() &&
-						(x.getUsuarioTroca() != null && x.getUsuarioTroca().getId() == projEsc.getPrestador().getId()) ).collect(Collectors.toList()));
+						x.getProjetoEscalaTroca().getId() == projEsc.getProjetoEscala().getId() &&						
+						(x.getUsuarioTroca() != null &&
+							x.getUsuarioTroca().getId() == projEsc.getPrestador().getId()) ).collect(Collectors.toList()));
 			}
 		}
-		    	
+		
 		List<ProjetoEscalaPrestador> prestadores = escalaId == 0 ? this.prestadores : this.prestadores.stream().filter(x->x.getProjetoEscala().getId()==escalaId).collect(Collectors.toList());
+				
 		modelView.addObject("prestadores", prestadores); //.toArray(ProjetoEscalaPrestador[]::new)	
     	
 		modelView.addObject("diasMes", diasMes);		

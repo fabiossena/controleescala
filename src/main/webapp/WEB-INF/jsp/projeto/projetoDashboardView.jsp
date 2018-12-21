@@ -199,6 +199,7 @@
 									</c:if> 
 									</c:if>
 
+									<c:set var="escala" value="${escala}" scope="request"/>
 									<c:set var="reposicoes" value="${escala.ausenciaReposicoes}" scope="request"/>
 									<c:set var="solicitacaoId" value="${solicitacaoId}" scope="request"/>		
 									<c:set var="dia" value="${dia}" scope="request"/>	
@@ -216,12 +217,12 @@
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
-													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
+													<div class="badge badge-primary" style="font-size: 10pt;margin: 1px">
 														Andamento - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
-													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
+													<div class="badge badge-Success" style="font-size: 10pt;margin: 1px">
 														Pausa (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
@@ -301,10 +302,11 @@
 										<jsp:include page="projetoDashboardSolicitacaoPartialView.jsp" />
 
 
-										<c:set var="reposicoes" value="${item.ausenciaReposicoes}" scope="request"/>
-										<jsp:include page="projetoDashboardReposicaoPartialView.jsp" />	
-										
-
+										<c:forEach items="${item.ausenciaSolicitacoes}" var="solicitacao">
+											<c:set var="escala" value="${item.projetoEscala}" scope="request"/>
+											<c:set var="reposicoes" value="${solicitacao.ausenciaReposicoes}" scope="request"/>
+											<jsp:include page="projetoDashboardReposicaoPartialView.jsp" />
+										</c:forEach>
 
 									</c:if>
 								

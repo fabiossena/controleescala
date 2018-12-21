@@ -115,6 +115,8 @@
 			$("#selected-projeto-escala-principal").change(function() {
 				preencherUsuarioPorProjetoEscalaId(this.value, '#selected-usuario-solicitacao')
 			});
+			
+			preencherProjetoEscalaPorUsuarioId($("#selected-usuario-solicitacao").val(), '#selected-projeto-escala-troca', '#selected-usuario-troca'); //, true)
 		}
 		
 		// 2 main
@@ -124,7 +126,7 @@
 
 		// 1 optional
 	    $("#selected-usuario-solicitacao").change(function() {
-			preencherProjetoEscalaPorUsuarioId(this.value, '#selected-projeto-escala-troca', '#selected-usuario-troca', true)
+			preencherProjetoEscalaPorUsuarioId(this.value, '#selected-projeto-escala-troca', '#selected-usuario-troca'); //, true)
 		});
 
 		
@@ -310,7 +312,7 @@
 	// 1 optional - escalas pelos usuarios e depois (escala depois usuario)
 	// 1 optional - #selected-usuario-solicitacao depois    #selected-projeto-escala-troca  (depois #selected-projeto-escala-troca 			#selected-usuario-troca					) 
 
-   function preencherProjetoEscalaPorUsuarioId(id, destino, destinoPai, exceptPrestadorEscala)
+   function preencherProjetoEscalaPorUsuarioId(id, destino, destinoPai) //, exceptPrestadorEscala) 
    {
 	   var estaDesabilitado = $(destino).prop("disabled");
 	   var estaDesabilitadoPai = $(destinoPai).prop("disabled");
@@ -318,12 +320,12 @@
 	   $(destinoPai).prop("disabled", true);
 	   var localUrl = urlBase + "ausencia/projetoEscalaPorUsuarioId/" + id;
 
-		if (exceptPrestadorEscala) {
-			var prestadorEscalaIdExcept = $("#selected-projeto-escala-principal").val();
-			if (prestadorEscalaIdExcept) {
-				localUrl = localUrl + "?prestadorEscalaId="+prestadorEscalaIdExcept;
-			}	
-		}
+//		if (exceptPrestadorEscala) {
+//			var prestadorEscalaIdExcept = $("#selected-projeto-escala-principal").val();
+//			if (prestadorEscalaIdExcept) {
+//				localUrl = localUrl + "?prestadorEscalaId="+prestadorEscalaIdExcept;
+//			}	
+//		}
 		
        $.ajax({
            type:'GET',

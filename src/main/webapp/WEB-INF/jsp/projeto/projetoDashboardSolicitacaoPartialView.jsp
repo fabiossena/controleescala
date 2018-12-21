@@ -18,6 +18,7 @@
 			onclick="toggleCard(this)">${solicitacao.motivoAusencia.nome}
 			(${solicitacao.horaInicio} - ${solicitacao.horaFim})</button> 
 		</div>
+		
 		<div id="card-solicitacao${solicitacao.id}${indexString}"
 			class="card bg-light" style="z-index: 9999;position: absolute; display: none">
 
@@ -182,8 +183,7 @@
 			<c:set var="selecionarSolicitacao">0</c:set>
 		</c:if>
 
-		<br>
-
+		
 	</c:if>
 	
 </c:forEach>

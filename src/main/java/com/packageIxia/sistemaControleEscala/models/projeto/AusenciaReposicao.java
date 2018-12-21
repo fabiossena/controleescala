@@ -3,6 +3,7 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -62,7 +63,7 @@ public class AusenciaReposicao {
 	@JoinColumn(name = "ausenciaSolicitacaoId")
 	private AusenciaSolicitacao ausenciaSolicitacao;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "usuarioTrocaId")
 	private Usuario usuarioTroca;
 

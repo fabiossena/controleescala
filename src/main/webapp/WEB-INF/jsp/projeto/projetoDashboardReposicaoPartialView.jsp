@@ -6,10 +6,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page session="true"%>
 
-
 <c:forEach items="${reposicoes}" var="reposicao">
-	<c:if test="${reposicao.ausenciaSolicitacao.ativo > 0 && reposicao.data == dia.data}"> 
-	
+ 
+	<c:if test="${reposicao.ausenciaSolicitacao.ativo > 0 && reposicao.data == dia.data && reposicao.projetoEscalaTroca.id == escala.id}"> 
+		
 		<div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<!-- <b>Reposição</b>  -->
 			<button style="font-size: 10pt; font-weight: bold; margin: 1px"

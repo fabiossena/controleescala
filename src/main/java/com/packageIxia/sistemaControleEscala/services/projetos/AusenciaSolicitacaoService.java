@@ -231,7 +231,14 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			solicitacao.setAusenciaReposicoes(solicitacaoEditada.getAusenciaReposicoes());
 			for (int i = 0; i < solicitacao.getAusenciaReposicoes().size();i++) {
 				AusenciaReposicao reposicao = solicitacao.getAusenciaReposicoes().get(i);
-				reposicao.setId(0);
+				if (reposicao.getId() < 0) {
+					reposicao.setId(0);
+				}
+				
+				if (reposicao.getUsuarioTroca() != null && reposicao.getUsuarioTroca().getId() == 0) {
+					reposicao.setUsuarioTroca(null);
+				}
+				
 				reposicao.setAusenciaSolicitacao(solicitacao);
 			}
 		}

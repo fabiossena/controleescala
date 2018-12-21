@@ -314,7 +314,7 @@ public class AusenciaController {
 	@ResponseBody
 	public List<ProjetoEscala> projetoEscalaPorUsuarioId(
 			@PathVariable("usuarioId") long usuarioId,
-			@RequestParam(value = "prestadorEscalaId", defaultValue = "0") long prestadorEscalaId,
+			//@RequestParam(value = "prestadorEscalaId", defaultValue = "0") long prestadorEscalaId,
 			HttpServletRequest request) {
 		
 		if (usuarioId == 0) {

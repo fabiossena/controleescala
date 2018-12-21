@@ -79,6 +79,8 @@ public class AusenciaReposicaoService implements IAusenciaReposicao {
 						solicitacaoEditada.getAusenciaReposicoes().get(i).setHoraInicio(ausenciaReposicao.getHoraInicio());
 						solicitacaoEditada.getAusenciaReposicoes().get(i).setHoraFim(ausenciaReposicao.getHoraFim());
 						solicitacaoEditada.getAusenciaReposicoes().get(i).setProjetoEscalaTroca(this.projetoEscalaService.findById(ausenciaReposicao.getProjetoEscalaTroca().getId()));
+						solicitacaoEditada.getAusenciaReposicoes().get(i).setUsuarioAprovacao(
+							solicitacaoEditada.getAusenciaReposicoes().get(i).getProjetoEscalaTroca().getMonitor());
 						solicitacaoEditada.getAusenciaReposicoes().get(i).setIndicadoOutroUsuario(ausenciaReposicao.isIndicadoOutroUsuario());
 						
 						if (solicitacaoEditada.getAusenciaReposicoes().get(i).isIndicadoOutroUsuario()) {
