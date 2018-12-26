@@ -35,6 +35,12 @@ public class MotivoAusencia {
 	private String nome;
 
 	private int tipo;
+    
+	// 1,2,3 
+	// tipo 1 = Não descontada no banco de horas  
+	// tipo 2 = Descontada no banco de horas      
+	// tipo 3 = Remunerada
+	private String opcoes;
 	
 	public int getId() {
 		return id;
@@ -66,5 +72,13 @@ public class MotivoAusencia {
 	
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getOpcoes() {
+		return opcoes;
+	}
+
+	public void setOpcoes(String opcoes) {
+		this.opcoes = opcoes;
 	}
 }

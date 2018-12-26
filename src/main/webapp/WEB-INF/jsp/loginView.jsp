@@ -104,9 +104,9 @@
                         </div>
                         
                          <div class="border-top" style="padding: 10px 0 0 5px; font-size:10pt" >
-                             Recebeu o convite por e-mail!
+                             Recebeu o convite por e-mail?
                              <a href="<c:url value='/cadastroinicial' />" class="block-click">
-                             Clique aqui para se cadastrar
+                             Clique aqui para se cadastrar!
                              </a>
                          </div>
                         

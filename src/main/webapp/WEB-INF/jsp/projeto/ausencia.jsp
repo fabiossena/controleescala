@@ -180,7 +180,7 @@
 
 
 							<div
-								class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+								class="form-group col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5">
 								<label for="motivo" class="control-label">Motivo</label>
 								<div>
 									<form:select path="motivoAusencia.id" id="motivo-ausencia"
@@ -198,12 +198,32 @@
 										<input type="hidden" id="motivo-tipo${motivo.id}"
 											value="${motivo.tipo}" />
 									</c:forEach>
+									
+									<c:forEach items="${motivos}" var="motivo">
+										<input type="hidden" id="motivo-opcoes${motivo.id}"
+											value="${motivo.opcoes}" />
+									</c:forEach>
+									
 									<div class="invalid-feedback" id="feedback-folgaMotivo"></div>
 								</div>
 							</div>
 
 							<div
-								class='form-group col-12 col-sm-12 col-md-12 <c:if test="${isAtendimento}">col-lg-8 col-xl-8</c:if><c:if test="${!isAtendimento}">col-lg-4 col-xl-4 </c:if>'>
+								class='form-group col-12 col-sm-12 col-md-12 col-lg-7 col-xl-7'>
+								<label for="tipoMotivoAusencia" class="control-label">Tipo ausência *</label>
+									<form:select path="tipoMotivoAusencia" id="tipo-motivo-ausencia"
+										class="form-control" disabled="${isDisableCampos}">
+										<form:option value="1" label="Não descontada no banco de horas"  />
+										<form:option value="2" label="Descontada do saldo banco de horas" />
+										<form:option value="3" label="Remunerada" />
+									</form:select>
+								<div class="invalid-feedback">
+									<form:errors path="projetoEscala.id" />
+								</div>
+							</div>
+
+							<div
+								class='form-group col-12 col-sm-12 col-md-12 <c:if test="${isAtendimento}">col-lg-12 col-xl-12</c:if><c:if test="${!isAtendimento}">col-lg-6 col-xl-6</c:if>'>
 								<label for="projetoEscala.id" class="control-label">Escala
 									projeto *</label>
 								<form:select path="projetoEscala.id"
@@ -225,7 +245,7 @@
 
 
 							<div
-								class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4"
+								class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6"
 								id="panel-selected-projeto-escala-principal"
 								<c:if test="${isAtendimento}">style="display:none;"</c:if>>
 								<label for="usuario.id" class='control-label container row'>

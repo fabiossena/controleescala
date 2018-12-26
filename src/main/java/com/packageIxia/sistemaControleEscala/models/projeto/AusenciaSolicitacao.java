@@ -95,8 +95,15 @@ public class AusenciaSolicitacao {
 	
 	private boolean excluido;
 
-	// tipo 0 
+	// tipo 0 = Simples
+	// tipo 1 = Horário colocado a disposição
+	// tipo 2 = Indicado outro horário/usuário
 	private int tipoAusencia;
+	
+	// tipo 1 = Não descontada no banco de horas
+	// tipo 2 = Descontada no banco de horas
+	// tipo 3 = Remunerada
+	private int tipoMotivoAusencia;
 
 	transient private boolean colocarHorarioDisposicao;
 
@@ -316,6 +323,14 @@ public class AusenciaSolicitacao {
 
 	public String getHoras() {
 		return Utilities.horaDiff(horaInicio, horaFim);
+	}
+
+	public int getTipoMotivoAusencia() {
+		return tipoMotivoAusencia;
+	}
+
+	public void setTipoMotivoAusencia(int tipoMotivoAusencia) {
+		this.tipoMotivoAusencia = tipoMotivoAusencia;
 	}
 	
 }

@@ -1,3 +1,15 @@
+
+	function selectOption(key, value) {
+	 $(key + " option").each(function () { 
+         $(this).removeAttr("selected");
+         $(this).prop("selected", false);
+ 		if ($(this).val() > 0 && $(this).val() == value) {
+            $(this).prop("selected", true);
+            $(this).attr("selected", "selected");
+        }
+	 });
+	}
+	
 	$(document).ready(function() {		
 
    	 	cancelarReposicao(); 
@@ -53,12 +65,53 @@
 		});
 
 		$("#motivo-ausencia").change(function() {
-			motivoAusenciaEscondePaineis();
+			motivoAusenciaEscondePaineis(true);
+			//var mot = $("#motivo-ausencia").val();
+			//var value = $("#motivo-tipo" + mot).val() == 0 ? 3 : $("#motivo-tipo" + mot).val();
+			//selectOption("#tipo-motivo-ausencia", value);
 		});
 
-		function motivoAusenciaEscondePaineis() {
+		function addRemoveOptionsAusencia(changed) {
+
 			var mot = $("#motivo-ausencia").val();
-			if ($("#motivo-tipo" + mot).val() != 1) {
+			var opcoes = $("#motivo-opcoes" + mot).val();
+			
+			if (changed) {
+				 $("#tipo-motivo-ausencia option").each(function () {
+					 var i  = $(this).val();
+					 $("#tipo-motivo-ausencia option[value='" + i + "']").remove();
+				 });
+			}
+			
+			addRemoveOption(1, "Não descontada no banco de horas", opcoes);
+			addRemoveOption(2, "Descontada do saldo banco de horas", opcoes);
+			addRemoveOption(3, "Remunerada", opcoes);
+			
+		}
+		
+		function addRemoveOption(index, text, opcoes) {
+			var hasOption = $('#tipo-motivo-ausencia option[value="' + index + '"]').length > 0;
+			if (opcoes.search(index)>=0 && !hasOption) {
+				$("#tipo-motivo-ausencia").append('<option value="' + index + '">' + text + '</option>');
+			}
+			else if (opcoes.search(index)==-1 && hasOption) {
+				 $("#tipo-motivo-ausencia option[value='" + index + "']").remove();
+			}
+		}
+		
+		function motivoAusenciaEscondePaineis(changed) {
+			
+			addRemoveOptionsAusencia(changed);
+
+			/*			
+			var mot = $("#motivo-ausencia").val();
+			if (!$("#motivo-ausencia").prop("disabled")) {
+				var value = $("#motivo-tipo" + mot).val() == 0 ? 3 : $("#motivo-tipo" + mot).val();
+				$("#tipo-motivo-ausencia").prop("disabled", value == 2);
+			}*/
+			
+			
+			/*if ($("#motivo-tipo" + mot).val() != 1) {
 				$("#indicar-horario-para-repor").prop("checked", false);
 				$("#observacao-motivo-ausencia").html("Ausencia não descontada do banco de horas");
 				$("#panel-horario-reposicao").hide();	
@@ -67,7 +120,7 @@
 			else {
 				$("#observacao-motivo-ausencia").html("Ausencia descontada do banco de horas");
 				$("#panel-indicar-horario-para-repor").show();				
-			}
+			}*/
 		}
 		
 		motivoAusenciaEscondePaineis();

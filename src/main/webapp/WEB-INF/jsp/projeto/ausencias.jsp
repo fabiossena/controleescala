@@ -110,7 +110,11 @@
 					                	<c:if test="${solicitacao.aceito==0}">Pendente</c:if>
 					                	<c:if test="${solicitacao.aceito==1}">Aceita</c:if>
 					                	<c:if test="${solicitacao.aceito==2}">Recusada</c:if><br>
-					                	<b>Motivo:</b> ${solicitacao.motivoAusencia.nome}<br>
+					                	<b>Motivo:</b> ${solicitacao.motivoAusencia.nome}
+					                	<br><i><c:if test="${solicitacao.tipoMotivoAusencia == 0 || solicitacao.tipoMotivoAusencia == 1}">Não descontada no banco de horas</c:if>
+					                	<c:if test="${solicitacao.tipoMotivoAusencia == 2}">Descontada do saldo banco de horas</c:if>
+					                	<c:if test="${solicitacao.tipoMotivoAusencia == 3}">Remunerada</c:if></i>
+					                	<br>
 					                	<b>Tipo ausência:</b> <c:if test="${solicitacao.tipoAusencia == 0}">Simples</c:if>                
 					                	<c:if test="${solicitacao.tipoAusencia == 1}">Horário colocado a disposição</c:if>
 					                	<c:if test="${solicitacao.tipoAusencia == 2}">Indicado outro horário/usuário</c:if>
