@@ -178,9 +178,12 @@
 							</c:forEach>
 
 
+							<!-- se adicionar painel acima duas tags abaixo usar codigo este abaixo aqui -->
+							<!-- <div
+								class="form-group col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5"> -->
 
 							<div
-								class="form-group col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5">
+								class="form-group col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3">
 								<label for="motivo" class="control-label">Motivo</label>
 								<div>
 									<form:select path="motivoAusencia.id" id="motivo-ausencia"
@@ -208,6 +211,7 @@
 								</div>
 							</div>
 
+							<!-- 
 							<div
 								class='form-group col-12 col-sm-12 col-md-12 col-lg-7 col-xl-7'>
 								<label for="tipoMotivoAusencia" class="control-label">Tipo ausência *</label>
@@ -221,9 +225,13 @@
 									<form:errors path="projetoEscala.id" />
 								</div>
 							</div>
+							 -->
 
+							<!-- se adicionar painel acima usar codigo abaixo aqui -->
+							<!-- <div
+								class='form-group col-12 col-sm-12 col-md-12 <c:if test="${isAtendimento}">col-lg-12 col-xl-12</c:if><c:if test="${!isAtendimento}">col-lg-6 col-xl-6</c:if>'> -->
 							<div
-								class='form-group col-12 col-sm-12 col-md-12 <c:if test="${isAtendimento}">col-lg-12 col-xl-12</c:if><c:if test="${!isAtendimento}">col-lg-6 col-xl-6</c:if>'>
+								class='form-group col-12 col-sm-12 col-md-12 <c:if test="${isAtendimento}">col-lg-8 col-xl-8</c:if><c:if test="${!isAtendimento}">col-lg-5 col-xl-5</c:if>'>
 								<label for="projetoEscala.id" class="control-label">Escala
 									projeto *</label>
 								<form:select path="projetoEscala.id"
@@ -244,8 +252,14 @@
 
 
 
-							<div
+							<!-- se adicionar painel acima mudar codigo abaixo para isto -->
+							<!-- div
 								class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6"
+								id="panel-selected-projeto-escala-principal"
+								<c:if test="${isAtendimento}">style="display:none;"</c:if>> -->
+								
+							<div
+								class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4"
 								id="panel-selected-projeto-escala-principal"
 								<c:if test="${isAtendimento}">style="display:none;"</c:if>>
 								<label for="usuario.id" class='control-label container row'>
@@ -345,7 +359,7 @@
 								<div
 									class="text-primary col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"
 									style="font-size: 10pt">									
-									Saldo de horas: ${horasDisponiveisAno}hrs<c:if test="${horasDisponiveisAno> 0}"> / ${diasDisponiveisAno} dias(de 6 horas de trabalho)</c:if> - <i>Para verificação antes de aprovar esta solicitação</i><br>
+									Saldo de horas: ${horasDisponiveisAno}hrs<c:if test="${horasDisponiveisAno> 0}"> / ${diasDisponiveisAno} dias(de 6 horas de trabalho)</c:if> <i>(Para verificar antes de realizar a aprovação)</i><br>
 								</div>
 							</c:if>
 							</c:if>

@@ -101,7 +101,8 @@
 		
 		function motivoAusenciaEscondePaineis(changed) {
 			
-			addRemoveOptionsAusencia(changed);
+			// adicionar se colocar banco de horas
+			// addRemoveOptionsAusencia(changed);
 
 			/*			
 			var mot = $("#motivo-ausencia").val();

@@ -82,9 +82,9 @@
 				<b style="font-size: 10pt">Motivo:</b>
 				<span style="font-size: 10pt"> 
 					${solicitacao.motivoAusencia.nome}
-                	<i>(<c:if test="${solicitacao.tipoMotivoAusencia == 0 || solicitacao.tipoMotivoAusencia == 1}">Não descontada no banco de horas</c:if>	
+                	<!--<i>(<c:if test="${solicitacao.tipoMotivoAusencia == 0 || solicitacao.tipoMotivoAusencia == 1}">Não descontada no banco de horas</c:if>	
 					<c:if test="${solicitacao.tipoMotivoAusencia == 2}">Descontada do saldo banco de horas</c:if>
-					<c:if test="${solicitacao.tipoMotivoAusencia == 3}">Remunerada</c:if></i>)
+					<c:if test="${solicitacao.tipoMotivoAusencia == 3}">Remunerada</c:if></i>)-->
 				</span><br> 
 				
 								

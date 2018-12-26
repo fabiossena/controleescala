@@ -378,7 +378,7 @@
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHorasFormatada} (${item.totalHoras}hrs)<br> 
+									  	<b>Horas:</b> ${item.totalHorasFormatada}  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hrs)</c:if><br> 
 										<b>Valor:</b> ${item.totalValor}
 									  </div>
 									</td> 
@@ -424,7 +424,7 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}  (${item2.doubleValue}hrs)</b></label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hrs)</c:if></b> </label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

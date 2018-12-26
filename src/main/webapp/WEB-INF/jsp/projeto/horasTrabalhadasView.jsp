@@ -223,7 +223,7 @@
 												  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
 												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
-										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} (${item.doubleValue}hrs)</b></label>
+										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hrs)</c:if></b></label>
 								          	  <br>
 									      </c:forEach>
 								       </div>	
@@ -239,7 +239,7 @@
 									      
 								  	  <div class="form-group col-sm-12" style="font-size: 10pt"> 								          
 								      	<label class="control-label"> 
-											<b>Total:</b> ${aprovacaoHora.totalHorasFormatada} (${aprovacaoHora.totalHoras}hrs) 
+											<b>Total:</b> ${aprovacaoHora.totalHorasFormatada} <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs</c:if>) 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
 										</label><br>					          
 								      	<label class="control-label">
@@ -337,7 +337,7 @@
 																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 16)}
 																</div>
 															</td>
-														  	<td>${item.horasFormatada} (${item.horas}hrs)</td> 
+														  	<td>${item.horasFormatada} <c:if test="${item.horas < 1}">(${item.horas}hrs)</c:if></td> 
 											                <td>
 											                	<c:if test="${item.tipoAcao == 1 || item.tipoAcao == 3}">Inicio/Parada</c:if>
 											                	<c:if test="${item.tipoAcao == 2 || item.tipoAcao == 4}">Pausado/Reiniciado</c:if>
