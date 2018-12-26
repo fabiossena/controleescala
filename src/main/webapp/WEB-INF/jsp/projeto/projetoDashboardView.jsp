@@ -217,12 +217,12 @@
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 1}">
-													<div class="badge badge-primary" style="font-size: 10pt;margin: 1px">
+													<div class="badge badge-warning" style="font-size: 10pt;margin: 1px">
 														Andamento - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
 												<c:if test="${hora.dataHoraFim == null && hora.tipoAcao == 2}">
-													<div class="badge badge-Success" style="font-size: 10pt;margin: 1px">
+													<div class="badge badge-success" style="font-size: 10pt;margin: 1px">
 														Pausa (${hora.motivoPausa}) - Início ${hora.dataHoraInicio.toString().substring(11, 16)} (${hora.horas} horas)
 													</div>
 												</c:if>
