@@ -27,8 +27,7 @@ public class FileSystemStorageService implements StorageService {
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
-     
-    	this.rootLocation = Paths.get(System.getProperty("user.home") + "/upload-dir"); // + properties.getLocation()); // // Paths.get(properties.getLocation());
+    	this.rootLocation = Paths.get(System.getProperty("user.home") + "/upload-dir");
     	this.tempLocation = Paths.get(System.getProperty("user.home") + "\\temp-dir");
     }
 

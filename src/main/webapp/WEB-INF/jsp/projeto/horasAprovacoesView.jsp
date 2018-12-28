@@ -371,15 +371,15 @@
 											     </c:if> 
 										     </c:if>
 									     </c:if>
-	                				</td>
+	                				</td> 
 	                				
 					                <td style="font-size: 10pt">
 					                  <div style="width: 200px">
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHorasFormatada}  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hrs)</c:if><br> 
-										<b>Valor:</b> ${item.totalValor}
+									  	<b>Horas:</b> ${item.totalHorasFormatada} hrs  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hrs)</c:if><br> 
+										<b>Valor:</b> R$ ${item.totalValor}
 									  </div>
 									</td> 
 				                							
@@ -407,7 +407,7 @@
 							        	  	  </c:if>
 											  <c:if test="${!status}">
 											  	<c:if test="${item.aceitePrestador != 1}">Processo de aprovação iniciado</c:if>
-											  	<c:if test="${item.aceitePrestador == 1}">Processo finalizado</c:if>
+											  	<c:if test="${item.aceitePrestador == 1 &&  item.aceiteAprovador == 1}">Processo finalizado</c:if>
 											  </c:if>
 										  </i> 
 										  
@@ -424,7 +424,7 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hrs)</c:if></b> </label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao} hrs  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hrs)</c:if></b> </label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

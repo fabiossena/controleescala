@@ -16,8 +16,8 @@
 				window.location.href = "../horatrabalhada/apagar/" + id
 			}
 		}
-		
-		$(document).ready(function() {
+				$(document).ready(function() {
+			
 			if ($("#id").val() == "" || $("#id").val() == null || $("#id").val() == 0) {
 				 cancelarHoras();
 			}
@@ -72,7 +72,7 @@
 		});
 		
 		function anexarClique() {
-			if ($("#arquivo-updload") == null || $("#arquivo-updload").val() == "") {
+			if ($("#arquivo-upload") == null || $("#arquivo-upload").val() == "") {
 				alert("Anexe a nota fiscal")
 				return false; 
 			}
@@ -197,7 +197,7 @@
 						        	  	  <c:if test="${isDisableCampos}">As etapas de aprovação serão iniciadas apenas após o ultimo dia do mês, enquanto isso é possivel apenas editar as horas trabalhadas.</c:if>
 										  <c:if test="${!isDisableCampos}">
 										  	<c:if test="${aprovacaoHora.aceitePrestador != 1}">Processo de aprovação iniciado</c:if>
-										  	<c:if test="${aprovacaoHora.aceitePrestador == 1}">Processo finalizado</c:if>
+										  	<c:if test="${aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.aceiteAprovador == 1}">Processo finalizado</c:if>
 										  </c:if>
 									  </i> 
 									  <br>
@@ -207,9 +207,11 @@
 										  <span class="${styleStatusPrestador}">
 											  <c:if test="${aprovacaoHora.aceitePrestador == 0}">(Pendente)</c:if>
 											  <c:if test="${aprovacaoHora.aceitePrestador == 1}">(Aprovado)</c:if>
-											  <c:if test="${aprovacaoHora.aceitePrestador == 2}">(Recusado)</c:if> Prestador: ${aprovacaoHora.prestador.nomeCompletoMatricula}
+											  <c:if test="${aprovacaoHora.aceitePrestador == 2}">(Recusado)</c:if> Prestador: ${aprovacaoHora.prestador.nomeCompletoMatricula} 
 										   </span><br>	        	  		
-				        	  			   <c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}"><a class="text-dark" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>											  
+				        	  			   <c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
+				        	  			   	<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a>
+				        	  			   </c:if>		        	  			   											  
 									  </div> 
 									    
 									    
@@ -223,7 +225,7 @@
 												  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
 												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
-										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hrs)</c:if></b></label>
+										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} hrs <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hrs)</c:if></b></label>
 								          	  <br>
 									      </c:forEach>
 								       </div>	
@@ -239,11 +241,11 @@
 									      
 								  	  <div class="form-group col-sm-12" style="font-size: 10pt"> 								          
 								      	<label class="control-label"> 
-											<b>Total:</b> ${aprovacaoHora.totalHorasFormatada} <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs</c:if>) 
+											<b>Total horas:</b> ${aprovacaoHora.totalHorasFormatada} hrs <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs)</c:if> 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
 										</label><br>					          
 								      	<label class="control-label">
-											<b>Total valor:</b> ${aprovacaoHora.totalValor}
+											<b>Total valor:</b> R$ ${aprovacaoHora.totalValor}
 											<%-- <c:if test="${aprovacaoHora.totalValor > 0}">${aprovacaoHora.totalValor}</c:if><c:if test="${aprovacaoHora.totalValor == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalValor}</c:if> --%>
 										</label>
 									  </div>	
@@ -253,7 +255,7 @@
 										      <c:if test="${!isDisableCampos && 
 										      				((aprovacaoHora.aceitePrestador == 0 && aprovacaoHora.prestador.id == usuarioLogado.id) || 
 										      				 (aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}">		
-											      <label for="motivo" class="control-label">Motivo recusa</label>
+											      <label for="motivo" class="control-label"><strong>Motivo recusa</strong></label>
 										          <input id="motivo-recusa" class='form-control' />
 									          </c:if>
 									          
@@ -290,8 +292,13 @@
 			        	  			
 				        	  			<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id && atendentePodeAprovar}">					          
 						        	  		<div class="form-group col-sm-12">	
-						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data"> 							        	  				
-												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-updload" /><br/><br/>
+						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data">
+						        	  				<c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
+														<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a><br>
+														Para substituir a nota atual selecione
+													</c:if>
+						        	  				<c:if test="${aprovacaoHora.arquivoNota==null || aprovacaoHora.arquivoNota ==''}">Selecione</c:if> o arquivo da sua nota fiscal e clique em 'Salvar nota anexa' 							        	  				
+												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-upload" /><br/><br/> 
 												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" onclick="anexarClique()" />						        	  				
 												    <input type="hidden" name="forcar" value="${forcar}" />
 												</form>

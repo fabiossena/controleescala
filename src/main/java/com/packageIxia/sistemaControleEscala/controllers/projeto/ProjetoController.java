@@ -1,5 +1,6 @@
 package com.packageIxia.sistemaControleEscala.controllers.projeto;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,12 +114,12 @@ public class ProjetoController {
 	}   
 	
 	@GetMapping("/projeto/{id}")
-	public ModelAndView cadastroPorId(@PathVariable("id") long id) {		
+	public ModelAndView cadastroPorId(@PathVariable("id") long id) throws IOException {		
 		return this.getCadastroPorId(id, true);
 	}
 
 	@GetMapping("/projeto/{id}/editar")
-	public ModelAndView cadastroPorIdEdit(@PathVariable("id") long id) {		
+	public ModelAndView cadastroPorIdEdit(@PathVariable("id") long id) throws IOException {		
 		return this.getCadastroPorId(id, false);
 	}
 
@@ -164,7 +165,7 @@ public class ProjetoController {
 		return modelViewCadastro;
 	}
 
-	private ModelAndView getCadastroPorId(long id, boolean disabilitarTodosCampos) {	
+	private ModelAndView getCadastroPorId(long id, boolean disabilitarTodosCampos) throws IOException {	
 		
 		System.out.println("projeto");		
 		this.DisabilitarCampos(id, disabilitarTodosCampos);

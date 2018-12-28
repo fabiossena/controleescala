@@ -1,5 +1,6 @@
 package com.packageIxia.sistemaControleEscala.services.projetos;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	}
 
 	@Override
-	public List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId) {
+	public List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId) throws IOException {
 		if (projetoEscalaId == 0) {
 			return new ArrayList<ProjetoEscalaPrestador>();
 		}
@@ -76,7 +77,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		return projetoEscalaPrestadores;
 	}
 
-	public String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) {
+	public String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) throws IOException {
 		String json ="";
 		try {
 			ObjectMapper mapper = new ObjectMapper();

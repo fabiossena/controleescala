@@ -1,5 +1,6 @@
 package com.packageIxia.sistemaControleEscala.interfaces.projeto;
 
+import java.io.IOException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
@@ -11,7 +12,7 @@ public interface IProjetoEscalaPrestador {
 
 	List<Usuario> findAllPrestadoresByProjetoEscalaId(long projetoEscalaId);
 
-	List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId);
+	List<ProjetoEscalaPrestador> findAllByProjetoEscalaId(long projetoEscalaId) throws IOException;
 
 	List<Usuario> findAllByProjetoEscalaIdExceptUsuarioId(long projetoEscalaId, long usuarioId);
 
@@ -42,7 +43,7 @@ public interface IProjetoEscalaPrestador {
 
 	List<ProjetoEscalaPrestador> findAllByRamalIntegracaoRobo(String ramalRobo);
 	
-	String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho);
+	String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) throws IOException;
 
 	List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId, boolean b);
 

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.amazonaws.AmazonClientException;
 import com.packageIxia.sistemaControleEscala.helpers.GeradorCsv;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
@@ -47,6 +47,7 @@ import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 import com.packageIxia.sistemaControleEscala.services.projetos.IntegracaoRoboService;
+import com.packageIxia.sistemaControleEscala.services.referencias.AmazonStorageService;
 import com.packageIxia.sistemaControleEscala.services.referencias.StorageFileNotFoundException;
 import com.packageIxia.sistemaControleEscala.services.referencias.StorageService;
 
@@ -75,6 +76,7 @@ public class HoraTrabalhadaAprovacaoController {
 	private int mes;
 	private int ano;
 	private List<Usuario> usuarios;
+	private AmazonStorageService amazonStorageService;
     
 	public HoraTrabalhadaAprovacaoController(
 			IProjetoEscala projetoEscalaService,
@@ -87,7 +89,8 @@ public class HoraTrabalhadaAprovacaoController {
 			INotificacao notificacaoService,
 			HttpServletRequest request,
 			IProjetoEscalaPrestador projetoEscalaPrestadorService,
-			IUsuario usuarioService) {
+			IUsuario usuarioService,
+			AmazonStorageService amazonStorageService) {
 		this.projetoEscalaService = projetoEscalaService;
 		this.horaAprovacaoService = horaAprovacaoService;
 		this.horaTrabalhadaService = horaTrabalhadaService;
@@ -98,11 +101,13 @@ public class HoraTrabalhadaAprovacaoController {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.request = request;
 		this.usuarioService = usuarioService;
+		this.amazonStorageService = amazonStorageService;
 	}
 
-    @GetMapping("nota/{id}")
+    @GetMapping(value = "nota/{id}", produces = "application/pdf")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable("id") long id) {
+    //public ModelAndView  getFile(@PathVariable("id") long id) throws IOException {
+    public ResponseEntity<Resource> getFile(@PathVariable("id") long id) throws IOException {
     	HoraAprovacao aprovacao;
     	if (aprovacaoHora != null && aprovacaoHora.getId() == id) {
     		aprovacao = aprovacaoHora;
@@ -115,8 +120,10 @@ public class HoraTrabalhadaAprovacaoController {
     		return null;
     	}
     	
-        Resource file = storageService.loadAsResource(aprovacao.getArquivoNota());
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+    	Resource file = amazonStorageService.getFile(aprovacao.getArquivoNota()); //storageService.loadAsResource(aprovacao.getArquivoNota());
+        
+        //return new ModelAndView();
+    	return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + aprovacao.getArquivoNota() + "\"").body(file);
     }
     
@@ -124,8 +131,9 @@ public class HoraTrabalhadaAprovacaoController {
     public ModelAndView handleFileUpload(
     		@PathVariable("id") long id,
     		@RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes) {
-    	
+            RedirectAttributes redirectAttributes) throws AmazonClientException, IOException, InterruptedException {
+
+    	ModelAndView modelAndView = new ModelAndView("redirect:/aprovacaoHoras");
     	if (id == 0) {
     		return null;
     	}
@@ -141,8 +149,22 @@ public class HoraTrabalhadaAprovacaoController {
     	if (aprovacao == null) {
     		return null;
     	}
+
+		if (file.isEmpty()) {
+			redirectAttributes.addFlashAttribute("message", "Arquivo não encontrado");
+			return modelAndView;			
+		}
+
+		String[] splitFilename = file.getOriginalFilename().split("\\.");
+		if (splitFilename == null || splitFilename.length < 2 || !splitFilename[1].toLowerCase().equals("pdf") ) {
+			redirectAttributes.addFlashAttribute("message", "Arquivo enviado de ser um 'PDF'");
+			return modelAndView;			
+		}
+		
+    	String name = "notas-" + String.valueOf(aprovacao.getId()) + "-" + file.getOriginalFilename();
+    	this.amazonStorageService.uploadFile(name, file);
     	
-        String name = storageService.store(file, String.valueOf(aprovacao.getId()));
+        //String name = storageService.store(file, String.valueOf(aprovacao.getId()));
         horaAprovacaoService.uploadNota(aprovacaoHora.getId(), name);
         redirectAttributes.addFlashAttribute("message",
                 "A nota foi anexada com sucesso");

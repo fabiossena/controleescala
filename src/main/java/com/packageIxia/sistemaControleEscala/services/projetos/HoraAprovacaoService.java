@@ -287,8 +287,9 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 		if (aprovacaoHora != null && aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {
 			this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());			
 			this.horaAprovacaoDao.updateAprovacaoPrestador(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
-			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {	
-				this.horaTrabalhadaDao.updateAprova(hora.getId(), hora.getResponsavelAprovacao().getId(), 0, "");
+			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {
+				long aprovadorId = hora.getResponsavelAprovacao() == null ? hora.getProjetoEscala().getMonitor().getId() : hora.getResponsavelAprovacao().getId();
+				this.horaTrabalhadaDao.updateAprova(hora.getId(), aprovadorId, 0, "");
 			}	
 		}
 
