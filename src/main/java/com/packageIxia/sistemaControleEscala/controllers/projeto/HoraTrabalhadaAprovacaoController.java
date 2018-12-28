@@ -161,7 +161,9 @@ public class HoraTrabalhadaAprovacaoController {
 			return modelAndView;			
 		}
 		
-    	String name = "notas-" + String.valueOf(aprovacao.getId()) + "-" + file.getOriginalFilename();
+    	String name = file.getOriginalFilename().startsWith("nota-" + String.valueOf(aprovacao.getId())) ? 
+    			file.getOriginalFilename() : "nota-" + String.valueOf(aprovacao.getId()) + "-" + file.getOriginalFilename();
+    			
     	this.amazonStorageService.uploadFile(name, file);
     	
         //String name = storageService.store(file, String.valueOf(aprovacao.getId()));
