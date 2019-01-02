@@ -16,7 +16,8 @@
 				window.location.href = "../horatrabalhada/apagar/" + id
 			}
 		}
-				$(document).ready(function() {
+		
+		$(document).ready(function() {
 			
 			if ($("#id").val() == "" || $("#id").val() == null || $("#id").val() == 0) {
 				 cancelarHoras();

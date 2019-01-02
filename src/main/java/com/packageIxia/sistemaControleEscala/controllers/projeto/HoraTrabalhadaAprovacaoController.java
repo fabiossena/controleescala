@@ -133,7 +133,7 @@ public class HoraTrabalhadaAprovacaoController {
     		@RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes) throws AmazonClientException, IOException, InterruptedException {
 
-    	ModelAndView modelAndView = new ModelAndView("redirect:/aprovacaoHoras");
+    	ModelAndView modelAndView = new ModelAndView("redirect:/horasTrabalhadas/"+id);
     	if (id == 0) {
     		return null;
     	}
@@ -150,7 +150,7 @@ public class HoraTrabalhadaAprovacaoController {
     		return null;
     	}
 
-		if (file.isEmpty()) {
+		if (file == null) {
 			redirectAttributes.addFlashAttribute("message", "Arquivo não encontrado");
 			return modelAndView;			
 		}
