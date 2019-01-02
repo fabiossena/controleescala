@@ -150,7 +150,7 @@ public class HoraTrabalhadaAprovacaoController {
     		return null;
     	}
 
-		if (file == null) {
+		if (file == null || file.isEmpty()) {
 			redirectAttributes.addFlashAttribute("message", "Arquivo não encontrado");
 			return modelAndView;			
 		}
