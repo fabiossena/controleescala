@@ -293,14 +293,14 @@
 			        	  			
 				        	  			<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id && atendentePodeAprovar}">					          
 						        	  		<div class="form-group col-sm-12">	
-						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data" onsubmit="anexarClique()">
+						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data">
 						        	  				<c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
 														<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a><br>
 														Para substituir a nota atual selecione
 													</c:if>
 						        	  				<c:if test="${aprovacaoHora.arquivoNota==null || aprovacaoHora.arquivoNota ==''}">Selecione</c:if> o arquivo da sua nota fiscal e clique em 'Salvar nota anexa'<br> 							        	  				
 												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-upload" /><br/><br/> 
-												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" />						        	  				
+												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" onclick="return anexarClique()" />						        	  				
 												    <input type="hidden" name="forcar" value="${forcar}" />
 												</form>
 			        	  					</div>
