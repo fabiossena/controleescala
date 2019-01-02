@@ -43,12 +43,12 @@ public class AmazonStorageService {
     	//BasicAWSCredentials awsCreds = new BasicAWSCredentials("access_key_id", "secret_key_id");
         this.s3Client = AmazonS3ClientBuilder.standard()
                 .withRegion(clientRegion)
-                .withCredentials(new EnvironmentVariableCredentialsProvider())
+                .withCredentials(new EnvironmentVariableCredentialsProvider())      
+                .build();
         		// new SystemPropertiesCredentialsProvider()) 
                 // new AWSStaticCredentialsProvider(awsCreds)) 
                 // new EnvironmentVariableCredentialsProvider()) 
-                // new EnvironmentVariableCredentialsProvider()) //new ProfileCredentialsProvider()) //      
-                .build();
+                // new EnvironmentVariableCredentialsProvider()) //new ProfileCredentialsProvider()) //
     }
     
 	public Resource getFile(String key) throws IOException {
