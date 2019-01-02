@@ -285,9 +285,9 @@ public class HoraTrabalhadaAprovacaoController {
     	
 		horaTrabalhadaView.addObject("isDisableInsertCampos", true);   
     	this.aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(this.aprovacaoHora, usuarioLogado));
-    	if ((this.aprovacaoHora.getData().getYear() == Utilities.now().getYear() && 
-    			this.aprovacaoHora.getData().getMonthValue() == Utilities.now().getMonthValue()) ||
-    			!this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getDadosAcesso()) {
+    	if (this.aprovacaoHora.getData().getYear() == Utilities.now().getYear() && 
+    			this.aprovacaoHora.getData().getMonthValue() == Utilities.now().getMonthValue()) { //) ||
+    			//!this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getDadosAcesso()) {
     		horaTrabalhadaView.addObject("isDisableCampos", true);    		
     	}
     	else {

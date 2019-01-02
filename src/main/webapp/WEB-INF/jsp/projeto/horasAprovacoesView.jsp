@@ -378,7 +378,7 @@
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHorasFormatada} hrs  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hrs)</c:if><br> 
+									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if><br> 
 										<b>Valor:</b> R$ ${item.totalValor}
 									  </div>
 									</td> 
@@ -399,7 +399,6 @@
 										   </c:if>
 										   <c:if test="${item.arquivoNota!=null && item.arquivoNota!=''}"><br><a class="text-dark" href="<c:url value='nota/${item.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>
 										   </div>
-										   
 										  <c:set var="status">${item.data.year == dataAtual.year && item.data.monthValue == dataAtual.monthValue}</c:set>
 										  <i style="font-size: 10pt" class="text-danger">
 							        	  	  <c:if test="${status}">
@@ -424,7 +423,7 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao} hrs  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hrs)</c:if></b> </label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hr)</c:if></b> </label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

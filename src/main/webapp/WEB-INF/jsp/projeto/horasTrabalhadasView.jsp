@@ -73,7 +73,7 @@
 		
 		function anexarClique() {
 			if ($("#arquivo-upload") == null || $("#arquivo-upload").val() == "") {
-				alert("Anexe a nota fiscal")
+				alert("Anexe a nota fiscal");
 				return false; 
 			}
 		}
@@ -225,7 +225,7 @@
 												  <c:if test="${item.nome.contains('(Aprovado')}">text-success</c:if>
 												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
-										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao} hrs <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hrs)</c:if></b></label>
+										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao}hr <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hr)</c:if></b></label>
 								          	  <br>
 									      </c:forEach>
 								       </div>	
@@ -241,7 +241,7 @@
 									      
 								  	  <div class="form-group col-sm-12" style="font-size: 10pt"> 								          
 								      	<label class="control-label"> 
-											<b>Total horas:</b> ${aprovacaoHora.totalHorasFormatada} hrs <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs)</c:if> 
+											<b>Total horas:</b> ${aprovacaoHora.totalHorasFormatada}hr <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs)</c:if> 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
 										</label><br>					          
 								      	<label class="control-label">
@@ -299,10 +299,10 @@
 													</c:if>
 						        	  				<c:if test="${aprovacaoHora.arquivoNota==null || aprovacaoHora.arquivoNota ==''}">Selecione</c:if> o arquivo da sua nota fiscal e clique em 'Salvar nota anexa'<br> 							        	  				
 												    <input class="btn btn-sm btn-primary" type="file" name="file" id="arquivo-upload" /><br/><br/> 
-												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" onclick="anexarClique()" />						        	  				
+												    <input class="btn btn-sm btn-primary" type="submit" value="Salvar nota anexa" onclick="return anexarClique()" />						        	  				
 												    <input type="hidden" name="forcar" value="${forcar}" />
 												</form>
-			        	  					</div>	 
+			        	  					</div>
 					        	  		</c:if>
 					        	  			
 				        	  		</c:if>	
@@ -320,7 +320,7 @@
 									            <tr>
 									                <th>Id</th>
 													<th>Escala</th>
-									                <th>Data/hora início/fim</th> 
+									                <th>Início/fim</th> 
 									                <th>Horas</th> 
 									                <th>Ação/Motivo</th>
 									                <th>Observação</th>
@@ -344,7 +344,7 @@
 																	<fmt:formatDate value="${dataHrFim}" pattern="dd/MM/yyyy" /> ${item.dataHoraFim.toString().substring(11, 16)}
 																</div>
 															</td>
-														  	<td>${item.horasFormatada} <c:if test="${item.horas < 1}">(${item.horas}hrs)</c:if></td> 
+														  	<td>${item.horasFormatada}hr <c:if test="${item.horas < 1}">(${item.horas}hr)</c:if></td> 
 											                <td>
 											                	<c:if test="${item.tipoAcao == 1 || item.tipoAcao == 3}">Inicio/Parada</c:if>
 											                	<c:if test="${item.tipoAcao == 2 || item.tipoAcao == 4}">Pausado/Reiniciado</c:if>
