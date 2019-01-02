@@ -14,6 +14,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -37,10 +38,11 @@ public class AmazonStorageService {
     	
 //    	String accessKeyId = environment.getProperty("aws.accessKeyId");
 //    	String secretKey = environment.getProperty("aws.secretKey");
-//    	BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretKey);
+    	//BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretKey);
+    	BasicAWSCredentials awsCreds = new BasicAWSCredentials("access_key_id", "secret_key_id");
         this.s3Client = AmazonS3ClientBuilder.standard()
                 .withRegion(clientRegion)
-                .withCredentials(new ProfileCredentialsProvider()) // new AWSStaticCredentialsProvider(awsCreds)) // new EnvironmentVariableCredentialsProvider()) //     
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds)) // new EnvironmentVariableCredentialsProvider()) // new EnvironmentVariableCredentialsProvider()) //new ProfileCredentialsProvider()) //      
                 .build();
     }
     
