@@ -164,14 +164,16 @@
         <div class="col-md-9">
             <form:select path="centroCusto.id" class="form-control" items="${centroCustos}"  itemLabel="descricaoCompleta" itemValue="id" disabled="${isDisableCamposChaves || isDisableTodosCampos}"/>
         </div>
-    </div>		 	                           
-                     
+    </div>		
+     	                           
+    <c:if test="${usuarioLogado.id == usuario.id || isFinanceiro || isAdministracao}">	
     <div class="form-group">
         <label for="valorMinuto" class="col-md-12 control-label">Valor minuto</label>
         <div class="col-md-9">
      		<form:input path="valorMinuto" class="form-control" disabled="${isDisableCamposChaves || isDisableTodosCampos}" maxlength="50" />
         </div>
-    </div>                          
+    </div>    
+    </c:if>                       
                      
     <div class="form-group">
         <label for="matricula" class="col-md-12 control-label">Matrícula Ixia *</label>

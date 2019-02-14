@@ -123,7 +123,7 @@ $(document).ready(function() {
 	     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/usuario/meucadastro')}">active</c:if>">
 		  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/usuario/meucadastro' />">Meu cadastro</a>
 	      		</li>	
-				<c:if test="${!isAtendimento}">			      
+				<c:if test="${isAdministracao || isFinanceiro}">			      
 		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/usuario') && !requestScope['javax.servlet.forward.request_uri'].contains('/usuario/meucadastro')}">active</c:if>">
 			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/usuarios' />">Cadastro usuários</a>
 		      		</li>	
@@ -153,7 +153,7 @@ $(document).ready(function() {
 	      		</li>	
 				<c:if test="${isAtendimento || isMonitoramento || isAdministracao}">			      
 		     		<li class="nav-item <c:if test="${requestScope['javax.servlet.forward.request_uri'].contains('/extratoHoras')}">active</c:if>">
-			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/extratoHoras' />">Extrato banco de horas</a>
+			  	  		<a class="nav-link navbar-brand" style="font-size: 12pt" href="<c:url value='/extratoHoras' />">Extrato horas</a>
 		      		</li>	
 				</c:if>	
 			</c:if>

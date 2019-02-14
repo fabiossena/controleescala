@@ -30,7 +30,7 @@
     <div class="container">    
        <div style="margin-top:50px" class="mainbox col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         	  
-		<h3>Extrato banco de horas</h3>      
+		<h3>Extrato de horas</h3>      
 		<div class="container border-top panel-custom">
 		     <div class="container row">
 				

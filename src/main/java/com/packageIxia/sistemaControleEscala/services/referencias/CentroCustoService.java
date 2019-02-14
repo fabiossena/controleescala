@@ -12,8 +12,8 @@ import com.packageIxia.sistemaControleEscala.models.referencias.CentroCusto;
 @Service
 public class CentroCustoService implements ICentroCusto {
 
-	private CentroCustoDao centroCustoDao;
-
+	private CentroCustoDao centroCustoDao; 
+	
 	public CentroCustoService(CentroCustoDao centroCustoDao) {
 		this.centroCustoDao = centroCustoDao;
 	}

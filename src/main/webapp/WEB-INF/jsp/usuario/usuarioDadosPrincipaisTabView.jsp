@@ -47,6 +47,22 @@
 	  </div>
 	                   
 	  <div class="form-group">
+	      <label for="cnpj" class="col-md-12 control-label">Cnpj *</label>
+	      <div class="col-md-9">	      
+	          <form:input path="cnpj" class='form-control ${result.hasFieldErrors("cnpj") ? "is-invalid" : ""}' name="cnpj" placeholder="cnpj" disabled="${isDisableTodosCampos}" maxlength="50" />
+	      	  <div class="invalid-feedback"><form:errors path="cnpj" /></div>
+	      </div>
+	  </div>
+	                   
+	  <div class="form-group">
+	      <label for="razaoSocial" class="col-md-12 control-label">Razão social</label>
+	      <div class="col-md-9">	      
+	          <form:input path="razaoSocial" class='form-control ${result.hasFieldErrors("razaoSocial") ? "is-invalid" : ""}' name="razaoSocial" placeholder="razaoSocial" disabled="${isDisableTodosCampos}" maxlength="50" />
+	      	  <div class="invalid-feedback"><form:errors path="razaoSocial" /></div>
+	      </div>
+	  </div>
+	                   
+	  <div class="form-group">
 	      <label for="telefone" class="col-md-12 control-label">Telefone *</label>
 	      <div class="col-md-9">
 	          <form:input path="telefone" class='form-control mask-phone ${result.hasFieldErrors("telefone") ? "is-invalid" : ""}' name="telefone" placeholder="telefone com DDD" disabled="${isDisableTodosCampos}" maxlength="50" />

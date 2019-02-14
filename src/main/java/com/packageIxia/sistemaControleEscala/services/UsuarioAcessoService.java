@@ -241,10 +241,16 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		return "";
 	}
 
-	public String validateLoginUsuario(Usuario usuario) {
+	public String validateLoginUsuario(Usuario usuario, Usuario usuarioBanco) {
 
 		if (usuario == null) {
 			return "Dados inválidos!";
+		}
+		
+		if (usuarioBanco != null &&
+			!usuario.getSenha().equals(usuarioBanco.getSenha()) &&
+			usuario.getSenhaAnterior().equals(usuario.getSenha())) {
+			return "Senha de confirmação para troca de 'senha' incorreta!";
 		}
 		
 		if (!usuario.getRepetirSenha().equals(usuario.getSenha())) {

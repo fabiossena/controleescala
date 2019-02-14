@@ -36,6 +36,11 @@
     	 });
 
 
+			$("#selecionar-todos").change(function() {
+				$(".checked-item").prop("checked", $("#selecionar-todos").prop("checked"));
+			});
+
+
 			$("#banco-id").change(function() {
 				var mes = $("#txt-pesquisar-mes").val();
 				var ano = $("#txt-pesquisar-ano").val();
@@ -59,18 +64,21 @@
 			var ano = $("#txt-pesquisar-ano").val();
 			var banco = $("#banco-id").val();
 			var prestador = $("#prestador").val();
-			if (mes == 0 || mes > 12){
-				alert("Digite um mês válido");
-				return;
-			}
 			
-			if (ano < 2018 || ano > ${anoBase}){
-				alert("Digite um ano válido");
-				return;
-			}
-
 			var item = $("#selected-id-gerar-horas").val();
 			
+			if (item != "5" && item != "6") {
+				if (mes == 0 || mes > 12){
+					alert("Digite um mês válido");
+					return;
+				}
+				
+				if (ano < 2018 || ano > ${anoBase}){
+					alert("Digite um ano válido");
+					return;
+				}
+			}
+
 
 			if (item == "2") {
 				
@@ -84,9 +92,34 @@
 				integracaoRobo();				
 			} else if (item == "3") {
 				gerarCsv();
-			} else {
+			} else if (item == "1") {
 				$("*").css("cursor", "progress");
 	        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "") + (prestador != null && prestador != 0 ? "&prestador=" + prestador : "");
+			} else if (item == "5" || item == "6") {
+				
+				var items = "";
+				var total = 1;
+				
+				var rows = $(".select-rows");
+				rows.each(function() {
+					var id = this.id.replace("id-row", "");
+					var checked = $("#checked-item" + id);
+					if (checked != null && checked.prop("checked")) {
+						items = (items!=""?",":"") + id; 
+						total++;		
+					}
+				});
+				
+				total--;
+				if (items=="") {
+					alert("Não existem itens para a opção selecionada");
+					return;
+				}
+				
+				if (confirm("Deseja realmente " + (item == "5" ? "aprovar " : "recusar ")  + "as horas do" + (total > 1 ? ("s " + total + " prestadores selecionados") :  " prestador selecionado") + "?")) {
+					$("*").css("cursor", "progress");
+	        		window.location.href = "<c:url value='/horas/aprovarSelecionados' />?itens=" + items + "" + "&aprovar=" + (item == "5");
+				}
 			}
 			
 		}
@@ -141,17 +174,17 @@
 				var status = $("#status-financeiro" + id).val();
 				if (item == "1" || item == "2") {
 					if (item == "1" && status == 1) {
-						items = (items!=""?",":"") + (status != null ? status : "");
+						items = (items!=""?",":"") + id; //(status != null ? status : "");
 						total++;
 					} else if (item == "2" && (status == 1 || status == 3)) {
-						items = (items!=""?",":"") + (status != null ? status : "");
+						items = (items!=""?",":"") + id; //(status != null ? status : "");
 						total++;
 					}
 				}
 				else if (item == "3") {
 					var checked = $("#checked-item" + id);
 					if (checked != null && checked.prop("checked")) {
-						items = (items!=""?",":"") + (status != null ? status : "");
+						items = (items!=""?",":"") + id; //(status != null ? status : "");
 						total++;		
 					}
 				}
@@ -202,19 +235,31 @@
 			if (item == 3) {
 				$("#selected-text-gerar-horas").html("Gerar CSV");
 				$("#panel-gerar-csv").show();
+				$(".checked-item-area").show();
+			}
+			else if (item == 2) {
+				$("#selected-text-gerar-horas").html("Gerar mês para prestador");
+				$("#panel-banco").hide();
+				$(".checked-item").hide();
+			}
+			else if (item == 1) {
+				$("#selected-text-gerar-horas").html("Filtro");
+				$(".checked-item-area").hide();
 			}
 			else if (item == 4) {
 				$("#selected-text-gerar-horas").html("Integrar dados robô");
 				$("#panel-banco").hide();
 				$("#panel-prestador").hide();
 				$("#panel-dados-robo").show();
+				$(".checked-item-area").hide();
 			}
-			else if (item == 2) {
-				$("#selected-text-gerar-horas").html("Gerar mês para prestador");
+			else if (item == 5 || item == 6) {
+				$("#selected-text-gerar-horas").html("Aprovar selecionados");
+				$(".checked-item-area").show();
 				$("#panel-banco").hide();
-			}
-			else {
-				$("#selected-text-gerar-horas").html("Filtro");
+				$("#panel-gerar-csv").hide();
+				$("#panel-dados-robo").hide();
+				$("#panel-prestador").hide();
 			}
 		}
 	</script>
@@ -272,16 +317,16 @@
 
 				     <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
 				         <label for="banco" class="control-label">&nbsp;</label>
-				        <br> 
-				        
-				  	
+			        </div>
+						
 					  <div class="btn-group " role="group">
 						  
 						<c:if test="${!isAdministracao && !isFinanceiro}">	
     	  		  			<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrarGerarHoras()" style="height: 35px">Filtrar</button>						
 						</c:if>
 						
-						<c:if test="${isAdministracao || isFinanceiro}">	
+						<c:if test="${isAdministracao || isFinanceiro}">
+						    
 	    	  		  		<button id="btn-filtrar" class="btn btn-sm btn-primary" onclick="filtrarGerarHoras()" style="height: 35px">Executar</button>
 							  <div class="btn-group" role="group">
 								    <button id="btnGroupDrop2"  style=";height: 35px" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -296,6 +341,12 @@
 										  </c:if>
 										  <c:if test="${isFinanceiro}">
 											<button type="button" class="dropdown-item" onclick="selectGerarHoras(3)">Gerar CSV</button>
+										  </c:if>
+										  <c:if test="${isFinanceiro || isAdministracao}">
+											<button type="button" class="dropdown-item" onclick="selectGerarHoras(5)">Aprovar selecionados</button>
+										  </c:if>
+										  <c:if test="${isFinanceiro || isAdministracao}">
+											<button type="button" class="dropdown-item" onclick="selectGerarHoras(6)">Reprovar selecionados</button>
 										  </c:if>
 							        </div>
 							        
@@ -316,8 +367,9 @@
 									  </c:if> 
 							        
 							    </div> 
-						    </c:if>
-					  </c:if>
+						    
+						    </c:if> 
+						</c:if>
 						        	  			
 		   	  			<c:if test="${isAdministracao}">					          
 			       	  		<div id="panel-dados-robo" class="form-group" style="display: none; height: 35px; margin-left: -2px;">	
@@ -326,9 +378,14 @@
 								</form>
 				  			</div>	 
 		      	  		</c:if> 
+				</div> 
 		      	  		
 	
-				</div> 
+						<c:if test="${isAdministracao || isFinanceiro}">	
+						    <span class="checked-item-area form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="display: none;">
+						    	&nbsp;<input type="checkbox" id="selecionar-todos" />&nbsp;Selecionar todos 
+						    </span>
+			        	</c:if> 
 			</div>
 				<div class="table-container table-responsive" style="margin-top: 100px">
 					<table id="tabela" class="display tabela-avancada">
@@ -349,10 +406,19 @@
 				                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.data}" var="data" /> 
 											
 	                				<td>
+							     
+									     <c:if test="${item.aceitePrestador == 1}">
+										     <c:if test="${((isMonitoramento || isAdministracao) && item.dadosAcessoAprovacaoHoras.aprovado != 1) || (isFinanceiro && item.dadosAcessoAprovacaoHoras.aprovado == 1)}">
+										     	<span class="checked-item-area" style="display: none;"> 
+										     		<input type="checkbox" class="checked-item" id="checked-item${item.id}"> 
+										     	</span> 
+									     	</c:if> 
+								     	</c:if> 
+								     	
 	                					<a  class="btn btn-sm btn-primary" 
 	                						href="<c:url value='/horasTrabalhadas' />/${item.id}"
-	                						style="margin: 1px">ver	</a> 
-									     <c:if test="${isFinanceiro}"> 
+	                						style="margin: 1px">ver	</a>
+									     <c:if test="${isFinanceiro}">
 										     <c:if test="${item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado == 1}">
 											     <c:if test="${item.aceiteAprovador == 0}"> 
 				                					<button  class="btn btn-sm btn-primary" 
@@ -365,10 +431,6 @@
 				                						onclick="recusar(${item.id})"
 				                						style="margin: 1px">recusar</button>
 											     </c:if>
-											     <c:if test="${item.aceiteAprovador == 1}">
-											     	Selecionar
-											     	<input type="checkbox" id="checked-item${item.id}"> 
-											     </c:if> 
 										     </c:if>
 									     </c:if>
 	                				</td> 
@@ -379,7 +441,9 @@
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
 									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if><br> 
-										<b>Valor:</b> R$ ${item.totalValor}
+									    <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro || isAdministracao}">	
+											<b>Valor:</b> R$ ${item.totalValor}
+										</c:if> 
 									  </div>
 									</td> 
 				                							
@@ -397,12 +461,14 @@
 										  <c:if test="${item.aceitePrestador == 2}">
 										      <span class="text-danger">(Recusado) Prestador</span>
 										   </c:if>
-										   <c:if test="${item.arquivoNota!=null && item.arquivoNota!=''}"><br><a class="text-dark" href="<c:url value='nota/${item.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>
+										   <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro || isAdministracao}">
+										   	<c:if test="${item.arquivoNota!=null && item.arquivoNota!=''}"><br><a class="text-dark" href="<c:url value='nota/${item.id}'/>" target="_blank">Nota fiscal anexa</a></c:if>
+										   </c:if>
 										   </div>
 										  <c:set var="status">${item.data.year == dataAtual.year && item.data.monthValue == dataAtual.monthValue}</c:set>
 										  <i style="font-size: 10pt" class="text-danger">
 							        	  	  <c:if test="${status}">
-							        	  	  	As etapas de aprovação serão iniciadas apenas após o ultimo dia do mês.
+							        	  	  	As etapas de aprovação serão iniciadas apenas após o último dia do mês.
 							        	  	  </c:if>
 											  <c:if test="${!status}">
 											  	<c:if test="${item.aceitePrestador != 1}">Processo de aprovação iniciado</c:if>
@@ -423,7 +489,8 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr  <c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hr)</c:if></b> </label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr
+											      <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro || isAdministracao}"><c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hr)</c:if></c:if></b> </label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

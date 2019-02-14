@@ -68,6 +68,12 @@ public class Usuario {
     private String cpf;
 
 	@Size(max = 50)
+    private String cnpj;
+
+	@Size(max = 250)
+    private String razaoSocial;
+
+	@Size(max = 50)
     private String rg;
 
 	@Size(max = 50)
@@ -92,6 +98,9 @@ public class Usuario {
 
     @Transient
     private String repetirSenha;
+
+    @Transient
+    private String senhaAnterior;
 
 	@Size(max = 1)
     private String sexo;
@@ -558,5 +567,29 @@ public class Usuario {
 
 	public void setUsuarioFuncaoAdicionais(List<UsuarioFuncaoAdicional> usuarioFuncaoAdicionais) {
 		this.usuarioFuncaoAdicionais = usuarioFuncaoAdicionais;
+	}
+
+	public String getSenhaAnterior() {
+		return senhaAnterior;
+	}
+
+	public void setSenhaAnterior(String senhaAnterior) {
+		this.senhaAnterior = senhaAnterior;
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+
+	public String getRazaoSocial() {
+		return razaoSocial;
+	}
+
+	public void setRazaoSocial(String razaoSocial) {
+		this.razaoSocial = razaoSocial;
 	}
 }

@@ -33,7 +33,6 @@ public class EnvioEmail extends Thread  {
     
     @Override
     public void run() {
-    	
     	String email = this.environment.getProperty("ixia.sistema.escala.email");
     	String senha = this.environment.getProperty("ixia.sistema.escala.senha");
     	String smtp = this.environment.getProperty("ixia.sistema.escala.smtp");

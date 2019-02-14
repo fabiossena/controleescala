@@ -12,7 +12,7 @@
     <jsp:include page="shared/headerPartialView.jsp"/>
 	<script src="<c:url value='/js/projeto/index-projeto.js' />"></script>
 	<script>
-	
+		
 		function aprovarSolicitacao(id) {
 			$("#motivo-recusa-solicitacao-feedback" + id).html("");
 			$("#motivo-recusa-solicitacao" + id).removeClass("is-invalid");
@@ -51,6 +51,7 @@
 			
 			var message = (tipo == 1 ? (iniciar ? "iniciar" : "parar") : ""); 
 			if (message != "" && !confirm("Deseja realmente " + message + " este apontamento de horas?")) {
+				clearTimeout(timeoutAlertHoras);
 				return;
 			}
 			
@@ -69,14 +70,12 @@
 				if (!confirm("Deseja realmente pausar este apontamento de horas?")) {
 					return;
 				}
-			
 				iniciar = true;
 			}
 			else if (tipo == 2 && $("#motivo").prop("disabled")) {
 				if (!confirm("Deseja realmente retomar este apontamento de horas?")) {
 					return;
 				}
-				
 				iniciar = false;			
 			}		
 
@@ -130,6 +129,10 @@
 				$("#tempo").html(timeString);				
 				if ("${pausar}" ==  "pausar") {
 					setTimeout(setTempo, 1000);
+				}
+				
+				if (tempoServer>((60*60)*6,1)){
+					timeoutAlertHoras = setTimeout(function () { alert("Seu apontamento de horas ultrapassou 6 horas!"); }, 20000);
 				}
 			}
 		}

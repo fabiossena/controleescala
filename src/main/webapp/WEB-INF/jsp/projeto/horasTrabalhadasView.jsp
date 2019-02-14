@@ -209,10 +209,12 @@
 											  <c:if test="${aprovacaoHora.aceitePrestador == 0}">(Pendente)</c:if>
 											  <c:if test="${aprovacaoHora.aceitePrestador == 1}">(Aprovado)</c:if>
 											  <c:if test="${aprovacaoHora.aceitePrestador == 2}">(Recusado)</c:if> Prestador: ${aprovacaoHora.prestador.nomeCompletoMatricula} 
-										   </span><br>	        	  		
-				        	  			   <c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
-				        	  			   	<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a>
-				        	  			   </c:if>		        	  			   											  
+										   </span><br>	  
+										   <c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id || isFinanceiro || isAdministracao}">      	  		
+					        	  			   <c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
+					        	  			   	<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a>
+					        	  			   </c:if>		
+				        	  			   </c:if>        	  			   											  
 									  </div> 
 									    
 									    
@@ -227,6 +229,7 @@
 												  <c:if test="${item.nome.contains('(Reprovado')}">text-danger</c:if>
 											  </c:set>
 										      <label style="font-size: 10pt" class="control-label ${styleStatusAprovador}">${item.nome} | <b>${item.descricao}hr <c:if test="${item.doubleValue < 1}">(${item.doubleValue}hr)</c:if></b></label>
+										      
 								          	  <br>
 									      </c:forEach>
 								       </div>	
@@ -244,11 +247,13 @@
 								      	<label class="control-label"> 
 											<b>Total horas:</b> ${aprovacaoHora.totalHorasFormatada}hr <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs)</c:if> 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
-										</label><br>					          
+										</label><br>
+										<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id || isFinanceiro || isAdministracao}">         
 								      	<label class="control-label">
 											<b>Total valor:</b> R$ ${aprovacaoHora.totalValor}
 											<%-- <c:if test="${aprovacaoHora.totalValor > 0}">${aprovacaoHora.totalValor}</c:if><c:if test="${aprovacaoHora.totalValor == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalValor}</c:if> --%>
 										</label>
+										</c:if>		
 									  </div>	
 									  
 					        	  	  <c:if test="${!isDisableCampos}">

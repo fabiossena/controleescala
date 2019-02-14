@@ -56,15 +56,16 @@ public class DadosAcessoAprovacaoHoras {
 
 		this.dadosAcesso = false;
 		this.aprovador = new Usuario();
-    	if (!(usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.monitoramento.getId() &&
+    	if (!(usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.administracao.getId() &&
+    			usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.monitoramento.getId() &&
 			usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.atendimento.getId())) {
 
     		this.dadosAcesso = true;
-	    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getPerfilAcesso().getId()) {
+    		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {
 	    		
 	    		List<HoraTrabalhada> hr = 
 	    				horaAprovacao.getHorasTrabalhadas().stream().filter(x->
-						(x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId())).collect(Collectors.toList());
+						 x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()).collect(Collectors.toList());
 	    		
 	    		this.aprovador = usuarioLogado;
 	    		if (hr.size() > 0) {
@@ -73,7 +74,9 @@ public class DadosAcessoAprovacaoHoras {
 	    	}
     	}
 
-    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
+    	boolean acessoAdm = usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() || 
+    				 usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId();
+    	if (acessoAdm) {
     		List<HoraTrabalhada> hr = horaAprovacao.getHorasTrabalhadas();
     		
     		this.aprovador = usuarioLogado;

@@ -24,7 +24,7 @@ import com.amazonaws.services.s3.transfer.Upload;
 @Service
 public class AmazonStorageService {
 	
-    private String clientRegion;
+    //private String clientRegion;
     private String bucketName;
     private AmazonS3 s3Client;
 
@@ -32,9 +32,10 @@ public class AmazonStorageService {
     public AmazonStorageService (Environment environment) {
     	
         this.s3Client = AmazonS3ClientBuilder.standard()
-                .withRegion(clientRegion)
+                .withRegion(environment.getProperty("aws.clientRegion"))
                 .withCredentials(new EnvironmentVariableCredentialsProvider())      
                 .build();
+        
         		// new SystemPropertiesCredentialsProvider()) 
                 // new AWSStaticCredentialsProvider(awsCreds)) 
                 // new EnvironmentVariableCredentialsProvider()) 

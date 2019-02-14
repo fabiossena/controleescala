@@ -454,10 +454,6 @@ public class ProjetoController {
 	        	return modelViewCadastro;
 	        }      
     	}
-        
-    	if (prestador.isReenviarConvite()) {
-    		prestador.setAceito(0);
-    	}
     	
         message = this.projetoEscalaPrestadorService.save(prestador);  
         

@@ -93,7 +93,8 @@ public class UsuarioController {
     	modelViewCadastro.addObject("errorMessage", null);
     	
 		this.usuarioLogado = ((Usuario)request.getSession().getAttribute("usuarioLogado"));
-    	if (this.usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
+    	if (this.usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.administracao.getId() &&
+    			this.usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.financeiro.getId()) {
     		ModelAndView erroModelView = new ModelAndView("redirect:/error");
     		erroModelView.addObject("errorMessage", "Não permitido acesso a tela de usuários");
             return erroModelView;
@@ -140,8 +141,8 @@ public class UsuarioController {
 		modelViewCadastro.addObject("isDisableCamposChaves", false);		
 		modelViewCadastro.addObject("isDisableTodosCampos", readOnly);
 
-    	
-    	if (this.usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
+    	if (this.usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.administracao.getId() &&
+    			this.usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.financeiro.getId()) {
     		ModelAndView erroModelView = new ModelAndView("redirect:/error");
     		erroModelView.addObject("errorMessage", "Não permitido acesso a tela de usuários");
             return erroModelView;

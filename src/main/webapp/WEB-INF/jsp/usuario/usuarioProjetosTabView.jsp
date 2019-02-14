@@ -24,7 +24,8 @@
 				    <h6 class="card-subtitle mb-2 text-muted">Função: ${item.funcao.nome}</h6>
 				    
 				    <p class="card-text" style="font-size: 10pt" id="observacao-prestador${item.id}">${item.observacaoPrestador}</p>
-				    
+				     	
+	                <!--
 	                <c:if test="${item.ativo}">
 		                	
                			<div class="form-group" 
@@ -42,7 +43,6 @@
               		 				<c:if test='${isDisableTodosCampos || item.aceito == 2}'>disabled</c:if>>${item.motivoRecusa}</textarea>
               		 			<div id="motivo-recusa-feedback${item.id}" class="invalid-feedback"></div>	
 						</div>  
-		                        	
 		                <input  type="button"
 				                id="bt-aceita-prestador${item.id}"
 		                		onclick="aceitarPrestador(${item.id})" 
@@ -57,8 +57,9 @@
 		                		class="btn btn-sm btn-danger" 
 		                		value="clique aqui para recusar"
 		                		style='margin: 1px; <c:if test="${!(item.aceito == 0 || item.aceito == 1)}">display: none</c:if>'
-		                		<c:if test="${isDisableTodosCampos}">disabled</c:if> />
-               		</c:if>		
+		                		<c:if test="${isDisableTodosCampos}">disabled</c:if> />      
+               		</c:if>	
+               		 -->  	
 				  </div>
 				</div>
 	        </c:forEach>

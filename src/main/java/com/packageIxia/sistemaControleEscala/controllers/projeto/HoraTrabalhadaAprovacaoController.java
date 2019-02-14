@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +79,8 @@ public class HoraTrabalhadaAprovacaoController {
 	private int ano;
 	private List<Usuario> usuarios;
 	private AmazonStorageService amazonStorageService;
-    
+
+	@Autowired
 	public HoraTrabalhadaAprovacaoController(
 			IProjetoEscala projetoEscalaService,
 			IHoraAprovacao horaAprovacaoService,
@@ -362,6 +365,23 @@ public class HoraTrabalhadaAprovacaoController {
 		return new ModelAndView("redirect:/horasTrabalhadas/"+id);
 	}
 	
+	@GetMapping("horas/aprovarSelecionados")
+    public ModelAndView aprovarSelecionados(
+    		@RequestParam("itens") String itens,
+			@RequestParam(value = "aprovar", defaultValue = "true") boolean aprovar,
+			HttpServletResponse response) throws NumberFormatException, Exception {
+
+			if (itens == null || itens.trim().isEmpty()) {
+				return null;
+			}
+
+			for (String str : itens.split(",")) {
+				this.horaAprovacaoService.updateAprovacao(aprovar, Long.valueOf(str), "", this.aprovacaoHora);				
+			}
+			
+			return  new ModelAndView("redirect:/aprovacaoHoras?ano=" + this.ano + "&mes=" + this.mes);
+	 }
+	
 	@GetMapping("horas/gerarCsv")
     public ResponseEntity<Resource> downloadCSV(
     		@RequestParam("itens") String itens,
@@ -468,9 +488,7 @@ public class HoraTrabalhadaAprovacaoController {
 		this.ano = ano == 0 ? Utilities.now().getYear() : ano;
 		this.mes = mes == 0 ? Utilities.now().getMonthValue() : mes;
 		
-    	ModelAndView mv = new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
-    	
-		return mv;
+		return  new ModelAndView("redirect:/aprovacaoHoras/"+id + "?ano=" + ano + "&mes=" + mes);
 	}
 	
 	private void loadUsuarios() {

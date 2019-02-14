@@ -261,8 +261,46 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 		if (aprovacaoHora.getDadosAcessoAprovacaoHoras() == null) {
 			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado));
 		}
+			
+		if (aprovacaoHora != null && aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {
+			this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());			
+			this.horaAprovacaoDao.updateAprovacaoPrestador(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
+			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {
+				long aprovadorId = hora.getResponsavelAprovacao() == null ? hora.getProjetoEscala().getMonitor().getId() : hora.getResponsavelAprovacao().getId();
+				this.horaTrabalhadaDao.updateAprova(hora.getId(), aprovadorId, 0, "");
+			}
+			
+			return;
+		}
+
+		if (aprovacaoHora.getHorasTrabalhadas().stream().anyMatch(x->
+				x.getAprovadoResponsavel() != 1 && 
+				(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+				(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() &&  x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()) )) ) {
+
+			if (aprovacaoHora.getAceiteAprovador() == 2) {
+				this.horaAprovacaoDao.updateAprovacaoResponsavel(0, id, aprovacaoHora.getAprovador().getId(), "");
+			}
+			
+			if (!aprovar) {
+				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
+				this.notificacaoService.save(new Notificacao(3, "Suas horas trabalhadas foram ''recusadas'', por favor verifique e realize os ajustes necessários!", "Aprovação de horas", aprovacaoHora.getPrestador()));
+			}
+			
+			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas().stream().filter(x->
+					x.getAprovadoResponsavel() != 1 && 
+					(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+					(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() &&  x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()))).collect(Collectors.toList())) {	
+				this.horaTrabalhadaDao.updateAprova(hora.getId(), usuarioLogado.getId(), aprovar ? 1 : 2, motivo);
+			}
+			
+			return;
+		}
 		
-		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId()) {
+		if (aprovacaoHora.getDadosAcessoAprovacaoHoras().getAprovado() == 1 &&
+			!aprovacaoHora.getHorasTrabalhadas().stream().anyMatch(x->x.getAprovadoResponsavel() != 1) && 
+			(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.financeiro.getId())) {
 			this.horaAprovacaoDao.updateAprovacaoResponsavel(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
 			if (!aprovar) {
 				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
@@ -270,7 +308,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 				for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {	
 					this.horaTrabalhadaDao.updateAprova(hora.getId(), hora.getResponsavelAprovacao().getId(), 0, "");
 					if (!enviadoMonitor .stream().anyMatch(x->x == hora.getResponsavelAprovacao().getId())) {
-						this.notificacaoService.save(new Notificacao(3, "As horas trabalhadas do prestador ''" + aprovacaoHora.getPrestador().getNomeCompleto()  + "'' foram recusadas pelo financeiro, para que sejam efetuados os ajustes necessários (após retornando para sua aprovação)!", "Aprovação de horas", aprovacaoHora.getPrestador()));
+						this.notificacaoService.save(new Notificacao(3, "As horas trabalhadas do prestador ''" + aprovacaoHora.getPrestador().getNomeCompleto()  + "'' foram recusadas pelo financeiro, para que sejam efetuados os ajustes necessários (após retornando para sua aprovação)!", "Aprovação de horas", hora.getResponsavelAprovacao()));
 						enviadoMonitor.add(hora.getResponsavelAprovacao().getId());
 					}
 				}
@@ -282,31 +320,6 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 			}
 			
 			return;
-		}
-			
-		if (aprovacaoHora != null && aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {
-			this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());			
-			this.horaAprovacaoDao.updateAprovacaoPrestador(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
-			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {
-				long aprovadorId = hora.getResponsavelAprovacao() == null ? hora.getProjetoEscala().getMonitor().getId() : hora.getResponsavelAprovacao().getId();
-				this.horaTrabalhadaDao.updateAprova(hora.getId(), aprovadorId, 0, "");
-			}	
-		}
-
-		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() && aprovacaoHora.getHorasTrabalhadas().stream().anyMatch(x->x.getProjetoEscala().getMonitor().getId() ==  usuarioLogado.getId())) {
-
-			if (aprovacaoHora.getAceiteAprovador() == 2) {
-				this.horaAprovacaoDao.updateAprovacaoResponsavel(0, id, aprovacaoHora.getAprovador().getId(), "");
-			}
-			
-			if (!aprovar) {
-				this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());
-				this.notificacaoService.save(new Notificacao(3, "Suas horas trabalhadas foram ''recusadas'', por favor verifique e realize os ajustes necessários!", "Aprovação de horas", aprovacaoHora.getPrestador()));
-			}
-			
-			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas().stream().filter(x->x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()).collect(Collectors.toList())) {	
-				this.horaTrabalhadaDao.updateAprova(hora.getId(), usuarioLogado.getId(), aprovar ? 1 : 2, motivo);
-			}
 		}
 	}
 

@@ -59,8 +59,13 @@ public class UsuarioService implements IUsuario {
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
-
-		error = this.usuarioAcessoService.validateLoginUsuario(usuario);
+		
+		Usuario usuarioBanco = null;
+		if (usuario.getId() != 0) {
+			usuarioBanco = this.findByUsuarioId(usuario.getId());
+		}
+		
+		error = this.usuarioAcessoService.validateLoginUsuario(usuario, usuarioBanco);
 		if (!Strings.isBlank(error)) {
 			return error;
 		}

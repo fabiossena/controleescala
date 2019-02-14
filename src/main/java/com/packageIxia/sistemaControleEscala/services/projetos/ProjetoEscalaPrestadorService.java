@@ -17,9 +17,11 @@ import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoFolgaSemanal;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestadorDiaHoraTrabalho;
+import com.packageIxia.sistemaControleEscala.models.referencias.Notificacao;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -32,6 +34,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 	private AusenciaSolicitacaoDao ausenciaSolicitacaoDao;
 	private AusenciaReposicaoDao ausenciaReposicaoDao;
 	private HoraAprovacaoDao horaAprovacaoDao;
+	private INotificacao notificacao;
 
 	@Autowired
 	public ProjetoEscalaPrestadorService(
@@ -40,13 +43,15 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 			IProjeto projetoService,
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
-			HoraAprovacaoDao  horaAprovacaoDao) {
+			HoraAprovacaoDao  horaAprovacaoDao,
+			INotificacao notificacao) {
 		this.projetoEscalaPrestadorDao = projetoEscalaPrestadorDao;
 		this.projetoFolgaSemanalService = projetoFolgaSemanalService;
 		this.projetoService = projetoService;
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
 		this.horaAprovacaoDao = horaAprovacaoDao;
+		this.notificacao = notificacao;
 	}
 	
 	@Override
@@ -152,8 +157,21 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		if (message != "") {
 			return message;
 		}
+
+		prestador.setAceito(1);
+    	/*if (prestador.isReenviarConvite()) {
+    		prestador.setAceito(1);
+    	}*/
+		
+		ProjetoEscalaPrestador prestadorBase = prestador.getId() == 0 ? null : this.findById(prestador.getId());
+    	boolean novo = prestador.getId() == 0 || (prestadorBase != null && prestadorBase.getPrestador().getId() != prestador.getId());
     	
 		ProjetoEscalaPrestador prestadorSalvo = this.projetoEscalaPrestadorDao.save(prestador);
+		
+		if (novo) {
+			notificacao.save(new Notificacao(1, "Você foi cadastrado em um novo projeto.", "Projetos", prestadorSalvo.getPrestador()));
+		}
+		
 		prestador.setId(prestadorSalvo.getId());
 		return "";
 	}
@@ -295,13 +313,13 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 					if (item.isAtivo() &&
 						item.getProjetoEscala().isAtivo() &&
 						item.getProjeto().isAtivo()) {
-						informacaoAdicional +=  item.getAceito() == 0 ? "<br><br><i>Projeto aguardando aceite do prestador.</i>" : "";
+						//informacaoAdicional +=  item.getAceito() == 0 ? "<br><br><i>Projeto aguardando aceite do prestador.</i>" : "";
 					}
 					
-					informacaoAdicional +=  item.getAceito() == 2 ? "<br><br><i>Projeto recusado pelo prestador.</i>" : "";
+					//informacaoAdicional +=  item.getAceito() == 2 ? "<br><br><i>Projeto recusado pelo prestador.</i>" : "";
 					
 					if (!trazerSomenteInformacoesBasicas) {
-						informacaoAdicional +=  item.getAceito() == 1 ? "<br><br><i>Projeto aceito pelo prestador.</i>" : "";
+						//informacaoAdicional +=  item.getAceito() == 1 ? "<br><br><i>Projeto aceito pelo prestador.</i>" : "";
 					}
 				}
 				

@@ -16,7 +16,7 @@
 	  </div>
 	  
 	  <div class="form-group">
-	      <label for="senha" class="col-md-12 control-label">Senha *</label>
+	      <label for="senha" class="col-md-12 control-label">Senha * ()</label>
 	      <div class="col-md-9">
 	          <form:input path="senha" type="password" class='form-control ${result.hasFieldErrors("senha") ? "is-invalid" : ""}' name="senha" placeholder="senha" disabled="${isDisableTodosCampos}" maxlength="50"/>
 	      	  <div class="invalid-feedback"><form:errors path="senha"  disabled="${isDisableTodosCampos}"/></div>
@@ -30,6 +30,14 @@
 	      	  	<div class="invalid-feedback"><form:errors path="repetirSenha"  disabled="${isDisableTodosCampos}"/></div>
 		    </div>
 		</div>
+	  
+	  <div class="form-group">
+	      <label for="senhaAnterior" class="col-md-12 control-label">Preencha a senha anterior em caso de troca</label>
+	      <div class="col-md-9">
+	          <form:input path="senhaAnterior" type="password" class='form-control' name="senhaAnterior" placeholder="senhaAnterior" disabled="${isDisableTodosCampos}" maxlength="50"/>
+	      	  <div class="invalid-feedback"><form:errors path="senhaAnterior"  disabled="${isDisableTodosCampos}"/></div>
+	       </div>
+	   </div>
 		
 	</div>
 </div>
