@@ -130,6 +130,12 @@
 	      <label for="ativo" class="col-md-12 control-label">Ativo</label>
           <form:checkbox  path="ativo" disabled="${isDisableCamposChaves || isDisableTodosCampos}" class="form-control  col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" name="ativo" />
 	  </div>
+	                   
+	  <div class="form-group">
+	      <div class="col-md-9">
+	      	  <i>Último acesso: ${usuario.ultimoAcessoDataHora}</i>
+	      </div>
+	  </div>
 		
 	</div>
 </div>

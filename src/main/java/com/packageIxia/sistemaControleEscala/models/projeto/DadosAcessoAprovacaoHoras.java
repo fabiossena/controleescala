@@ -56,9 +56,9 @@ public class DadosAcessoAprovacaoHoras {
 
 		this.dadosAcesso = false;
 		this.aprovador = new Usuario();
-    	if (!(usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.administracao.getId() &&
-    			usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.monitoramento.getId() &&
-			usuarioLogado.getFuncao().getPerfilAcessoId() != PerfilAcessoEnum.atendimento.getId())) {
+    	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() ||
+			usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.atendimento.getId()) {
 
     		this.dadosAcesso = true;
     		if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId()) {

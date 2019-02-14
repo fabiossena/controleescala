@@ -12,7 +12,9 @@
     <jsp:include page="../shared/headerPartialView.jsp"/>
 	<script>
 		$(document).ready(function() {
-
+		$("#txt-pesquisar-mes").spinner({ min: 1, max: 12});
+		$("#txt-pesquisar-ano").spinner({ min: 2018, max: 2100});
+		
          $('#btn-gerar-prestador').on('click',function() {
 			var mes = $("#txt-pesquisar-mes").val();
 			var ano = $("#txt-pesquisar-ano").val();
@@ -149,7 +151,8 @@
 				success : function(data) {
 					$("#aprovar").hide();
 					$("#recusar").hide();
-					$("#linha-aprovacao"+id).html("<span style='font-size: 10pt'>" + (aprovar ? "Aprovado" : "Reprovado") + " Financeiro (atualizar tela)<span>");
+					//$("#linha-aprovacao"+id).html("<span style='font-size: 10pt'>" + (aprovar ? "Aprovado" : "Reprovado") + " Financeiro (atualizar tela)<span>");
+					alert("Favor atualizar tela para ver as informações de aprovação!");
 				},
 				error : function(e) {
 					alert("Error!")
@@ -280,12 +283,12 @@
 				  
 					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-ano" class="control-label">Ano</label>
-				          <input id="txt-pesquisar-ano" class="form-control mask-year" value="${ano}" />
+				          <input id="txt-pesquisar-ano" class="spinner number form-control mask-year" value="${ano}" />
 					  </div> 
 					
 					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-mes" class="control-label">Mês</label>
-				          <input id="txt-pesquisar-mes" class="form-control mask-month" value="${mes}" />
+				          <input id="txt-pesquisar-mes" class="spinner number form-control mask-month" value="${mes}" />
 					  </div>
 
 				     <div id="panel-banco" class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
@@ -381,11 +384,11 @@
 				</div> 
 		      	  		
 	
-						<c:if test="${isAdministracao || isFinanceiro}">	
-						    <span class="checked-item-area form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="display: none;">
-						    	&nbsp;<input type="checkbox" id="selecionar-todos" />&nbsp;Selecionar todos 
-						    </span>
-			        	</c:if> 
+				<c:if test="${isAdministracao || isFinanceiro}">	
+				    <span class="checked-item-area form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="display: none;">
+				    	&nbsp;<input type="checkbox" id="selecionar-todos" />&nbsp;Selecionar todos 
+				    </span>
+	        	</c:if> 
 			</div>
 				<div class="table-container table-responsive" style="margin-top: 100px">
 					<table id="tabela" class="display tabela-avancada">
@@ -405,34 +408,38 @@
 					            <tr class="select-rows" id="id-row${item.id}">
 				                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.data}" var="data" /> 
 											
-	                				<td>
-							     
-									     <c:if test="${item.aceitePrestador == 1}">
-										     <c:if test="${((isMonitoramento || isAdministracao) && item.dadosAcessoAprovacaoHoras.aprovado != 1) || (isFinanceiro && item.dadosAcessoAprovacaoHoras.aprovado == 1)}">
-										     	<span class="checked-item-area" style="display: none;"> 
-										     		<input type="checkbox" class="checked-item" id="checked-item${item.id}"> 
-										     	</span> 
-									     	</c:if> 
-								     	</c:if> 
-								     	
+	                				<td> 
+	                				
+									   		<c:set var="atendentePodeAprovar">${(item.aceitePrestador != 1 && item.prestador.id == usuarioLogado.id) ||
+														   						(isFinanceiro && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado == 1 && item.aceiteAprovador != 1) ||
+														   						(isAdministracao && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1) ||
+											        	  				 		(item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1 && item.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id)}</c:set>	
+											        	  				 		
+										        	  				 		
+									     <c:if test="${atendentePodeAprovar}">
+									     	<span class="checked-item-area" style="display: none;"> 
+									     		<input type="checkbox" class="checked-item" id="checked-item${item.id}"> 
+									     	</span> 
+									     	<br />
+								     	</c:if>
+									     
 	                					<a  class="btn btn-sm btn-primary" 
 	                						href="<c:url value='/horasTrabalhadas' />/${item.id}"
 	                						style="margin: 1px">ver	</a>
-									     <c:if test="${isFinanceiro}">
-										     <c:if test="${item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado == 1}">
-											     <c:if test="${item.aceiteAprovador == 0}"> 
-				                					<button  class="btn btn-sm btn-primary" 
-				                						id="aprovar"
-				                						onclick="aprovar(${item.id})" 
-				                						style="margin: 1px">aprovar</button>
-	
-				                					<button  class="btn btn-sm btn-danger" 
-				                						id="recusar"
-				                						onclick="recusar(${item.id})"
-				                						style="margin: 1px">recusar</button>
-											     </c:if>
-										     </c:if>
-									     </c:if>
+							     
+										     <c:if test="${atendentePodeAprovar}">
+										     	<button  class="btn btn-sm btn-primary" 
+			                						id="aprovar"
+			                						onclick="aprovar(${item.id})" 
+			                						style="margin: 1px">aprovar</button>
+
+										     		<c:if test="${item.dadosAcessoAprovacaoHoras.aprovado != 2 && item.aceiteAprovador != 2}">
+					                					<button  class="btn btn-sm btn-danger" 
+					                						id="recusar"
+					                						onclick="recusar(${item.id})"
+					                						style="margin: 1px">recusar</button>									     	
+			                						</c:if>
+									     	</c:if> 
 	                				</td> 
 	                				
 					                <td style="font-size: 10pt">
@@ -441,7 +448,7 @@
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
 									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if><br> 
-									    <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro || isAdministracao}">	
+									    <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro}">	
 											<b>Valor:</b> R$ ${item.totalValor}
 										</c:if> 
 									  </div>

@@ -248,7 +248,7 @@
 											<b>Total horas:</b> ${aprovacaoHora.totalHorasFormatada}hr <c:if test="${aprovacaoHora.totalHoras < 1}">(${aprovacaoHora.totalHoras}hrs)</c:if> 
 											<%-- <c:if test="${aprovacaoHora.totalHoras > 0}">${aprovacaoHora.totalHoras}</c:if><c:if test="${aprovacaoHora.totalHoras == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalHoras}</c:if> --%>
 										</label><br>
-										<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id || isFinanceiro || isAdministracao}">         
+										<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id || isFinanceiro}">         
 								      	<label class="control-label">
 											<b>Total valor:</b> R$ ${aprovacaoHora.totalValor}
 											<%-- <c:if test="${aprovacaoHora.totalValor > 0}">${aprovacaoHora.totalValor}</c:if><c:if test="${aprovacaoHora.totalValor == 0}">${aprovacaoHora.dadosAcessoAprovacaoHoras.totalValor}</c:if> --%>
@@ -260,7 +260,10 @@
 										   <div class="form-group col-sm-12"> 
 										      <c:if test="${!isDisableCampos && 
 										      				((aprovacaoHora.aceitePrestador == 0 && aprovacaoHora.prestador.id == usuarioLogado.id) || 
-										      				 (aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}">		
+									   						(isAdministracao && aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0) ||
+										      				(aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado != 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id) ||
+									   						(isFinanceiro && aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 1 && aprovacaoHora.aceiteAprovador == 0) ||
+						        	  				 		(aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id) )}">		
 											      <label for="motivo" class="control-label"><strong>Motivo recusa</strong></label>
 										          <input id="motivo-recusa" class='form-control' />
 									          </c:if>
@@ -273,33 +276,34 @@
 								          
 							          
 					        	  	  <c:if test="${!isDisableCampos}">
-									   <div class="form-group col-sm-12">	
-									   		<c:set var="atendentePodeAprovar">${((aprovacaoHora.aceitePrestador == 0 || aprovacaoHora.aceitePrestador == 2) && (aprovacaoHora.prestador.id == usuarioLogado.id)) ||
-						        	  				 		((aprovacaoHora.aceitePrestador == 1 && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 || aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 2)) && (aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}</c:set>	        	  			
+									   <div class="form-group col-sm-12">
+									   		<c:set var="atendentePodeAprovar">${(aprovacaoHora.aceitePrestador != 1 && aprovacaoHora.prestador.id == usuarioLogado.id) ||
+														   						(isFinanceiro && aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 1 && aprovacaoHora.aceiteAprovador != 1) ||
+														   						(isAdministracao && aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado != 1) ||
+											        	  				 		(aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado != 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id)}</c:set>	        	  			
 						        	  		<c:if test="${atendentePodeAprovar}">						          
 							        	  		<input 
 							        	  			id="btn-aceitar-todas" 
 							        	  			type="button" 
 							        	  			class="btn btn-sm btn-success" 
 							        	  			value="Aceitar todas" 
-							        	  			style="margin: 1px" />
-					        	  			</c:if>				        	  			
-						        	  		<c:if test="${(aprovacaoHora.aceitePrestador == 0 && aprovacaoHora.prestador.id == usuarioLogado.id) ||
-						        	  						(aprovacaoHora.aceitePrestador == 1 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado == 0 && aprovacaoHora.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id)}">
-							        	  		<input 
-							        	  			id="btn-recusar-todas" 
-							        	  			type="button" 
-							        	  			class="btn btn-sm btn-danger" 
-							        	  			value="Recusar todas" 
-							        	  			style="margin: 1px" />	
-					        	  			</c:if>		
+							        	  			style="margin: 1px" />			        	  			
+							        	  		<c:if test="${aprovacaoHora.dadosAcessoAprovacaoHoras.aprovado != 2 && aprovacaoHora.aceiteAprovador != 2}">
+								        	  		<input 
+								        	  			id="btn-recusar-todas" 
+								        	  			type="button" 
+								        	  			class="btn btn-sm btn-danger" 
+								        	  			value="Recusar todas" 
+								        	  			style="margin: 1px" />	
+						        	  			</c:if>		
+					        	  			</c:if>	
 					        	  			
 				        	  			</div>	
 			        	  			
-				        	  			<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id && atendentePodeAprovar}">					          
+				        	  			<c:if test="${aprovacaoHora.aceitePrestador != 1 && usuarioLogado.id == aprovacaoHora.prestador.id && atendentePodeAprovar}">					          
 						        	  		<div class="form-group col-sm-12">	
 						        	  			<form method="POST" action="<c:url value='../upload/${aprovacaoHora.id}'/>" enctype="multipart/form-data">
-						        	  				<c:if test="${aprovacaoHora.arquivoNota!=null && aprovacaoHora.arquivoNota!=''}">
+						        	  				<c:if test="${aprovacaoHora.arquivoNota != null && aprovacaoHora.arquivoNota != ''}">
 														<a class="text-dark" style="text-decoration: underline;" id="nota-anexa" href="<c:url value='../nota/${aprovacaoHora.id}'/>" target="_blank">Nota fiscal anexa</a><br>
 														Para substituir a nota atual selecione
 													</c:if>
@@ -336,10 +340,9 @@
 									        <tbody>    
 										      <c:forEach var = "i" begin = "1" end = "2">
 										        <c:forEach items="${horasTrabalhadas}" var="item">
-										        	<c:if test="${
-											        	(i == 1 && (item.horaAprovacao.prestador.id == usuarioLogado.id || item.projetoEscala.monitor.id == usuarioLogado.id ||  item.projetoEscala.projeto.gerente.id == usuarioLogado.id)) ||
-											        	(i == 2 && !(item.horaAprovacao.prestador.id == usuarioLogado.id || item.projetoEscala.monitor.id == usuarioLogado.id ||  item.projetoEscala.projeto.gerente.id == usuarioLogado.id))}">
-											            <tr onclick="selecionarHora(${item.id})" <c:if test="${item.tipoAcao==1}">style='font-weight: bold'</c:if>>
+									        		<c:if test="${(i == 1 && (item.horaAprovacao.prestador.id == usuarioLogado.id || item.projetoEscala.monitor.id == usuarioLogado.id || item.projetoEscala.projeto.gerente.id == usuarioLogado.id)) ||
+									        					  (i == 2 && !(item.horaAprovacao.prestador.id == usuarioLogado.id || item.projetoEscala.monitor.id == usuarioLogado.id || item.projetoEscala.projeto.gerente.id == usuarioLogado.id))}">
+						        					  	<tr onclick="selecionarHora(${item.id})" <c:if test="${item.tipoAcao==1}">style='font-weight: bold'</c:if>>
 										                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataHoraInicio}" var="dataHrIni" /> 
 										                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.dataHoraFim}" var="dataHrFim" /> 
 											                <td>${item.id}</td>

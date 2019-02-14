@@ -183,6 +183,8 @@ public class Usuario {
 
 	private double valorMinuto;
 	
+	private LocalDateTime ultimoAcessoDataHora;
+	
 	public long getId() {
 		return id;
 	}
@@ -591,5 +593,13 @@ public class Usuario {
 
 	public void setRazaoSocial(String razaoSocial) {
 		this.razaoSocial = razaoSocial;
+	}
+
+	public LocalDateTime getUltimoAcessoDataHora() {
+		return ultimoAcessoDataHora;
+	}
+
+	public void setUltimoAcessoDataHora(LocalDateTime ultimoAcessoDataHora) {
+		this.ultimoAcessoDataHora = ultimoAcessoDataHora;
 	}
 }

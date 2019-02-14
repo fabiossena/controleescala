@@ -262,7 +262,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado));
 		}
 			
-		if (aprovacaoHora != null && aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {
+		if (aprovacaoHora != null && aprovacaoHora.getAceitePrestador() != 1 &&  aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {
 			this.updateAprovacaoReset(id, aprovacaoHora.getTotalHoras(), aprovacaoHora.getTotalValor());			
 			this.horaAprovacaoDao.updateAprovacaoPrestador(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
 			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {
@@ -279,7 +279,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 				(usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.monitoramento.getId() &&  x.getProjetoEscala().getMonitor().getId() == usuarioLogado.getId()) )) ) {
 
 			if (aprovacaoHora.getAceiteAprovador() == 2) {
-				this.horaAprovacaoDao.updateAprovacaoResponsavel(0, id, aprovacaoHora.getAprovador().getId(), "");
+				this.horaAprovacaoDao.updateAprovacaoResponsavel(0, id, usuarioLogado.getId(), "");
 			}
 			
 			if (!aprovar) {

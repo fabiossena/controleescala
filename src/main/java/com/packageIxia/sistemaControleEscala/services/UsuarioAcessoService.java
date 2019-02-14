@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.packageIxia.sistemaControleEscala.daos.UsuarioEmailPrimeiroAcessoDao;
 import com.packageIxia.sistemaControleEscala.daos.usuario.UsuarioDao;
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioAcesso;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.models.CadastroInicialPage;
@@ -53,11 +54,14 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		}
 		
 		login.setMatricula(login.getMatricula().trim());
-		Usuario usuario = usuarioDao.findByMatricula(login.getMatricula());
+		Usuario usuario = this.usuarioDao.findByMatricula(login.getMatricula());
 		String error = this.validateLoginUsuario(login, usuario);
 		if (!Strings.isBlank(error)) {
 			return error;
 		}
+		
+		usuario.setUltimoAcessoDataHora(Utilities.now());
+		this.usuarioDao.save(usuario);
 		
 		if (login.getFuncao().getId() == 0 
 			|| usuario.getUsuarioFuncaoAdicionais().size() == 0 
@@ -102,6 +106,7 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 			usuario.setAtivo(true);
 			usuario.setFuncao(usuarioPrimeiroAcesso.getFuncao());
 			usuario.setCentroCusto(usuarioPrimeiroAcesso.getCentroCusto());
+			usuario.setUltimoAcessoDataHora(Utilities.now());
 			usuario = usuarioDao.save(usuario);
 	        
 	        usuarioPrimeiroAcesso.setAceito(true);
