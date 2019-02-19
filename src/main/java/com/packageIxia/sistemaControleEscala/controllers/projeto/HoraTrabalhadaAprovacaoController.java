@@ -33,11 +33,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.amazonaws.AmazonClientException;
 import com.packageIxia.sistemaControleEscala.helpers.GeradorCsv;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraAprovacao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
@@ -216,7 +216,8 @@ public class HoraTrabalhadaAprovacaoController {
 			@RequestParam(value = "ano", defaultValue = "0") int ano,
 			@RequestParam(value = "mes", defaultValue = "0") int mes,
 			@RequestParam(value = "banco", defaultValue = "0") int banco,
-			@RequestParam(value = "prestadorId", defaultValue = "0") long prestadorId) throws Exception {
+			@RequestParam(value = "prestadorId", defaultValue = "0") long prestadorId,
+			@RequestParam(value = "conflitos", defaultValue = "0") int conflitos) throws Exception {
 
 		this.ano = ano;
 		this.mes = mes;
@@ -234,6 +235,8 @@ public class HoraTrabalhadaAprovacaoController {
 		this.horaAprovacaoView.addObject("ano", this.ano);
 		this.horaAprovacaoView.addObject("mes", this.mes);
 		this.horaAprovacaoView.addObject("bancoId", this.banco);
+		this.horaAprovacaoView.addObject("conflitos", conflitos);
+		this.horaAprovacaoView.addObject("prestadorId", prestadorId);
 
 		Usuario usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
 		this.aprovacaoHoras = this.horaAprovacaoService.findAll(this.ano, this.mes);
@@ -248,13 +251,21 @@ public class HoraTrabalhadaAprovacaoController {
 			this.aprovacaoHoras = this.aprovacaoHoras.stream().filter(x->x.getPrestador().getId() == prestadorId).collect(Collectors.toList());
 		}
 		
+		List<HoraAprovacao> aprovacaoHorasSelecionados = new ArrayList<HoraAprovacao>();
+		
 		for (HoraAprovacao horaAprovacao : aprovacaoHoras) {
-			horaAprovacao.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(horaAprovacao, usuarioLogado));
+			DadosAcessoAprovacaoHoras dadosAcessoAprovacaoHoras = new DadosAcessoAprovacaoHoras(horaAprovacao, usuarioLogado);
+			horaAprovacao.setDadosAcessoAprovacaoHoras(dadosAcessoAprovacaoHoras);
 			horaAprovacao.setTotalHoras(horaAprovacao.getDadosAcessoAprovacaoHoras().getTotalHoras());
 			horaAprovacao.setTotalValor(horaAprovacao.getDadosAcessoAprovacaoHoras().getTotalValor());
+			if (conflitos == 0 ||
+				(conflitos == 1 && !dadosAcessoAprovacaoHoras.getObservacaoHoras().isEmpty()) ||
+				(conflitos == -1 && dadosAcessoAprovacaoHoras.getObservacaoHoras().isEmpty())) {
+				aprovacaoHorasSelecionados.add(horaAprovacao);
+			}
 		}
 		
-		this.horaAprovacaoView.addObject("aprovacaoHoras", this.aprovacaoHoras);
+		this.horaAprovacaoView.addObject("aprovacaoHoras", aprovacaoHorasSelecionados);
 
 		this.horaAprovacaoView.addObject("dataAtual", Utilities.now());
     	

@@ -2,6 +2,7 @@ package com.packageIxia.sistemaControleEscala.helpers;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.validation.BindingResult;
 
 public class Utilities { 	
@@ -174,6 +174,10 @@ public class Utilities {
 
 	public static LocalDate now2() {
 		return LocalDate.now(TimeZone.getTimeZone("America/Sao_Paulo").toZoneId());
+	}
+
+	public static long dateDiff(LocalDate dataFim, LocalDate dataInicio) {
+		return  Duration.between(dataInicio, dataFim).toHours();
 	}
 	
 }

@@ -267,7 +267,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 			this.horaAprovacaoDao.updateAprovacaoPrestador(aprovar ? 1 : 2, id, usuarioLogado.getId(), motivo);
 			for (HoraTrabalhada hora : aprovacaoHora.getHorasTrabalhadas()) {
 				long aprovadorId = hora.getResponsavelAprovacao() == null ? hora.getProjetoEscala().getMonitor().getId() : hora.getResponsavelAprovacao().getId();
-				this.horaTrabalhadaDao.updateAprova(hora.getId(), aprovadorId, 0, "");
+				this.horaTrabalhadaDao.updateAprova(hora.getId(), aprovadorId, 0, ""); // reset aprovação monitor
 			}
 			
 			return;

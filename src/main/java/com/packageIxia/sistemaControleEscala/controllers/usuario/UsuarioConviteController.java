@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioConvite;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.ICentroCusto;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.models.UsuarioEmailPrimeiroAcesso;
 import com.packageIxia.sistemaControleEscala.models.referencias.CentroCusto;

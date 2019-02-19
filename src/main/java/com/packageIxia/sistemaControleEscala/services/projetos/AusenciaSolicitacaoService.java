@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import com.packageIxia.sistemaControleEscala.daos.projeto.AusenciaSolicitacaoDao
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IAusenciaSolicitacao;
+import com.packageIxia.sistemaControleEscala.interfaces.projeto.IHoraExtrato;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjeto;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscala;
 import com.packageIxia.sistemaControleEscala.interfaces.projeto.IProjetoEscalaPrestador;
@@ -21,6 +23,7 @@ import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaReposicao;
 import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoSolicitacaoAusencia;
+import com.packageIxia.sistemaControleEscala.models.projeto.HoraExtrato;
 import com.packageIxia.sistemaControleEscala.models.projeto.Projeto;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
@@ -39,6 +42,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 	private IProjetoEscala projetoEscalaService;
 	private INotificacao notificacaoService;
 	private IAusenciaReposicao ausenciaReposicaoService;
+	private IHoraExtrato horaExtratoService;
 	
 	@Autowired
 	public AusenciaSolicitacaoService(
@@ -48,7 +52,8 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			AusenciaSolicitacaoDao ausenciaSolicitacaoDao,
 			AusenciaReposicaoDao ausenciaReposicaoDao,
 			INotificacao notificacaoService,
-			IAusenciaReposicao ausenciaReposicaoService, 
+			IAusenciaReposicao ausenciaReposicaoService,
+			IHoraExtrato horaExtrato,
 			HttpSession session) {
 		this.ausenciaSolicitacaoDao = ausenciaSolicitacaoDao;
 		this.ausenciaReposicaoDao = ausenciaReposicaoDao;
@@ -58,6 +63,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		this.projetoService = projetoService;
 		this.notificacaoService = notificacaoService;
 		this.ausenciaReposicaoService = ausenciaReposicaoService;
+		this.horaExtratoService = horaExtratoService;
 	}
 	
 	@Override
@@ -376,6 +382,7 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 			
 			List<AusenciaReposicao> reposicoes = item.getAusenciaReposicoes().stream().filter(
 					x->x.getUsuarioTroca() != null && x.getUsuarioTroca().getId() == usuarioLogado.getId()).collect(Collectors.toList());
+			
 			for (AusenciaReposicao reposicao : reposicoes) {
 				if (isAdmin || 
 					reposicao.getAceitoUsuarioTroca() != 1) {
@@ -435,11 +442,25 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 		
 		if (todosAceitos) {
 			item.setAtivo(3); // finalizado
+			if (item.getMotivoAusencia().getNome() == "Férias") {
+				this.saveFerias(usuarioLogado, item);
+			}
+			
 			this.notificacaoService.save(new Notificacao(1, "Sua solicitação de ausência foi aceita!", "Solicitação de ausência", item.getUsuario()));
 		}
 		
 		this.ausenciaSolicitacaoDao.save(item);
 		return "";
+	}
+
+	private void saveFerias(Usuario usuarioLogado, AusenciaSolicitacao item) {
+		double totalHoras = item.getHorasValue() * (Utilities.dateDiff(item.getDataFim(), item.getDataInicio())+1);
+		HoraExtrato ferias = new HoraExtrato();
+		ferias.setData(Utilities.now());
+		ferias.setUsuario(item.getUsuario());
+		ferias.setMinutosEntradaSaida(-(int)(totalHoras*60));
+		ferias.setUsuarioAtualizacao(usuarioLogado);
+		this.horaExtratoService.save(ferias);
 	}
 
 	@Override

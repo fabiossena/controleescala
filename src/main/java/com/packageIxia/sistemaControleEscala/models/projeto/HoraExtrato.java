@@ -38,7 +38,7 @@ public class HoraExtrato {
 	
 	private int minutosEntradaSaida;	
 
-	private int minutosTotalDisponiveis;
+	transient private int minutosTotalDisponiveis;
 
 	@ManyToOne
 	@JoinColumn(name="usuarioId")
@@ -67,16 +67,8 @@ public class HoraExtrato {
 		return dataCriacao;
 	}
 
-	public void setDataCriacao(LocalDateTime dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
-
 	public LocalDateTime getUltimaModificacao() {
 		return ultimaModificacao;
-	}
-
-	public void setUltimaModificacao(LocalDateTime ultimaModificacao) {
-		this.ultimaModificacao = ultimaModificacao;
 	}
 
 	public String getDescricao() {

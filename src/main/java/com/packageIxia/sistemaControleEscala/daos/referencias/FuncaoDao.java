@@ -1,4 +1,4 @@
-package com.packageIxia.sistemaControleEscala.daos.projeto;
+package com.packageIxia.sistemaControleEscala.daos.referencias;
 
 import java.util.List;
 

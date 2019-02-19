@@ -264,7 +264,7 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 			horaTrabalhada.setIncluidoManualmente(true);
 			horaTrabalhada.setUsuarioCriacao(usuarioLogado);
 		} else if (horaTrabalhadaAnterior != null) {
-			setLogAlteracao(horaTrabalhada, horaTrabalhadaAnterior, usuarioLogado);
+			this.setLogAlteracao(horaTrabalhada, horaTrabalhadaAnterior, usuarioLogado);
 		}
 
 		if (horaTrabalhada.isExcluido()) {
@@ -298,8 +298,10 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 
 	private void setLogAlteracao(HoraTrabalhada horaTrabalhada, HoraTrabalhada horaTrabalhadaAnterior,
 			Usuario usuarioLogado) {
+		
 		String usuarioAlteracao = " <i>(" + usuarioLogado.getNomeCompletoMatricula() + "|"
 				+ Utilities.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ")</i>";
+		
 		if (!horaTrabalhadaAnterior.getDataHoraInicio().isEqual(horaTrabalhada.getDataHoraInicio())) {
 
 			horaTrabalhada.setHistoricoCorrecao(
@@ -313,12 +315,13 @@ public class HoraTrabalhadaService implements IHoraTrabalhada {
 
 		}
 
-		if (!horaTrabalhadaAnterior.getDataHoraFim().isEqual(horaTrabalhada.getDataHoraFim())) {
+		if ((horaTrabalhadaAnterior.getDataHoraFim() == null && horaTrabalhada.getDataHoraFim() != null) ||
+			!horaTrabalhadaAnterior.getDataHoraFim().isEqual(horaTrabalhada.getDataHoraFim())) {
 			horaTrabalhada.setHistoricoCorrecao(
 					(horaTrabalhada.getHistoricoCorrecao() == null ? "" : horaTrabalhada.getHistoricoCorrecao())
 							+ "<br>Data fim alterada de "
-							+ horaTrabalhadaAnterior.getDataHoraFim()
-									.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm"))
+							+ (horaTrabalhadaAnterior.getDataHoraFim() == null ? "(vazia)" : 
+								horaTrabalhadaAnterior.getDataHoraFim().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")))
 							+ " para "
 							+ horaTrabalhada.getDataHoraFim().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm"))
 							+ usuarioAlteracao);

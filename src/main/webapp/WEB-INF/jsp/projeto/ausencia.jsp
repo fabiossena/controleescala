@@ -544,7 +544,7 @@
 
 
 										<div
-											class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+											class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="display: none;">
 											<label for="ausenciaReposicao.indicadoOutroUsuario"
 												class='control-label container row'> <input
 												type="checkbox" disabled="${isDisableCampos}"

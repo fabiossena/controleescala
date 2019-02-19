@@ -325,6 +325,10 @@ public class AusenciaSolicitacao {
 		return Utilities.horaDiff(horaInicio, horaFim);
 	}
 
+	public double getHorasValue() {
+		return Utilities.horaValueDiff(horaInicio, horaFim);
+	}
+
 	public int getTipoMotivoAusencia() {
 		return tipoMotivoAusencia;
 	}

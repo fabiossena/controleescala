@@ -1,4 +1,4 @@
-package com.packageIxia.sistemaControleEscala.interfaces.projeto;
+package com.packageIxia.sistemaControleEscala.interfaces.referencias;
 
 import java.util.List;
 import org.springframework.stereotype.Service;

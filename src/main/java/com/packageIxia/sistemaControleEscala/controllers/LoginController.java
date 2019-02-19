@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.packageIxia.sistemaControleEscala.interfaces.IUsuarioAcesso;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IFuncao;
 import com.packageIxia.sistemaControleEscala.models.LoginPage;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 

@@ -1,11 +1,12 @@
-package com.packageIxia.sistemaControleEscala.services.projetos;
+package com.packageIxia.sistemaControleEscala.services.referencias;
 
 import java.util.List;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import com.packageIxia.sistemaControleEscala.daos.projeto.FuncaoDao;
+
+import com.packageIxia.sistemaControleEscala.daos.referencias.FuncaoDao;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
-import com.packageIxia.sistemaControleEscala.interfaces.projeto.IFuncao;
+import com.packageIxia.sistemaControleEscala.interfaces.referencias.IFuncao;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 
 @Service

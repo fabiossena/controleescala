@@ -52,7 +52,7 @@
 			$("#btn-aceitar-todas").click(function () {
 				<c:if test="${usuarioLogado.id == aprovacaoHora.prestador.id}">
 				if ($("#nota-anexa") == null || $("#nota-anexa").html() == "") {
-					alert("Anexe a nota fiscal")
+					//alert("Anexe a nota fiscal")
 					return;
 				}
 				</c:if>
@@ -73,7 +73,8 @@
 		});
 		
 		function anexarClique() {
-			if ($("#arquivo-upload") == null || $("#arquivo-upload").val() == "") {
+			alert("Sem servidor de adequado para realizar upload de arquivos. Contate o setor de infraestrutura e redes.");
+			if (1==2 && $("#arquivo-upload") == null || $("#arquivo-upload").val() == "") {
 				alert("Anexe a nota fiscal");
 				return false; 
 			}

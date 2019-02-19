@@ -12,8 +12,30 @@
     <jsp:include page="../shared/headerPartialView.jsp"/>
 	<script>
 		$(document).ready(function() {
-		$("#txt-pesquisar-mes").spinner({ min: 1, max: 12});
-		$("#txt-pesquisar-ano").spinner({ min: 2018, max: 2100});
+		$("#txt-pesquisar-mes").spinner({ min: 1, max: 12,
+		    change: function() {
+		        var min = $(this).spinner('option', 'min');
+		        var max = $(this).spinner('option', 'max');
+ 
+				if ($(this).val() > max) {
+		            $(this).spinner("value", max);
+		        } else if ($(this).val() < min) {
+		            $(this).spinner("value", min);
+		        }
+		    }
+		}); 
+		
+		$("#txt-pesquisar-ano").spinner({ min: 2018, max: ${anoBase},
+		    change: function() {
+		        var min = $(this).spinner('option', 'min');
+		        var max = $(this).spinner('option', 'max');
+
+				if ($(this).val() > max) {
+		            $(this).spinner("value", max);
+		        } else if ($(this).val() < min) {
+		            $(this).spinner("value", min);
+		        }
+		    }});
 		
          $('#btn-gerar-prestador').on('click',function() {
 			var mes = $("#txt-pesquisar-mes").val();
@@ -66,6 +88,7 @@
 			var ano = $("#txt-pesquisar-ano").val();
 			var banco = $("#banco-id").val();
 			var prestador = $("#prestador").val();
+			var conflitos = $("#conflitos").val();
 			
 			var item = $("#selected-id-gerar-horas").val();
 			
@@ -96,7 +119,12 @@
 				gerarCsv();
 			} else if (item == "1") {
 				$("*").css("cursor", "progress");
-	        	window.location.href = "<c:url value='/aprovacaoHoras' />?mes=" + mes + "&ano=" + ano + (banco != null && banco != 0 ? "&banco=" + banco : "") + (prestador != null && prestador != 0 ? "&prestador=" + prestador : "");
+	        	window.location.href = 
+	        		"<c:url value='/aprovacaoHoras' />?mes=" + mes 
+        				+ "&ano=" + ano + 
+        				(banco != null && banco != 0 ? "&banco=" + banco : "") 
+	        			+ (prestador != null && prestador != 0 ? "&prestadorId=" + prestador : "")
+	        			+ (conflitos != null && conflitos != 0 ? "&conflitos=" + conflitos : "");
 			} else if (item == "5" || item == "6") {
 				
 				var items = "";
@@ -230,11 +258,16 @@
 		}
 		
 		function selectGerarHoras(item) {
+			
 			$("#selected-id-gerar-horas").val(item);
 			$("#panel-gerar-csv").hide();
-			$("#panel-banco").show();
-			$("#panel-prestador").show();
 			$("#panel-dados-robo").hide();
+			$("#panel-banco").hide();
+			$(".checked-item").hide();
+			$(".checked-item-area").hide();
+			$("#panel-prestador").hide();
+			$("#panel-conflitos").hide();
+			
 			if (item == 3) {
 				$("#selected-text-gerar-horas").html("Gerar CSV");
 				$("#panel-gerar-csv").show();
@@ -242,27 +275,20 @@
 			}
 			else if (item == 2) {
 				$("#selected-text-gerar-horas").html("Gerar mês para prestador");
-				$("#panel-banco").hide();
-				$(".checked-item").hide();
 			}
 			else if (item == 1) {
 				$("#selected-text-gerar-horas").html("Filtro");
-				$(".checked-item-area").hide();
+				$("#panel-banco").show();
+				$("#panel-prestador").show();
+				$("#panel-conflitos").show();
 			}
 			else if (item == 4) {
 				$("#selected-text-gerar-horas").html("Integrar dados robô");
-				$("#panel-banco").hide();
-				$("#panel-prestador").hide();
 				$("#panel-dados-robo").show();
-				$(".checked-item-area").hide();
 			}
 			else if (item == 5 || item == 6) {
 				$("#selected-text-gerar-horas").html("Aprovar selecionados");
 				$(".checked-item-area").show();
-				$("#panel-banco").hide();
-				$("#panel-gerar-csv").hide();
-				$("#panel-dados-robo").hide();
-				$("#panel-prestador").hide();
 			}
 		}
 	</script>
@@ -281,17 +307,28 @@
 				  <c:if test="${!isAtendimento}">
 				  <div class="form-group col-sm-12 row">
 				  
-					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
+					  <div class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-ano" class="control-label">Ano</label>
 				          <input id="txt-pesquisar-ano" class="spinner number form-control mask-year" value="${ano}" />
 					  </div> 
 					
-					  <div class="form-group col-6 col-sm-6 col-md-6 col-lg-2 col-xl-2">
+					  <div class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-mes" class="control-label">Mês</label>
 				          <input id="txt-pesquisar-mes" class="spinner number form-control mask-month" value="${mes}" />
-					  </div>
+					  </div>		
+				  		
+					  <div id="panel-conflitos" class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+					      <label for="conflitos" class="control-label">Status horas</label>
+				          <select 
+				          	id="conflitos" 
+				          	class='form-control select-cache-tab'>
+				          	<option value="0" <c:if test="${conflitos == 0}">selected</c:if>>Todos</option>
+				          	<option value="1" <c:if test="${conflitos == 1}">selected</c:if>>Apenas com conflitos</option>
+				          	<option value="-1" <c:if test="${conflitos == -1}">selected</c:if>>Apenas sem conflitos</option>
+			          	  </select>
+		       	    </div>    
 
-				     <div id="panel-banco" class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+				     <div id="panel-banco" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 				         <label for="banco" class="control-label">Banco</label>
 			             <select id="banco-id" class="form-control">
 			             	<option <c:if test="${bancoId == 0}">selected</c:if> value="0">Todos</option>
@@ -305,7 +342,7 @@
 	
 					
 					<c:if test="${isAdministracao}">				
-						<div id="panel-prestador" class="form-group  col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+						<div id="panel-prestador" class="form-group  col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 					      <label for="projetoEscala" class="control-label">Selecione um prestador</label>
 				          <select 
 				          	id="prestador" 
@@ -447,9 +484,12 @@
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if><br> 
+									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if> <br> 
 									    <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro}">	
 											<b>Valor:</b> R$ ${item.totalValor}
+										</c:if>
+									    <c:if test='${(isAdministracao || isMonitoria) && item.dadosAcessoAprovacaoHoras.observacaoHoras!=""}'>	
+											<b>Observações:</b>${item.dadosAcessoAprovacaoHoras.observacaoHoras}
 										</c:if> 
 									  </div>
 									</td> 
@@ -484,6 +524,7 @@
 										  </i> 
 										  
 									  </td>
+									  
 				                	  <td style="font-size: 10pt">
 		                				  <div style="width: 350px">
 										  	
@@ -496,8 +537,8 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr
-											      <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro || isAdministracao}"><c:if test="${item2.doubleValue < 1}">(${item2.doubleValue}hr)</c:if></c:if></b> </label>					          
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr<c:if test="${item2.doubleValue < 1}"> (${item2.doubleValue}hr)</c:if></b> 
+										      	  </label>					          
 									          </c:forEach>
 								          </div>
 									  </td>

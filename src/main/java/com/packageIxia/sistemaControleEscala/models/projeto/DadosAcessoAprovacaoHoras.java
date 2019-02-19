@@ -1,9 +1,9 @@
 package com.packageIxia.sistemaControleEscala.models.projeto;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
@@ -21,7 +21,13 @@ public class DadosAcessoAprovacaoHoras {
 	private double totalHoras;
 	private double totalSegundos;
 	private double totalValor;
+	private String observacaoHoras;
+	private int diasTrabalhados;
 	
+	private int historicoAlterado = 1, exclusao = 1, inclusao = 1,		
+				horasAcima15m = 1, horasAcima30m = 1, horasAcima1h = 1, horasAcima3h = 1, horasAcima7h = 1, horasAcima12h = 1, horasAcima23h = 1,
+				horasAbaixo15m = 1, horasAbaixo30m = 1, horasAbaixo1h = 1, horasAbaixo3h = 1, horasAbaixo5h = 1;
+			
 	public DadosAcessoAprovacaoHoras() {
 		
 	}
@@ -88,69 +94,320 @@ public class DadosAcessoAprovacaoHoras {
 	
 	public void setDadosAprovacao(List<HoraTrabalhada> horasTrabalhadas) {
 		
-		 this.dadosAprovacao = new ArrayList<DadoGenerico>();
-	
+		this.dadosAprovacao = new ArrayList<DadoGenerico>();
+		
+		historicoAlterado = 1; exclusao = 1; inclusao = 1;		
+		horasAcima15m = 1; horasAcima30m = 1; horasAcima1h = 1; horasAcima3h = 1; horasAcima7h = 1; horasAcima12h = 1; horasAcima23h = 1;
+		horasAbaixo15m = 1; horasAbaixo30m = 1; horasAbaixo1h = 1; horasAbaixo3h = 1; horasAbaixo5h = 1;
+		
+		int baseHorasDia = 6;
+		double horasDia = 0; 
+		
+		LocalDate dataPercorrida = LocalDate.MIN;
+		boolean primeiroLoop = true;
+		
 		for (HoraTrabalhada horaTrabalhada : horasTrabalhadas) {
-			boolean encontrou = false;
-
-			Usuario prestador = horaTrabalhada.getHoraAprovacao().getPrestador();
+			
+			if (primeiroLoop) {
+				this.setDiasTrabalhados(1);		
+			}
+			
+			if (!primeiroLoop && !dataPercorrida.equals(horaTrabalhada.getDataHoraInicio().toLocalDate())) {
+				this.diasTrabalhados++;
+				//double horasCauculo = horasDia - baseHorasDia; 
+				//this.setDadosHorasCauculoObservacoes(horasDia, horasCauculo);
+				this.setDadosHorasCauculoInconsistencias(horasDia);				
+				
+				horasDia = 0;
+			}
+			
+			primeiroLoop = false;
+			dataPercorrida = horaTrabalhada.getDataHoraInicio().toLocalDate();
 			
 			double horas = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras();
-			double segundos = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
-			double valor = ((segundos/60)  * prestador.getValorMinuto());
-			//double totalHorasDiaEscala = Utilities.horaValueDiff(horaTrabalhada.getProjetoEscala().getHoraFim(), horaTrabalhada.getProjetoEscala().getHoraInicio());
 			
-			for (DadoGenerico dadoGenerico : this.dadosAprovacao) {
-				if (dadoGenerico.getId() == horaTrabalhada.getProjetoEscala().getId()) {
-					dadoGenerico.setDoubleValue(
-							Utilities.Round(
-									dadoGenerico.getDoubleValue() + (horaTrabalhada.isExcluido() ? 0 : 
-										(horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras())), 3));
-					if (horaTrabalhada.getTipoAcao() == 1) {
-						this.totalValor += valor;
-						this.totalHoras += horas;
-						this.totalSegundos +=  segundos;
-					}
-					else {
-						this.totalValor -= valor;
-						this.totalHoras -= horas;
-						this.totalSegundos -= segundos;
-					}
-					
-					dadoGenerico.setDescricao(Utilities.converterToTime((int)(dadoGenerico.getDoubleValue()*60*60)));
-					encontrou = true;
-					break;
-				}
-			}
+			this.setDadosHorasTrabalhadas(horasTrabalhadas, horaTrabalhada, horas);
 			
-			if (!encontrou) {
-				this.dadosAprovacao.add(
-						new DadoGenerico(
-								horaTrabalhada.getProjetoEscala().getId(), 
-								"(" + getStatusAprovacaoHoras(horasTrabalhadas, horaTrabalhada) + ") Monitor: " + 
-								horaTrabalhada.getProjetoEscala().getMonitor().getNomeCompletoMatricula() + "<br>" +
-								(horaTrabalhada.getMotivoRecusa() == null || horaTrabalhada.getMotivoRecusa().trim().isEmpty() ? "" : "<i>Motivo: " + horaTrabalhada.getMotivoRecusa() + "</i><br>") + 
-								"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "</i>", 
-								
-								Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3),
-								(horaTrabalhada.getTipoAcao() == 1 ? "" : "-") + Utilities.converterToTime(horaTrabalhada.isExcluido() ? 0 : (int)horaTrabalhada.getSegundos())));
-				
-				if (horaTrabalhada.getTipoAcao() == 1) {
-					this.totalValor += ((segundos/60) * prestador.getValorMinuto());
-					this.totalHoras += (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
-					this.totalSegundos += horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
-				}
-				else {
-					this.totalValor -= ((segundos/60) * prestador.getValorMinuto());
-					this.totalHoras -= (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
-					this.totalSegundos -= horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
-				}
-			}
+			horasDia += (horaTrabalhada.isExcluido() ? 0 : 
+				(horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()));
+			
+			if (horaTrabalhada.getHistoricoCorrecao() != null && 
+				!horaTrabalhada.getHistoricoCorrecao().isEmpty()) {
+				historicoAlterado++;
+			}			
+			if (horaTrabalhada.isExcluido()) {
+				exclusao++;
+			}			
+			if (horaTrabalhada.isIncluidoManualmente()) {
+				inclusao++;
+			}			
 		}
+
+		//double horasCauculo = horasDia - baseHorasDia; 
+		//this.setDadosHorasCauculoObservacoes(horasDia, horasCauculo);
+		this.setDadosHorasCauculoInconsistencias(horasDia);
+		
+		this.setObservacoesHoras(
+				historicoAlterado, exclusao, inclusao,
+				horasAcima15m, horasAcima30m, horasAcima1h, horasAcima3h, horasAcima7h, horasAcima12h, horasAcima23h, 
+				horasAbaixo15m, horasAbaixo30m, horasAbaixo1h, horasAbaixo3h, horasAbaixo5h);
 		
 		this.totalValor = Utilities.Round(this.totalValor);
 		this.totalHoras = Utilities.Round(this.totalHoras, 3);
 		this.totalSegundos = Utilities.Round(this.totalSegundos, 3);
+	}
+
+	private void setDadosHorasCauculoInconsistencias(double horasDia) {
+		if (horasDia >= 23) {
+			horasAcima23h++;
+		} else if (horasDia >= 12) {
+			horasAcima12h++;
+		} else if (horasDia >= 7) {
+			horasAcima7h++;
+		} else /*if (horasDia >= 3) {
+			horasAcima3h++;
+		} else if (horasDia >= 1) {
+			horasAcima1h++;
+		} else if (horasDia >= 0.5) {
+			horasAcima30m++;
+		} else if (horasDia > 0 && horasDia >= 0.25) {
+			horasAcima15m++;
+		} 
+		else */ if (horasDia > 0 && horasDia <= 0.25){
+			horasAbaixo15m++;
+		} else 
+		if (horasDia > 0 && horasDia <= 0.5) {
+			horasAbaixo30m++;
+		} else if (horasDia > 0 && horasDia <= 1) {
+			horasAbaixo1h++;
+		} else if (horasDia > 0 && horasDia <= 3) {
+			horasAbaixo3h++;
+		} else if (horasDia > 0 && horasDia <= 5) {
+			horasAbaixo5h++;
+		}
+	}
+
+	private void setDadosHorasCauculoObservacoes(double horasDia, double horasCauculo) {
+		if (horasCauculo >= 23) {
+			horasAcima23h++;
+		} else if (horasCauculo >= 12) {
+			horasAcima12h++;
+		} else if (horasCauculo >= 7) {
+			horasAcima7h++;
+		} else if (horasCauculo >= 3) {
+			horasAcima3h++;
+		} else if (horasCauculo >= 1) {
+			horasAcima1h++;
+		} else if (horasCauculo >= 0.5) {
+			horasAcima30m++;
+		} else if (horasCauculo > 0 && horasCauculo >= 0.25) {
+			horasAcima15m++;
+		} 
+		else /*if (horasDia <= 0.25){
+			horasAbaixo15m++;
+		} else */ 
+		if (horasDia > 0 && horasDia <= 0.5) {
+			horasAbaixo30m++;
+		} else if (horasDia > 0 && horasDia <= 1) {
+			horasAbaixo1h++;
+		} else if (horasDia > 0 && horasDia <= 3) {
+			horasAbaixo3h++;
+		} else if (horasDia > 0 && horasDia <= 5) {
+			horasAbaixo5h++;
+		}
+	}
+
+	private void setDadosHorasTrabalhadas(List<HoraTrabalhada> horasTrabalhadas, HoraTrabalhada horaTrabalhada, double horas) {
+		
+		boolean encontrou = false;
+		Usuario prestador = horaTrabalhada.getHoraAprovacao().getPrestador();
+		
+		double segundos = horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+		double valor = ((segundos/60)  * prestador.getValorMinuto());
+		//double totalHorasDiaEscala = Utilities.horaValueDiff(horaTrabalhada.getProjetoEscala().getHoraFim(), horaTrabalhada.getProjetoEscala().getHoraInicio());
+		
+		
+		for (DadoGenerico dadoGenerico : this.dadosAprovacao) {
+			if (dadoGenerico.getId() == horaTrabalhada.getProjetoEscala().getId()) {
+				
+				dadoGenerico.setDoubleValue(
+						Utilities.Round(
+								dadoGenerico.getDoubleValue() + (horaTrabalhada.isExcluido() ? 0 : 
+									(horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras())), 3));
+				
+				if (horaTrabalhada.getTipoAcao() == 1) {
+					this.totalValor += valor;
+					this.totalHoras += horas;
+					this.totalSegundos +=  segundos;
+				}
+				else {
+					this.totalValor -= valor;
+					this.totalHoras -= horas;
+					this.totalSegundos -= segundos;
+				}					
+				
+				dadoGenerico.setDescricao(Utilities.converterToTime((int)(dadoGenerico.getDoubleValue()*60*60)));
+				encontrou = true;
+				break;
+			}
+		}
+		
+		if (!encontrou) {
+			this.dadosAprovacao.add(
+					new DadoGenerico(
+							horaTrabalhada.getProjetoEscala().getId(), 
+							"(" + getStatusAprovacaoHoras(horasTrabalhadas, horaTrabalhada) + ") Monitor: " + 
+							horaTrabalhada.getProjetoEscala().getMonitor().getNomeCompletoMatricula() + "<br>" +
+							(horaTrabalhada.getMotivoRecusa() == null || horaTrabalhada.getMotivoRecusa().trim().isEmpty() ? "" : "<i>Motivo: " + horaTrabalhada.getMotivoRecusa() + "</i><br>") + 
+							"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "</i>", 
+							
+							Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3),
+							(horaTrabalhada.getTipoAcao() == 1 ? "" : "-") + Utilities.converterToTime(horaTrabalhada.isExcluido() ? 0 : (int)horaTrabalhada.getSegundos())));
+			
+			if (horaTrabalhada.getTipoAcao() == 1) {
+				this.totalValor += ((segundos/60) * prestador.getValorMinuto());
+				this.totalHoras += (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
+				this.totalSegundos += horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+			}
+			else {
+				this.totalValor -= ((segundos/60) * prestador.getValorMinuto());
+				this.totalHoras -= (horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getHoras());
+				this.totalSegundos -= horaTrabalhada.isExcluido() ? 0 : horaTrabalhada.getSegundos();
+			}
+		}
+	}
+
+	private void setObservacoesHoras(
+			int historicoAlterado, int exclusao, int inclusao,
+			int horasAcima15m, int horasAcima30m, int horasAcima1h, int horasAcima3h, int horasAcima7h, int horasAcima12h, int horasAcima23h, 
+			int horasAbaixo15m, int horasAbaixo30m, int horasAbaixo1h, int horasAbaixo3h, int horasAbaixo5h) {
+
+//		String observacaoHorasAcima = setObservacaoHorasAcima();
+//
+//		String observacaoHorasAbaixo = setObservacaoHorasAbaixo();
+		
+		String observacaoHorasInconsistencia = setObservacaoHorasInconsistentes();
+		
+		String observacaoInclusao = "";
+		if (inclusao > 1) {
+			observacaoInclusao = (inclusao == 2 ? "1 inclusão manual" : ((inclusao-1) + " inclusões manual"));
+		}
+		
+		String observacaoExclusao = "";
+		if (exclusao > 1) {
+			observacaoExclusao = (exclusao == 2 ? "1 apagado" : ((exclusao-1) + " apagados"));
+		}
+		
+		String historicoAlteracao = "";
+		if (historicoAlterado > 1) {
+			historicoAlteracao = (historicoAlterado == 2 ? "1 histórico alteração" : ((historicoAlterado-1) + " históricos de alterações"));
+		}
+
+		this.observacaoHoras = "";
+		//this.observacaoHoras += observacaoHorasAcima == "" ? "" : "<br>"+observacaoHorasAcima;
+		//this.observacaoHoras += observacaoHorasAbaixo == "" ? "" : "<br>"+observacaoHorasAbaixo;
+		this.observacaoHoras += observacaoHorasInconsistencia == "" ? "" : "<br>"+observacaoHorasInconsistencia; 
+		this.observacaoHoras += observacaoInclusao == "" ? "" : "<br>"+observacaoInclusao;
+		this.observacaoHoras += observacaoExclusao == "" ? "" : "<br>"+observacaoExclusao;
+		this.observacaoHoras += historicoAlteracao == "" ? "" : "<br>"+historicoAlteracao;
+	}
+
+	private String setObservacaoHorasInconsistentes() {
+		
+
+		String observacaoHorasInconsistentes = "";
+		
+		if (horasAcima23h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">23hr("+(horasAcima23h-1)+")";
+		}
+		if (horasAcima12h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">12hr("+(horasAcima12h-1)+")";
+		}
+		if (horasAcima7h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">7hr("+(horasAcima7h-1)+")";
+		}
+		/*if (horasAcima3h > 1) {
+			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">3hr("+(horasAcima3h-1)+")";
+		}
+		if (horasAcima1h > 1) {
+			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">1hr("+(horasAcima1h-1)+")";
+		}
+		if (horasAcima30m > 1) {
+			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">30min("+(horasAcima30m-1)+")";				
+		}
+		if (horasAcima15m > 1) {
+			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">15min("+(horasAcima15m-1)+")";
+		}*/		
+		
+		if (horasAbaixo5h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<5hr("+(horasAbaixo5h-1)+")";
+		}
+		if (horasAbaixo3h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<3hr("+(horasAbaixo3h-1)+")";
+		}
+		if (horasAbaixo1h > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<1hr("+(horasAbaixo1h-1)+")";				
+		}
+		if (horasAbaixo30m > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<30min("+(horasAbaixo30m-1)+")";
+		}
+		if (horasAbaixo15m > 1) {
+			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<15min("+(horasAbaixo15m-1)+")";
+		}
+		
+		return observacaoHorasInconsistentes;
+	}
+
+	private String setObservacaoHorasAbaixo() {
+		
+		String observacaoHorasAbaixo = "";
+		
+		if (horasAbaixo5h > 1) {
+			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "5hr("+(horasAbaixo5h-1)+")";
+		}
+		if (horasAbaixo3h > 1) {
+			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "3hr("+(horasAbaixo3h-1)+")";
+		}
+		if (horasAbaixo1h > 1) {
+			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "1hr("+(horasAbaixo1h-1)+")";				
+		}
+		if (horasAbaixo30m > 1) {
+			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "30min("+(horasAbaixo30m-1)+")";
+		}
+		if (horasAbaixo15m > 1) {
+			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "15min"+(horasAbaixo15m-1)+")";
+		}
+		
+		return observacaoHorasAbaixo;
+	}
+
+	private String setObservacaoHorasAcima() {
+		
+		String observacaoHorasAcima = "";
+		
+		if (horasAcima23h > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "23hr("+(horasAcima23h-1)+")";
+		}
+		if (horasAcima12h > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "12hr("+(horasAcima12h-1)+")";
+		}
+		if (horasAcima7h > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "7hr("+(horasAcima7h-1)+")";
+		}
+		if (horasAcima3h > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "3hr("+(horasAcima3h-1)+")";
+		}
+		if (horasAcima1h > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "1hr("+(horasAcima1h-1)+")";
+		}
+		if (horasAcima30m > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "30min("+(horasAcima30m-1)+")";				
+		}
+		if (horasAcima15m > 1) {
+			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "15min("+(horasAcima15m-1)+")";
+		}
+		
+		return observacaoHorasAcima;
 	}
 
 	private String getStatusAprovacaoHoras(List<HoraTrabalhada> horasTrabalhadas, HoraTrabalhada horaTrabalhada) {
@@ -196,5 +453,21 @@ public class DadosAcessoAprovacaoHoras {
 
 	public double getTotalSegundos() {
 		return totalSegundos;
+	}
+
+	public String getObservacaoHoras() {
+		return observacaoHoras;
+	}
+
+	public void setObservacaoHoras(String observacao) {
+		this.observacaoHoras = observacao;
+	}
+
+	public int getDiasTrabalhados() {
+		return diasTrabalhados;
+	}
+
+	public void setDiasTrabalhados(int diasTrabalhados) {
+		this.diasTrabalhados = diasTrabalhados;
 	}
 }
