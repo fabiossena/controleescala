@@ -217,7 +217,8 @@ public class HoraTrabalhadaAprovacaoController {
 			@RequestParam(value = "mes", defaultValue = "0") int mes,
 			@RequestParam(value = "banco", defaultValue = "0") int banco,
 			@RequestParam(value = "prestadorId", defaultValue = "0") long prestadorId,
-			@RequestParam(value = "conflitos", defaultValue = "0") int conflitos) throws Exception {
+			@RequestParam(value = "conflitos", defaultValue = "0") int conflitos,
+			@RequestParam(value = "aprovacoes", defaultValue = "0") int aprovacoes) throws Exception {
 
 		this.ano = ano;
 		this.mes = mes;
@@ -236,6 +237,7 @@ public class HoraTrabalhadaAprovacaoController {
 		this.horaAprovacaoView.addObject("mes", this.mes);
 		this.horaAprovacaoView.addObject("bancoId", this.banco);
 		this.horaAprovacaoView.addObject("conflitos", conflitos);
+		this.horaAprovacaoView.addObject("aprovacoes", aprovacoes);
 		this.horaAprovacaoView.addObject("prestadorId", prestadorId);
 
 		Usuario usuarioLogado = ((Usuario)session.getAttribute("usuarioLogado"));
@@ -247,12 +249,12 @@ public class HoraTrabalhadaAprovacaoController {
 			this.aprovacaoHoras = this.horaAprovacaoService.findAll(this.ano, this.mes).stream().filter(x->x.getPrestador().getBancoId() == this.banco).collect(Collectors.toList());
 		}
 
-		if (prestadorId > 0 && this.aprovacaoHoras.stream().anyMatch(x->x.getPrestador().getId() == prestadorId)) {
+		if (prestadorId > 0) {
 			this.aprovacaoHoras = this.aprovacaoHoras.stream().filter(x->x.getPrestador().getId() == prestadorId).collect(Collectors.toList());
 		}
 		
-		List<HoraAprovacao> aprovacaoHorasSelecionados = new ArrayList<HoraAprovacao>();
-		
+		List<HoraAprovacao> aprovacaoHorasFiltroStatusHoras = new ArrayList<HoraAprovacao>();
+
 		for (HoraAprovacao horaAprovacao : aprovacaoHoras) {
 			DadosAcessoAprovacaoHoras dadosAcessoAprovacaoHoras = new DadosAcessoAprovacaoHoras(horaAprovacao, usuarioLogado);
 			horaAprovacao.setDadosAcessoAprovacaoHoras(dadosAcessoAprovacaoHoras);
@@ -261,11 +263,35 @@ public class HoraTrabalhadaAprovacaoController {
 			if (conflitos == 0 ||
 				(conflitos == 1 && !dadosAcessoAprovacaoHoras.getObservacaoHoras().isEmpty()) ||
 				(conflitos == -1 && dadosAcessoAprovacaoHoras.getObservacaoHoras().isEmpty())) {
-				aprovacaoHorasSelecionados.add(horaAprovacao);
+				aprovacaoHorasFiltroStatusHoras.add(horaAprovacao);
 			}
 		}
 		
-		this.horaAprovacaoView.addObject("aprovacaoHoras", aprovacaoHorasSelecionados);
+		List<HoraAprovacao> aprovacaoHorasFiltroStatusAprovacao = new ArrayList<HoraAprovacao>();
+	
+		if (aprovacoes == 0) {
+			aprovacaoHorasFiltroStatusAprovacao = aprovacaoHoras;
+		}
+		else {
+			for (HoraAprovacao horaAprovacao : aprovacaoHoras) {
+				if (aprovacoes == 0 ||
+					(aprovacoes == 1 && horaAprovacao.getAceitePrestador() == 0) ||
+					(aprovacoes == 2 && horaAprovacao.getAceitePrestador() == 1) ||
+					(aprovacoes == 3 && horaAprovacao.getAceitePrestador() == 2) ||
+	
+					(aprovacoes == 4 && horaAprovacao.getDadosAcessoAprovacaoHoras().getAprovado() == 0) ||
+					(aprovacoes == 5 && horaAprovacao.getDadosAcessoAprovacaoHoras().getAprovado() == 1) ||
+					(aprovacoes == 6 && horaAprovacao.getDadosAcessoAprovacaoHoras().getAprovado() == 2) ||
+	
+					(aprovacoes == 7 && horaAprovacao.getAceiteAprovador() == 0) ||
+					(aprovacoes == 8 && horaAprovacao.getAceiteAprovador() == 1) ||
+					(aprovacoes == 9 && horaAprovacao.getAceiteAprovador() == 2)) {
+					aprovacaoHorasFiltroStatusAprovacao.add(horaAprovacao);
+				}
+			}
+		}
+		
+		this.horaAprovacaoView.addObject("aprovacaoHoras", aprovacaoHorasFiltroStatusAprovacao);
 
 		this.horaAprovacaoView.addObject("dataAtual", Utilities.now());
     	

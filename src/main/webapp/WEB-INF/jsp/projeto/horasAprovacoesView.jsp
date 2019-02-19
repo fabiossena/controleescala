@@ -89,6 +89,7 @@
 			var banco = $("#banco-id").val();
 			var prestador = $("#prestador").val();
 			var conflitos = $("#conflitos").val();
+			var aprovacoes = $("#aprovacoes").val();
 			
 			var item = $("#selected-id-gerar-horas").val();
 			
@@ -124,7 +125,8 @@
         				+ "&ano=" + ano + 
         				(banco != null && banco != 0 ? "&banco=" + banco : "") 
 	        			+ (prestador != null && prestador != 0 ? "&prestadorId=" + prestador : "")
-	        			+ (conflitos != null && conflitos != 0 ? "&conflitos=" + conflitos : "");
+	        			+ (conflitos != null && conflitos != 0 ? "&conflitos=" + conflitos : "")
+	        			+ (aprovacoes != null && aprovacoes != 0 ? "&aprovacoes=" + aprovacoes : ""); 
 			} else if (item == "5" || item == "6") {
 				
 				var items = "";
@@ -267,6 +269,7 @@
 			$(".checked-item-area").hide();
 			$("#panel-prestador").hide();
 			$("#panel-conflitos").hide();
+			$("#panel-aprovacoes").hide();
 			
 			if (item == 3) {
 				$("#selected-text-gerar-horas").html("Gerar CSV");
@@ -281,6 +284,7 @@
 				$("#panel-banco").show();
 				$("#panel-prestador").show();
 				$("#panel-conflitos").show();
+				$("#panel-conflitos").hide();
 			}
 			else if (item == 4) {
 				$("#selected-text-gerar-horas").html("Integrar dados robô");
@@ -307,18 +311,39 @@
 				  <c:if test="${!isAtendimento}">
 				  <div class="form-group col-sm-12 row">
 				  
-					  <div class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+					  <div class="form-group col-6 col-sm-4 col-md-4 col-lg-2 col-xl-2">
 					      <label for="txt-pesquisar-ano" class="control-label">Ano</label>
 				          <input id="txt-pesquisar-ano" class="spinner number form-control mask-year" value="${ano}" />
 					  </div> 
 					
-					  <div class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+					  <div class="form-group col-6 col-sm-4 col-md-4 col-lg-2 col-xl-1">
 					      <label for="txt-pesquisar-mes" class="control-label">Mês</label>
 				          <input id="txt-pesquisar-mes" class="spinner number form-control mask-month" value="${mes}" />
 					  </div>		
 				  		
-					  <div id="panel-conflitos" class="form-group col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2">
-					      <label for="conflitos" class="control-label">Status horas</label>
+				  		
+					  <div id="panel-aprovacoes" class="form-group col-6 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+					      <label for="aprovacoes" class="control-label">Aprovações</label>
+				          <select 
+				          	id="aprovacoes" 
+				          	class='form-control select-cache-tab'>
+				          	<option value="0" <c:if test="${aprovacoes == 0}">selected</c:if>>Todos</option>
+				          	<option value="1" <c:if test="${aprovacoes == 1}">selected</c:if>>Prestador - Pendente</option>
+				          	<option value="2" <c:if test="${aprovacoes == 2}">selected</c:if>>Prestador - Aprovado</option>
+				          	<option value="3" <c:if test="${aprovacoes == 3}">selected</c:if>>Prestador - Reprovado</option>
+				          	
+				          	<option value="4" <c:if test="${aprovacoes == 4}">selected</c:if>>Responsável - Pendente</option>
+				          	<option value="5" <c:if test="${aprovacoes == 5}">selected</c:if>>Responsável - Aprovado</option>
+				          	<option value="6" <c:if test="${aprovacoes == 6}">selected</c:if>>Responsável - Reprovado</option>
+				          	
+				          	<option value="7" <c:if test="${aprovacoes == 7}">selected</c:if>>Financeiro - Pendente</option>
+				          	<option value="8" <c:if test="${aprovacoes == 8}">selected</c:if>>Financeiro - Aprovado</option>
+				          	<option value="9" <c:if test="${aprovacoes == 9}">selected</c:if>>Financeiro - Reprovado</option>
+			          	  </select>
+		       	    </div>    		
+				  		
+					  <div id="panel-conflitos" class="form-group col-6 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+					      <label for="conflitos" class="control-label">Horas</label>
 				          <select 
 				          	id="conflitos" 
 				          	class='form-control select-cache-tab'>
@@ -328,7 +353,7 @@
 			          	  </select>
 		       	    </div>    
 
-				     <div id="panel-banco" class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+				     <div id="panel-banco" class="form-group col-12 col-sm-4 col-md-4 col-lg-2 col-xl-2">
 				         <label for="banco" class="control-label">Banco</label>
 			             <select id="banco-id" class="form-control">
 			             	<option <c:if test="${bancoId == 0}">selected</c:if> value="0">Todos</option>
@@ -340,21 +365,19 @@
 				     </div>
 
 	
-					
-					<c:if test="${isAdministracao}">				
-						<div id="panel-prestador" class="form-group  col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-					      <label for="projetoEscala" class="control-label">Selecione um prestador</label>
-				          <select 
-				          	id="prestador" 
-				          	class='form-control select-cache-tab'>
-				          	<option value="0"></option>
-				          	<c:forEach var="prestador" items="${prestadores}">
-				          		<option <c:if test="${prestadorId==prestador.id}">selected</c:if> value="${prestador.id}">${prestador.nomeCompletoMatricula}</option>
-				          	</c:forEach>
-				          	</select>
-			       	    </div>    
-			        </c:if>
-
+				
+					<div id="panel-prestador" class="form-group  col-12 col-sm-4 col-md-4 col-lg-2 col-xl-3">
+				      <label for="projetoEscala" class="control-label">Prestador</label>
+			          <select 
+			          	id="prestador" 
+			          	class='form-control select-cache-tab'>
+			          	<option value="0"></option>
+			          	<c:forEach var="prestador" items="${prestadores}">
+			          		<option <c:if test="${prestadorId==prestador.id}">selected</c:if> value="${prestador.id}">${prestador.nomeCompletoMatricula}</option>
+			          	</c:forEach>
+			          	</select>
+		       	    </div>    
+		        
 				     <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
 				         <label for="banco" class="control-label">&nbsp;</label>
 			        </div>
