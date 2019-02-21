@@ -169,7 +169,7 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		ProjetoEscalaPrestador prestadorSalvo = this.projetoEscalaPrestadorDao.save(prestador);
 		
 		if (novo) {
-			notificacao.save(new Notificacao(1, "Você foi cadastrado em um novo projeto.", "Projetos", prestadorSalvo.getPrestador()));
+			//notificacao.save(new Notificacao(1, "Você foi cadastrado em um novo projeto.", "Projetos", prestadorSalvo.getPrestador()));
 		}
 		
 		prestador.setId(prestadorSalvo.getId());
