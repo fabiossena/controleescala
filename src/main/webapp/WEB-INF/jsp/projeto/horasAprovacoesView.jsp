@@ -507,7 +507,7 @@
 					                	<b>Id:</b> ${item.id}<br>
 					                	<b>Prestador:</b> ${item.prestador.nomeCompletoMatricula}<br>
 					                	<b>Data:</b> <fmt:formatDate value="${data}" pattern="dd/MM/yyyy" /><br>
-									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if> <br> 
+									  	<b>Horas:</b> ${item.totalHorasFormatada}hr  <c:if test="${item.totalHoras < 1}">(${item.totalHoras}hr)</c:if> | ${item.dadosAcessoAprovacaoHoras.diasTrabalhados} dia<c:if test="${item.dadosAcessoAprovacaoHoras.diasTrabalhados>1}">s</c:if> <br> 
 									    <c:if test="${usuarioLogado.id == item.prestador.id || isFinanceiro}">	
 											<b>Valor:</b> R$ ${item.totalValor}
 										</c:if>
@@ -560,7 +560,8 @@
 												  </c:set>
 												  
 											      <br />		
-											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr<c:if test="${item2.doubleValue < 1}"> (${item2.doubleValue}hr)</c:if></b> 
+											      <label class="control-label ${styleStatusAprovador}">${item2.nome} | <b>${item2.descricao}hr<c:if test="${item2.doubleValue < 1}"> (${item2.doubleValue}hr)</c:if></b>
+											       ${item2.observacao}
 										      	  </label>					          
 									          </c:forEach>
 								          </div>

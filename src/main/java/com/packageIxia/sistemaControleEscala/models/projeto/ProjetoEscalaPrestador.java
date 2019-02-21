@@ -22,6 +22,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.referencias.Funcao;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 
@@ -97,6 +98,8 @@ public class ProjetoEscalaPrestador {
     transient private String json;
 
 	transient private List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho;
+
+	transient private String observacaoHorasEscala;
 	
 	public String getJsonDiasHorasTrabalho() {
 		return this.json;
@@ -302,6 +305,28 @@ public class ProjetoEscalaPrestador {
 
 	public void setProjetoEscalaPrestadorDiasHorasTrabalho(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) {
 		this.projetoEscalaPrestadorDiaHoraTrabalhos = diasHorasTrabalho;
+	}
+
+	
+
+	public String getObservacaoHorasEscala(int mes, int ano) {
+		if (this.observacaoHorasEscala == null || this.observacaoHorasEscala == "") {
+			List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho = getDiasHorasTrabalho();
+			int dias = 1;
+			double horas = 0;
+			for(int dia = 1; dia <= LocalDate.of(ano, mes, 1).plusMonths(1).minusDays(1).getDayOfMonth(); dia++) {
+				int diaDoMes = dia;
+				ProjetoEscalaPrestadorDiaHoraTrabalho diaTrabalhado = diasHorasTrabalho.stream().filter(x->x.getDiaSemana()==LocalDate.of(ano, mes, diaDoMes).getDayOfWeek().getValue()).findFirst().orElseGet(null);
+				if (diaTrabalhado != null && !diaTrabalhado.getHoraInicio().isEmpty()) {
+					dias++;
+					horas += Utilities.horaValueDiff(diaTrabalhado.getHoraInicio(), diaTrabalhado.getHoraFim());
+				}
+			}
+			
+			this.observacaoHorasEscala = Utilities.converterSecToTime((int)(horas*60*60)) + "hrs " + (dias-1) + " dias";
+		}
+		
+		return this.observacaoHorasEscala;
 	}
 
 }

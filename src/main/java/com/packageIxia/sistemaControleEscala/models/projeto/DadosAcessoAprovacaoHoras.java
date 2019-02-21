@@ -3,6 +3,7 @@ package com.packageIxia.sistemaControleEscala.models.projeto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
@@ -23,17 +24,30 @@ public class DadosAcessoAprovacaoHoras {
 	private double totalValor;
 	private String observacaoHoras;
 	private int diasTrabalhados;
+	List<ProjetoEscalaPrestador> projetoEscalaPrestadores;
 	
 	private int historicoAlterado = 1, exclusao = 1, inclusao = 1,		
 				horasAcima15m = 1, horasAcima30m = 1, horasAcima1h = 1, horasAcima3h = 1, horasAcima7h = 1, horasAcima12h = 1, horasAcima23h = 1,
 				horasAbaixo15m = 1, horasAbaixo30m = 1, horasAbaixo1h = 1, horasAbaixo3h = 1, horasAbaixo5h = 1;
-			
+	private List<AusenciaSolicitacao> ausenciaSolicitacoes;
+	
+
 	public DadosAcessoAprovacaoHoras() {
 		
 	}
 	
-	public DadosAcessoAprovacaoHoras(HoraAprovacao horaAprovacao, Usuario usuarioLogado) {
+	public DadosAcessoAprovacaoHoras(
+			HoraAprovacao horaAprovacao, 
+			Usuario usuarioLogado, 
+			List<ProjetoEscalaPrestador> projetoEscalaPrestadores,
+			List<AusenciaSolicitacao> ausenciaSolicitacoes) {
 		this.usuarioLogado = usuarioLogado;	
+		this.projetoEscalaPrestadores = projetoEscalaPrestadores;
+		this.ausenciaSolicitacoes = ausenciaSolicitacoes;
+		
+		if (horaAprovacao == null) {
+			return;
+		}
 		
 		setDadosAcesso(horaAprovacao);
 		
@@ -60,6 +74,10 @@ public class DadosAcessoAprovacaoHoras {
 	
 	private void setDadosAcesso(HoraAprovacao horaAprovacao) {
 
+		if (horaAprovacao == null) {
+			return;
+		}
+		
 		this.dadosAcesso = false;
 		this.aprovador = new Usuario();
     	if (usuarioLogado.getFuncao().getPerfilAcessoId() == PerfilAcessoEnum.administracao.getId() ||
@@ -187,36 +205,6 @@ public class DadosAcessoAprovacaoHoras {
 		}
 	}
 
-	private void setDadosHorasCauculoObservacoes(double horasDia, double horasCauculo) {
-		if (horasCauculo >= 23) {
-			horasAcima23h++;
-		} else if (horasCauculo >= 12) {
-			horasAcima12h++;
-		} else if (horasCauculo >= 7) {
-			horasAcima7h++;
-		} else if (horasCauculo >= 3) {
-			horasAcima3h++;
-		} else if (horasCauculo >= 1) {
-			horasAcima1h++;
-		} else if (horasCauculo >= 0.5) {
-			horasAcima30m++;
-		} else if (horasCauculo > 0 && horasCauculo >= 0.25) {
-			horasAcima15m++;
-		} 
-		else /*if (horasDia <= 0.25){
-			horasAbaixo15m++;
-		} else */ 
-		if (horasDia > 0 && horasDia <= 0.5) {
-			horasAbaixo30m++;
-		} else if (horasDia > 0 && horasDia <= 1) {
-			horasAbaixo1h++;
-		} else if (horasDia > 0 && horasDia <= 3) {
-			horasAbaixo3h++;
-		} else if (horasDia > 0 && horasDia <= 5) {
-			horasAbaixo5h++;
-		}
-	}
-
 	private void setDadosHorasTrabalhadas(List<HoraTrabalhada> horasTrabalhadas, HoraTrabalhada horaTrabalhada, double horas) {
 		
 		boolean encontrou = false;
@@ -246,23 +234,33 @@ public class DadosAcessoAprovacaoHoras {
 					this.totalSegundos -= segundos;
 				}					
 				
-				dadoGenerico.setDescricao(Utilities.converterToTime((int)(dadoGenerico.getDoubleValue()*60*60)));
+				dadoGenerico.setDescricao(Utilities.converterSecToTime((int)(dadoGenerico.getDoubleValue()*60*60)));
 				encontrou = true;
 				break;
 			}
 		}
 		
 		if (!encontrou) {
+			
+			Optional<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId()).findFirst();
+			String observacaoHoras = 
+					(projetoEscalaPrestador.orElse(null) == null ? 
+					horaTrabalhada.getProjetoEscala().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) : 
+					projetoEscalaPrestador.get().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) //+ 
+					//projetoEscalaPrestador.get().getObservacaoTodasFolgas()
+							);
+					
 			this.dadosAprovacao.add(
 					new DadoGenerico(
 							horaTrabalhada.getProjetoEscala().getId(), 
 							"(" + getStatusAprovacaoHoras(horasTrabalhadas, horaTrabalhada) + ") Monitor: " + 
 							horaTrabalhada.getProjetoEscala().getMonitor().getNomeCompletoMatricula() + "<br>" +
 							(horaTrabalhada.getMotivoRecusa() == null || horaTrabalhada.getMotivoRecusa().trim().isEmpty() ? "" : "<i>Motivo: " + horaTrabalhada.getMotivoRecusa() + "</i><br>") + 
-							"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "</i>", 
+							"<i>" + horaTrabalhada.getProjetoEscala().getDescricaoCompletaEscala() + "	" + observacaoHoras + "</i>", 
 							
 							Utilities.Round(horaTrabalhada.isExcluido() ? 0 : (horaTrabalhada.getTipoAcao() == 1 ? horaTrabalhada.getHoras() : -horaTrabalhada.getHoras()), 3),
-							(horaTrabalhada.getTipoAcao() == 1 ? "" : "-") + Utilities.converterToTime(horaTrabalhada.isExcluido() ? 0 : (int)horaTrabalhada.getSegundos())));
+							(horaTrabalhada.getTipoAcao() == 1 ? "" : "-") + Utilities.converterSecToTime(horaTrabalhada.isExcluido() ? 0 : (int)horaTrabalhada.getSegundos()),
+							""));
 			
 			if (horaTrabalhada.getTipoAcao() == 1) {
 				this.totalValor += ((segundos/60) * prestador.getValorMinuto());
@@ -310,6 +308,13 @@ public class DadosAcessoAprovacaoHoras {
 		this.observacaoHoras += observacaoInclusao == "" ? "" : "<br>"+observacaoInclusao;
 		this.observacaoHoras += observacaoExclusao == "" ? "" : "<br>"+observacaoExclusao;
 		this.observacaoHoras += historicoAlteracao == "" ? "" : "<br>"+historicoAlteracao;
+		
+		if (this.ausenciaSolicitacoes != null && !this.ausenciaSolicitacoes.isEmpty()) {
+			List<AusenciaSolicitacao> ferias = this.ausenciaSolicitacoes.stream().filter(x->x.getMotivoAusencia().getNome().toLowerCase()=="férias").collect(Collectors.toList());
+			
+			List<AusenciaSolicitacao> ausencias = this.ausenciaSolicitacoes.stream().filter(x->x.getMotivoAusencia().getNome().toLowerCase()!="férias").collect(Collectors.toList());
+		}
+		// folgas / ferias
 	}
 
 	private String setObservacaoHorasInconsistentes() {
@@ -325,19 +330,7 @@ public class DadosAcessoAprovacaoHoras {
 		}
 		if (horasAcima7h > 1) {
 			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">7hr("+(horasAcima7h-1)+")";
-		}
-		/*if (horasAcima3h > 1) {
-			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">3hr("+(horasAcima3h-1)+")";
-		}
-		if (horasAcima1h > 1) {
-			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">1hr("+(horasAcima1h-1)+")";
-		}
-		if (horasAcima30m > 1) {
-			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">30min("+(horasAcima30m-1)+")";				
-		}
-		if (horasAcima15m > 1) {
-			observacaoHorasInconsitentes += (observacaoHorasInconsitentes.contains("Horas acima/abaixo") ? " " : "Horas acima/abaixo ") + ">15min("+(horasAcima15m-1)+")";
-		}*/		
+		}		
 		
 		if (horasAbaixo5h > 1) {
 			observacaoHorasInconsistentes += (observacaoHorasInconsistentes.contains("Horas acima/abaixo ") ? " " : "Horas acima/abaixo ") + "<5hr("+(horasAbaixo5h-1)+")";
@@ -356,58 +349,6 @@ public class DadosAcessoAprovacaoHoras {
 		}
 		
 		return observacaoHorasInconsistentes;
-	}
-
-	private String setObservacaoHorasAbaixo() {
-		
-		String observacaoHorasAbaixo = "";
-		
-		if (horasAbaixo5h > 1) {
-			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "5hr("+(horasAbaixo5h-1)+")";
-		}
-		if (horasAbaixo3h > 1) {
-			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "3hr("+(horasAbaixo3h-1)+")";
-		}
-		if (horasAbaixo1h > 1) {
-			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "1hr("+(horasAbaixo1h-1)+")";				
-		}
-		if (horasAbaixo30m > 1) {
-			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "30min("+(horasAbaixo30m-1)+")";
-		}
-		if (horasAbaixo15m > 1) {
-			observacaoHorasAbaixo += (observacaoHorasAbaixo.contains("Horas a menos") ? " " : "Horas a menos - ") + "15min"+(horasAbaixo15m-1)+")";
-		}
-		
-		return observacaoHorasAbaixo;
-	}
-
-	private String setObservacaoHorasAcima() {
-		
-		String observacaoHorasAcima = "";
-		
-		if (horasAcima23h > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "23hr("+(horasAcima23h-1)+")";
-		}
-		if (horasAcima12h > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "12hr("+(horasAcima12h-1)+")";
-		}
-		if (horasAcima7h > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "7hr("+(horasAcima7h-1)+")";
-		}
-		if (horasAcima3h > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "3hr("+(horasAcima3h-1)+")";
-		}
-		if (horasAcima1h > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "1hr("+(horasAcima1h-1)+")";
-		}
-		if (horasAcima30m > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "30min("+(horasAcima30m-1)+")";				
-		}
-		if (horasAcima15m > 1) {
-			observacaoHorasAcima += (observacaoHorasAcima.contains("Horas a mais") ? " " : "Horas a mais - ") + "15min("+(horasAcima15m-1)+")";
-		}
-		
-		return observacaoHorasAcima;
 	}
 
 	private String getStatusAprovacaoHoras(List<HoraTrabalhada> horasTrabalhadas, HoraTrabalhada horaTrabalhada) {
@@ -436,7 +377,7 @@ public class DadosAcessoAprovacaoHoras {
 	}
 
 	public String getTotalHorasFormatada() {
-		return Utilities.converterToTime((int)this.totalSegundos);
+		return Utilities.converterSecToTime((int)this.totalSegundos);
 	}
 
 	public void setTotalHoras(double totalHoras) {

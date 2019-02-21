@@ -47,4 +47,8 @@ public interface ProjetoEscalaPrestadorDao extends CrudRepository<ProjetoEscalaP
 	@Modifying
 	@Query("update ProjetoEscalaPrestador set aceito = :aceito, motivo_recusa = :motivo where id = :id")
 	void aceiteRecusa(@Param("id")long id, @Param("aceito")int aceito, @Param("motivo")String motivo);
+	
+	ProjetoEscalaPrestador findByPrestadorIdAndProjetoEscalaId(long prestadorId, long projetoEscalaId);
+
+	ProjetoEscalaPrestador findByPrestadorIdAndProjetoId(long prestadorId, long projetoId);
 }

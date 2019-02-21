@@ -174,7 +174,7 @@ public class HoraTrabalhada {
 	}
 
 	public String getHorasFormatada() {
-		return Utilities.converterToTime((int)this.getSegundos());
+		return Utilities.converterSecToTime((int)this.getSegundos());
 	}
 	
 	public double getHoras() {

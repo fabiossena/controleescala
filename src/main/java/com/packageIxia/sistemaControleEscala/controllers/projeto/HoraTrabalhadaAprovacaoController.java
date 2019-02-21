@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,13 +42,16 @@ import com.packageIxia.sistemaControleEscala.interfaces.referencias.IFuncao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.INotificacao;
 import com.packageIxia.sistemaControleEscala.interfaces.referencias.IReferencias;
 import com.packageIxia.sistemaControleEscala.interfaces.usuario.IUsuario;
+import com.packageIxia.sistemaControleEscala.models.projeto.AusenciaSolicitacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.DadosAcessoAprovacaoHoras;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraAprovacao;
 import com.packageIxia.sistemaControleEscala.models.projeto.HoraTrabalhada;
 import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscala;
+import com.packageIxia.sistemaControleEscala.models.projeto.ProjetoEscalaPrestador;
 import com.packageIxia.sistemaControleEscala.models.referencias.Banco;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
 import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
+import com.packageIxia.sistemaControleEscala.services.projetos.AusenciaSolicitacaoService;
 import com.packageIxia.sistemaControleEscala.services.projetos.IntegracaoRoboService;
 import com.packageIxia.sistemaControleEscala.services.referencias.AmazonStorageService;
 import com.packageIxia.sistemaControleEscala.services.referencias.StorageFileNotFoundException;
@@ -79,6 +83,7 @@ public class HoraTrabalhadaAprovacaoController {
 	private int ano;
 	private List<Usuario> usuarios;
 	private AmazonStorageService amazonStorageService;
+	private AusenciaSolicitacaoService ausenciaSolicitacaoService;
 
 	@Autowired
 	public HoraTrabalhadaAprovacaoController(
@@ -93,6 +98,7 @@ public class HoraTrabalhadaAprovacaoController {
 			HttpServletRequest request,
 			IProjetoEscalaPrestador projetoEscalaPrestadorService,
 			IUsuario usuarioService,
+			AusenciaSolicitacaoService ausenciaSolicitacaoService,
 			AmazonStorageService amazonStorageService) {
 		this.projetoEscalaService = projetoEscalaService;
 		this.horaAprovacaoService = horaAprovacaoService;
@@ -104,6 +110,7 @@ public class HoraTrabalhadaAprovacaoController {
 		this.projetoEscalaPrestadorService = projetoEscalaPrestadorService;
 		this.request = request;
 		this.usuarioService = usuarioService;
+		this.ausenciaSolicitacaoService = ausenciaSolicitacaoService;
 		this.amazonStorageService = amazonStorageService;
 	}
 
@@ -256,7 +263,18 @@ public class HoraTrabalhadaAprovacaoController {
 		List<HoraAprovacao> aprovacaoHorasFiltroStatusHoras = new ArrayList<HoraAprovacao>();
 
 		for (HoraAprovacao horaAprovacao : aprovacaoHoras) {
-			DadosAcessoAprovacaoHoras dadosAcessoAprovacaoHoras = new DadosAcessoAprovacaoHoras(horaAprovacao, usuarioLogado);
+
+			List<ProjetoEscalaPrestador> projetoEscalaPrestadores = projetoEscalaPrestadorService.findAllByPrestadorId(horaAprovacao.getPrestador().getId());
+			
+			//HoraTrabalhada hr = horaAprovacao.getHorasTrabalhadas() == null || horaAprovacao.getHorasTrabalhadas().isEmpty() ? null : horaAprovacao.getHorasTrabalhadas().get(0);
+	    	
+			List<AusenciaSolicitacao> 
+				ausenciaSolicitacoes = 
+				this.ausenciaSolicitacaoService.findAllByPrestadorId(horaAprovacao.getData().getYear(), horaAprovacao.getData().getMonthValue(), horaAprovacao.getPrestador().getId());
+			
+			
+			horaTrabalhadaView.addObject("isDisableInsertCampos", true);   
+			DadosAcessoAprovacaoHoras dadosAcessoAprovacaoHoras = new DadosAcessoAprovacaoHoras(horaAprovacao, usuarioLogado, projetoEscalaPrestadores, ausenciaSolicitacoes);
 			horaAprovacao.setDadosAcessoAprovacaoHoras(dadosAcessoAprovacaoHoras);
 			horaAprovacao.setTotalHoras(horaAprovacao.getDadosAcessoAprovacaoHoras().getTotalHoras());
 			horaAprovacao.setTotalValor(horaAprovacao.getDadosAcessoAprovacaoHoras().getTotalValor());
@@ -323,8 +341,15 @@ public class HoraTrabalhadaAprovacaoController {
             return erroModelView;
     	}
     	
+    	//HoraTrabalhada hr = this.aprovacaoHora.getHorasTrabalhadas() == null || this.aprovacaoHora.getHorasTrabalhadas().isEmpty() ? null : this.aprovacaoHora.getHorasTrabalhadas().get(0);
+    	List<ProjetoEscalaPrestador> projetoEscalaPrestadores = projetoEscalaPrestadorService.findAllByPrestadorId(this.aprovacaoHora.getPrestador().getId());
+
+		List<AusenciaSolicitacao> 
+			ausenciaSolicitacoes = 
+			this.ausenciaSolicitacaoService.findAllByPrestadorId(this.aprovacaoHora.getData().getYear(), this.aprovacaoHora.getData().getMonthValue(), this.aprovacaoHora.getPrestador().getId());
+		
 		horaTrabalhadaView.addObject("isDisableInsertCampos", true);   
-    	this.aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(this.aprovacaoHora, usuarioLogado));
+    	this.aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(this.aprovacaoHora, usuarioLogado, projetoEscalaPrestadores, ausenciaSolicitacoes));
     	if (this.aprovacaoHora.getData().getYear() == Utilities.now().getYear() && 
     			this.aprovacaoHora.getData().getMonthValue() == Utilities.now().getMonthValue()) { //) ||
     			//!this.aprovacaoHora.getDadosAcessoAprovacaoHoras().getDadosAcesso()) {

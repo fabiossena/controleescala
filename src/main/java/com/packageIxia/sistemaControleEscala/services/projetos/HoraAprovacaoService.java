@@ -259,7 +259,7 @@ public class HoraAprovacaoService implements IHoraAprovacao {
 
 		Usuario usuarioLogado = (Usuario)session.getAttribute("usuarioLogado");
 		if (aprovacaoHora.getDadosAcessoAprovacaoHoras() == null) {
-			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado));
+			aprovacaoHora.setDadosAcessoAprovacaoHoras(new DadosAcessoAprovacaoHoras(aprovacaoHora, usuarioLogado, null, null));
 		}
 			
 		if (aprovacaoHora != null && aprovacaoHora.getAceitePrestador() != 1 &&  aprovacaoHora.getPrestador().getId() == usuarioLogado.getId()) {

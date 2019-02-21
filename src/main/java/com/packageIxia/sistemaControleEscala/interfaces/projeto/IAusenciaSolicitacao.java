@@ -26,4 +26,6 @@ public interface IAusenciaSolicitacao {
 
 	boolean existsByUsuarioId(long prestadorId);
 
+	List<AusenciaSolicitacao> findAllByPrestadorId(int year, int mount, long prestadorId);
+
 }

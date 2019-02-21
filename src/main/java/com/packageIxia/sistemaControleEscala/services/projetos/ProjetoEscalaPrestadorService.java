@@ -418,4 +418,14 @@ public class ProjetoEscalaPrestadorService implements IProjetoEscalaPrestador {
 		return this.projetoEscalaPrestadorDao.findAllByRamalIntegracaoRobo(ramalRobo);
 		
 	}
+
+	@Override
+	public ProjetoEscalaPrestador findByPrestadorIdAndProjetoId(long prestadorId, long projetoId) {
+		return this.projetoEscalaPrestadorDao.findByPrestadorIdAndProjetoId(prestadorId, projetoId);
+	}
+
+	@Override
+	public ProjetoEscalaPrestador findByPrestadorIdAndProjetoEscalaId(long prestadorId, long projetoEscalaId) {
+		return this.projetoEscalaPrestadorDao.findByPrestadorIdAndProjetoEscalaId(prestadorId, projetoEscalaId);
+	}
 }

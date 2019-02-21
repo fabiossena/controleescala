@@ -485,6 +485,16 @@ public class AusenciaSolicitacaoService implements IAusenciaSolicitacao {
 	}
 
 	@Override
+	public List<AusenciaSolicitacao> findAllByPrestadorId(int year, int mount, long prestadorId) { 
+		// todo: usar query sql
+		List<AusenciaSolicitacao> solicitacaoAusencias = Utilities.toList(ausenciaSolicitacaoDao.findAllByUsuarioId(prestadorId));
+		return solicitacaoAusencias.stream().filter(x->
+			x.getAceito() == 1 && 
+			x.getDataInicio().getYear() == year && 
+			x.getDataInicio().getMonthValue() == mount).collect(Collectors.toList());		
+	}
+
+	@Override
 	public boolean existsByUsuarioId(long prestadorId) {
 		return this.ausenciaSolicitacaoDao.existsByUsuarioId(prestadorId);
 	}

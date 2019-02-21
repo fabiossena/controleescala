@@ -100,24 +100,24 @@ public class ProjetoFolgaSemanalService implements IProjetoFolgaSemanal {
 	@Override
 	public void saveFolgasSemanais(List<ProjetoFolgaSemanal> folgasSemanais, Long projetoEscalaPrestadorId) {		
 
-		folgasSemanais = folgasSemanais != null ? folgasSemanais : new ArrayList<ProjetoFolgaSemanal>();
-		for (ProjetoFolgaSemanal item : Utilities.toList(this.projetoFolgaSemanalDao.findAllByProjetoEscalaPrestadorId(projetoEscalaPrestadorId))) {
-			if (!folgasSemanais.stream().anyMatch(x -> x.getId() == item.getId())){
-				this.projetoFolgaSemanalDao.delete(item);
-			}
-		}
-		
-		for (ProjetoFolgaSemanal item : folgasSemanais) {
-    		item.setProjetoEscalaPrestadorId(projetoEscalaPrestadorId);
-    		if (item.getId()<1) {
-    			item.setId(0);
-    			item.setMotivoId(item.getMotivoId());
-    			item.setDiaSemanaId(item.getDiaSemanaId());
-    			item.setProjetoEscalaPrestadorId(projetoEscalaPrestadorId);
-    		}
-		}
-    	
-		this.projetoFolgaSemanalDao.saveAll(folgasSemanais);
+//		folgasSemanais = folgasSemanais != null ? folgasSemanais : new ArrayList<ProjetoFolgaSemanal>();
+//		for (ProjetoFolgaSemanal item : Utilities.toList(this.projetoFolgaSemanalDao.findAllByProjetoEscalaPrestadorId(projetoEscalaPrestadorId))) {
+//			if (!folgasSemanais.stream().anyMatch(x -> x.getId() == item.getId())){
+//				this.projetoFolgaSemanalDao.delete(item);
+//			}
+//		}
+//		
+//		for (ProjetoFolgaSemanal item : folgasSemanais) {
+//    		item.setProjetoEscalaPrestadorId(projetoEscalaPrestadorId);
+//    		if (item.getId()<1) {
+//    			item.setId(0);
+//    			item.setMotivoId(item.getMotivoId());
+//    			item.setDiaSemanaId(item.getDiaSemanaId());
+//    			item.setProjetoEscalaPrestadorId(projetoEscalaPrestadorId);
+//    		}
+//		}
+//    	
+//		this.projetoFolgaSemanalDao.saveAll(folgasSemanais);
 	}
 
 	@Override

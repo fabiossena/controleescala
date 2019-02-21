@@ -40,11 +40,15 @@ public interface IProjetoEscalaPrestador {
 	List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId);
 
 	List<ProjetoEscalaPrestador> findAllByPrestadorId(long prestadorId);
+	
+	ProjetoEscalaPrestador findByPrestadorIdAndProjetoId(long prestadorId, long projetoId);
 
 	List<ProjetoEscalaPrestador> findAllByRamalIntegracaoRobo(String ramalRobo);
 	
 	String convertoToJson(List<ProjetoEscalaPrestadorDiaHoraTrabalho> diasHorasTrabalho) throws IOException;
 
 	List<ProjetoEscalaPrestador> findAllByProjetoId(long projetoId, boolean b);
+
+	ProjetoEscalaPrestador findByPrestadorIdAndProjetoEscalaId(long prestadorId, long projetoEscalaId);
 
 }

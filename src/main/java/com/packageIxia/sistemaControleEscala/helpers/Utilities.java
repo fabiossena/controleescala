@@ -145,7 +145,7 @@ public class Utilities {
 		return partes[partes.length-1];
 	}
 	
-	public static String converterToTime(int sec) {
+	public static String converterSecToTime(int sec) {
 		if (sec <= 0) {
 			return "00:00:00";
 		}
