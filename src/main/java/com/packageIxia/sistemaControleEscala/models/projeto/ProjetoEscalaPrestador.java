@@ -317,7 +317,7 @@ public class ProjetoEscalaPrestador {
 			for(int dia = 1; dia <= LocalDate.of(ano, mes, 1).plusMonths(1).minusDays(1).getDayOfMonth(); dia++) {
 				int diaDoMes = dia;
 				ProjetoEscalaPrestadorDiaHoraTrabalho diaTrabalhado = diasHorasTrabalho.stream().filter(x->x.getDiaSemana()==LocalDate.of(ano, mes, diaDoMes).getDayOfWeek().getValue()).findFirst().orElseGet(null);
-				if (diaTrabalhado != null && !diaTrabalhado.getHoraInicio().isEmpty()) {
+				if (diaTrabalhado != null && diaTrabalhado.getHoraInicio() != null && !diaTrabalhado.getHoraInicio().isEmpty()) {
 					dias++;
 					horas += Utilities.horaValueDiff(diaTrabalhado.getHoraInicio(), diaTrabalhado.getHoraFim());
 				}
