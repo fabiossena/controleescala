@@ -241,7 +241,7 @@ function loadClickIndicarEndereco() {
    <div class="form-group">
        <label for="informacoesadicionaisendereco" class="col-md-12 control-label">Informações adicionais </label>
        <div class="col-md-9">
-           <form:input path="informacoesAdicionaisEndereco" class="form-control" name="informacoesAdicionaisEndereco" placeholder="informações adicionais" disabled="${isDisableTodosCampos}" maxlength="100"/>
+           <form:textarea path="informacoesAdicionaisEndereco" class="form-control" name="informacoesAdicionaisEndereco" placeholder="informações adicionais" disabled="${isDisableTodosCampos}" maxlength="500"/>
        </div>
    </div>                          
                     
