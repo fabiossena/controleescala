@@ -55,6 +55,10 @@ public class UsuarioAcessoService implements IUsuarioAcesso {
 		
 		login.setMatricula(login.getMatricula().trim());
 		Usuario usuario = this.usuarioDao.findByMatricula(login.getMatricula());
+		if (usuario == null) {
+			usuario = this.usuarioDao.findByEmail(login.getMatricula());
+		}
+		
 		String error = this.validateLoginUsuario(login, usuario);
 		if (!Strings.isBlank(error)) {
 			return error;

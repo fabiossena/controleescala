@@ -122,7 +122,7 @@ public class Usuario {
 	@Size(max = 100)
     private String bairro;
 
-	@Size(max = 100)
+	@Size(max = 500)
     private String informacoesAdicionaisEndereco;
 
 	@Size(max = 100)
