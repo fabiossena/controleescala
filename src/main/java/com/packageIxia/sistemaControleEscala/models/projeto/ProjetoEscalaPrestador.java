@@ -86,7 +86,7 @@ public class ProjetoEscalaPrestador {
 	private LocalDateTime dataExcluido;
 	
     @OneToMany(fetch = FetchType.LAZY, mappedBy="projetoEscalaPrestador", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjetoEscalaPrestadorDiaHoraTrabalho> projetoEscalaPrestadorDiaHoraTrabalhos = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
+    transient sprivate List<ProjetoEscalaPrestadorDiaHoraTrabalho> projetoEscalaPrestadorDiaHoraTrabalhos = new ArrayList<ProjetoEscalaPrestadorDiaHoraTrabalho>();
     
 	// todo: ajustar
     transient private List<ProjetoFolgaSemanal> projetoFolgasSemanais;
