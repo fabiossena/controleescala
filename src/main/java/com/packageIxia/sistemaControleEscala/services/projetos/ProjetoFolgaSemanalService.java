@@ -157,7 +157,13 @@ public class ProjetoFolgaSemanalService implements IProjetoFolgaSemanal {
 	public int preDeleteFolgaSemanal(
 			List<ProjetoFolgaSemanal> folgasSemanais,
 			int id) {
+
 		folgasSemanais = folgasSemanais != null ? folgasSemanais : new ArrayList<ProjetoFolgaSemanal>();
+		
+		if (folgasSemanais.isEmpty()) {
+			return id;			
+		}
+		
 		int index = 1;
 		for (ProjetoFolgaSemanal folga : folgasSemanais) {
 			if (folga.getId() == id) {
