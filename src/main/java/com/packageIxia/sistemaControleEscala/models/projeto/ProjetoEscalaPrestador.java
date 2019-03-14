@@ -31,7 +31,7 @@ import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 public class ProjetoEscalaPrestador {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
     //@SequenceGenerator(name="sequence", sequenceName="usersequence")
 	private long id;
 	
