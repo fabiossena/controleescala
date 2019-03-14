@@ -31,7 +31,8 @@ import com.packageIxia.sistemaControleEscala.models.usuario.Usuario;
 public class ProjetoEscalaPrestador {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "sequence")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@SequenceGenerator(name="sequence", sequenceName="usersequence")
 	private long id;
 	
 	@CreationTimestamp
