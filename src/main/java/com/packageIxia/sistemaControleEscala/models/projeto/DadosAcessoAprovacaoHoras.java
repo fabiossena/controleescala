@@ -247,7 +247,7 @@ public class DadosAcessoAprovacaoHoras {
 			ProjetoEscalaPrestador projetoEscalaPrestador = null;
 			if (projetoEscalaPrestadores != null && projetoEscalaPrestadores.size() > 0) {
 				 Stream<ProjetoEscalaPrestador> projetoEscalaPrestadoresStream = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
-				
+				System.out.println(projetoEscalaPrestadoresStream.count());
 				projetoEscalaPrestador =  projetoEscalaPrestadoresStream == null || projetoEscalaPrestadoresStream.count() == 0 ? null : projetoEscalaPrestadoresStream.findFirst().get();
 			}
 			String observacaoHoras = 
