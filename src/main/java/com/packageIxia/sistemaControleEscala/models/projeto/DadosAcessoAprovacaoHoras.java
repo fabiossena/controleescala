@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -246,10 +247,10 @@ public class DadosAcessoAprovacaoHoras {
 			
 			ProjetoEscalaPrestador projetoEscalaPrestador = null;
 			if (projetoEscalaPrestadores != null && projetoEscalaPrestadores.size() > 0) {
-				 Stream<ProjetoEscalaPrestador> projetoEscalaPrestadoresStream = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
-				System.out.println(projetoEscalaPrestadoresStream.count());
-				projetoEscalaPrestador =  projetoEscalaPrestadoresStream == null || projetoEscalaPrestadoresStream.count() == 0 ? null : projetoEscalaPrestadoresStream.findFirst().get();
+				Supplier<Stream<ProjetoEscalaPrestador>> projetoEscalaPrestadoresStream = ()-> projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
+				projetoEscalaPrestador =  projetoEscalaPrestadoresStream == null || projetoEscalaPrestadoresStream.get().count() == 0 ? null : projetoEscalaPrestadoresStream.get().findFirst().get();
 			}
+			
 			String observacaoHoras = 
 					(projetoEscalaPrestador == null ? 
 					horaTrabalhada.getProjetoEscala().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) : 
