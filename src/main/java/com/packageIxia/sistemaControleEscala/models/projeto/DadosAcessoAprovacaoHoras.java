@@ -244,11 +244,16 @@ public class DadosAcessoAprovacaoHoras {
 		
 		if (!encontrou) {
 			
-			Stream<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
+			ProjetoEscalaPrestador projetoEscalaPrestador = null;
+			if (projetoEscalaPrestadores != null && projetoEscalaPrestadores.size() > 0) {
+				 Stream<ProjetoEscalaPrestador> projetoEscalaPrestadoresStream = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
+				
+				projetoEscalaPrestador =  projetoEscalaPrestadoresStream == null || projetoEscalaPrestadoresStream.count() == 0 ? null : projetoEscalaPrestadoresStream.findFirst().get();
+			}
 			String observacaoHoras = 
-					(projetoEscalaPrestador == null || projetoEscalaPrestador.count() == 0 || projetoEscalaPrestador.findFirst().orElse(null) == null ? 
+					(projetoEscalaPrestador == null ? 
 					horaTrabalhada.getProjetoEscala().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) : 
-					projetoEscalaPrestador.findFirst().get().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) //+ 
+					projetoEscalaPrestador.getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) //+ 
 					//projetoEscalaPrestador.get().getObservacaoTodasFolgas()
 							);
 					
