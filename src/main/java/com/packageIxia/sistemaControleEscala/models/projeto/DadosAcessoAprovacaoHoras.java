@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.packageIxia.sistemaControleEscala.helpers.Utilities;
 import com.packageIxia.sistemaControleEscala.models.referencias.DadoGenerico;
 import com.packageIxia.sistemaControleEscala.models.referencias.PerfilAcessoEnum;
@@ -242,11 +244,11 @@ public class DadosAcessoAprovacaoHoras {
 		
 		if (!encontrou) {
 			
-			Optional<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId()).findFirst();
+			Stream<ProjetoEscalaPrestador> projetoEscalaPrestador = projetoEscalaPrestadores.stream().filter(x->x.getProjetoEscala().getId() == horaTrabalhada.getProjetoEscala().getId());
 			String observacaoHoras = 
-					(projetoEscalaPrestador.orElse(null) == null ? 
+					(projetoEscalaPrestador == null || projetoEscalaPrestador.count() == 0 || projetoEscalaPrestador.findFirst().orElse(null) == null ? 
 					horaTrabalhada.getProjetoEscala().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) : 
-					projetoEscalaPrestador.get().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) //+ 
+					projetoEscalaPrestador.findFirst().get().getObservacaoHorasEscala(horaTrabalhada.getDataHoraInicio().getMonthValue(), horaTrabalhada.getDataHoraInicio().getYear()) //+ 
 					//projetoEscalaPrestador.get().getObservacaoTodasFolgas()
 							);
 					
