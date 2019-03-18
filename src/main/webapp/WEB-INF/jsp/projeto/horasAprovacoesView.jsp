@@ -92,7 +92,8 @@
 			var aprovacoes = $("#aprovacoes").val();
 			
 			var item = $("#selected-id-gerar-horas").val();
-			
+			item = item == null ? 1 : item;
+				
 			if (item != "5" && item != "6") {
 				if (mes == 0 || mes > 12){
 					alert("Digite um mês válido");
@@ -469,11 +470,12 @@
 				                	<fmt:parseDate pattern="yyyy-MM-dd" value="${item.data}" var="data" /> 
 											
 	                				<td> 
-	                				
-									   		<c:set var="atendentePodeAprovar">${(item.aceitePrestador != 1 && item.prestador.id == usuarioLogado.id) ||
-														   						(isFinanceiro && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado == 1 && item.aceiteAprovador != 1) ||
-														   						(isAdministracao && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1) ||
-											        	  				 		(item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1 && item.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id)}</c:set>	
+									   		<c:set var="atendentePodeAprovar">${
+									   		!(item.data.year==dataAtual.year && item.data.monthValue==dataAtual.monthValue) && 
+									   		((item.aceitePrestador != 1 && item.prestador.id == usuarioLogado.id) ||
+											(isFinanceiro && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado == 1 && item.aceiteAprovador != 1) ||
+											(isAdministracao && item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1) ||
+											(item.aceitePrestador == 1 && item.dadosAcessoAprovacaoHoras.aprovado != 1 && item.dadosAcessoAprovacaoHoras.aprovador.id == usuarioLogado.id))}</c:set>	
 											        	  				 		
 										        	  				 		
 									     <c:if test="${atendentePodeAprovar}">
